@@ -29,262 +29,197 @@ st.set_page_config(
 # ══════════════════════════════════════════════════════
 st.markdown("""
 <style>
-/* ── Reset e base ── */
+/* ── NOTION / LINEAR DESIGN SYSTEM ── */
+body, [data-testid="stAppViewContainer"] {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif !important;
+}
+
 .lead-card {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
     overflow: hidden;
-    margin-bottom: 12px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin-bottom: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.card-top { padding: 12px 12px 0 12px; }
-
-/* ── CNAE badges ── */
-.cnae-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600;
-    padding: 4px 10px; border-radius: 20px; margin-bottom: 8px;
+.lead-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
-.cnae-primary    { background: #1D9E75; color: #ffffff; }
-.cnae-outside    { background: #FCEBEB; border: 1px solid #F09595; color: #791F1F; }
-.cnae-secondary  { background: #FAEEDA; border: 1px solid #EF9F27; color: #633806; }
 
-/* ── Identidade ── */
-.card-identity { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; }
+.card-top { padding: 14px 16px 10px; }
+
+/* ── Identidade Notion ── */
+.card-identity { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
 .card-avatar {
-    width: 38px; height: 38px; border-radius: 8px;
+    width: 36px; height: 36px; border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
     font-size: 13px; font-weight: 600; flex-shrink: 0;
+    background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0;
 }
-.av-salao   { background: #E1F5EE; color: #085041; }
-.av-clinica { background: #FBEAF0; color: #4B1528; }
-.av-dist    { background: #E6F1FB; color: #042C53; }
-.av-loja    { background: #FAEEDA; color: #412402; }
-.av-fabrica { background: #EEEDFE; color: #26215C; }
-.av-rep     { background: #FAECE7; color: #4A1B0C; }
+.av-salao   { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.av-clinica { background: #fdf2f8; color: #be185d; border-color: #fbcfe8; }
+.av-dist    { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.av-loja    { background: #fffbeb; color: #b45309; border-color: #fde68a; }
+.av-fabrica { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
+.av-rep     { background: #fff7ed; color: #c2410c; border-color: #ffedd5; }
 
 .name-block { flex: 1; min-width: 0; }
-.company-main { font-size: 14px; font-weight: 600; color: #111827; line-height: 1.3; }
-.company-sub  { font-size: 11px; color: #6b7280; margin-top: 1px; }
+.company-main { font-size: 14px; font-weight: 600; color: #0f172a; line-height: 1.35; letter-spacing: -0.01em; }
+.company-sub  { font-size: 11.5px; color: #64748b; margin-top: 2px; font-weight: 400; }
 
-/* ── Segment pills ── */
 .seg-pill {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 11px; font-weight: 500; padding: 3px 9px;
-    border-radius: 20px; border: 1px solid; margin-top: 4px;
-}
-.seg-salao   { background:#E1F5EE; color:#085041; border-color:#5DCAA5; }
-.seg-clinica { background:#FBEAF0; color:#4B1528; border-color:#ED93B1; }
-.seg-dist    { background:#E6F1FB; color:#042C53; border-color:#85B7EB; }
-.seg-loja    { background:#FAEEDA; color:#412402; border-color:#EF9F27; }
-.seg-fabrica { background:#EEEDFE; color:#26215C; border-color:#AFA9EC; }
-.seg-rep     { background:#FAECE7; color:#4A1B0C; border-color:#F0997B; }
-
-/* ── Localização ── */
-.card-location {
-    font-size: 12px; color: #6b7280;
-    display: flex; align-items: center; gap: 5px;
-    padding: 0 12px; margin-bottom: 6px;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10.5px; font-weight: 500; padding: 2px 8px;
+    border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 5px;
+    background: #f8fafc; color: #475569;
 }
 
-/* ── CNAE strip ── */
+/* ── Localização e cadastro ── */
+.card-info { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: #64748b; margin-bottom: 10px; }
+.info-row { display: flex; align-items: center; gap: 6px; color: #475569; }
+
+/* ── CNAE strip Notion ── */
 .cnae-strip {
-    margin: 0 12px 8px 12px;
-    padding: 9px 12px; border-radius: 8px; border: 1px solid;
+    padding: 8px 10px; border-radius: 6px; border: 1px solid;
+    font-size: 11px; margin-top: 4px;
 }
-.cnae-strip-primary  { background:#E1F5EE; border-color:#5DCAA5; }
-.cnae-strip-outside  { background:#FFF7ED; border-color:#EF9F27; }
-.cnae-strip-unknown  { background:#F9FAFB; border-color:#e5e7eb; }
-.cnae-strip-title    { font-size: 11px; font-weight: 600; margin-bottom: 3px; }
-.cnae-strip-code     { font-size: 11px; color: #374151; line-height: 1.5; }
-.cnae-strip-warn     { font-size: 11px; color: #92400e; margin-top: 3px; }
-.cnae-strip-link     { font-size: 11px; color: #1D9E75; cursor: pointer; margin-top: 4px; display: block; }
+.cnae-strip-primary  { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+.cnae-strip-outside  { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.cnae-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; font-weight: 600; padding: 2px 7px;
+    border-radius: 4px; margin-bottom: 4px;
+}
+.cnae-primary   { background: #166534; color: #ffffff; }
+.cnae-outside   { background: #92400e; color: #ffffff; }
+.cnae-secondary { background: #d97706; color: #ffffff; }
+.cnae-strip-code { font-size: 11px; color: #334155; line-height: 1.4; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
 
-/* ── Seção de contatos ── */
+/* ── Contatos Notion List ── */
 .contact-section {
-    border-top: 1px solid #f3f4f6;
-    border-bottom: 1px solid #f3f4f6;
-    background: #f9fafb; padding: 8px 12px;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    background: #fafafa; padding: 10px 16px;
 }
-.contact-label { font-size: 10px; font-weight: 600; letter-spacing: .05em; color: #9ca3af; margin-bottom: 4px; }
-.contact-row {
-    display: flex; align-items: center; gap: 8px;
-    padding: 4px 0; border-bottom: 1px solid #f3f4f6; font-size: 12px;
+.c-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px;
 }
-.contact-row:last-child { border-bottom: none; }
-.contact-type  { font-size: 10px; font-weight: 600; color: #9ca3af; width: 30px; flex-shrink: 0; }
-.contact-num   { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: #111827; flex: 1; }
-.contact-icons { display: flex; gap: 5px; }
-.c-icon {
-    width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e5e7eb;
+.c-row:last-child { border-bottom: none; }
+.c-left { display: flex; align-items: center; gap: 8px; font-weight: 500; color: #1e293b; }
+.c-icon-badge {
+    width: 24px; height: 24px; border-radius: 5px;
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 14px; text-decoration: none; color: #6b7280;
-    background: white;
+    flex-shrink: 0;
 }
-.c-icon-wa  { border-color: #22c55e; color: #16a34a; background: #f0fdf4; }
-.c-icon-tel { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
+.c-wa    { background: #dcfce7; color: #15803d; }
+.c-tel   { background: #e0f2fe; color: #0369a1; }
+.c-email { background: #f1f5f9; color: #475569; }
+.c-val   { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; color: #0f172a; }
+.c-link  { font-size: 11px; font-weight: 500; text-decoration: none; padding: 3px 8px; border-radius: 4px; }
+.c-wa-link    { color: #15803d; background: #dcfce7; }
+.c-wa-link:hover { background: #bbf7d0; }
+.c-tel-link   { color: #0369a1; background: #e0f2fe; }
+.c-email-link { color: #2563eb; background: #dbeafe; }
+.c-note-warn  { font-size: 11px; color: #d97706; padding: 4px 0; font-weight: 500; display: flex; align-items: center; gap: 5px; }
 
-/* ── Botões de ação ── */
-.action-buttons { display: flex; gap: 6px; padding: 10px 12px; }
+/* ── Action buttons footer Notion/Linear style ── */
+.action-buttons { display: flex; gap: 6px; padding: 10px 16px; background: #ffffff; }
 .act-btn {
-    flex: 1; padding: 7px 0; border-radius: 7px; border: 1px solid #d1d5db;
-    font-size: 11px; font-weight: 500; text-align: center;
-    text-decoration: none; display: flex; align-items: center;
-    justify-content: center; gap: 5px; background: white;
-    color: #374151; cursor: pointer;
+    flex: 1; padding: 7px 4px; border-radius: 6px; border: 1px solid #e2e8f0;
+    font-size: 11.5px; font-weight: 500; text-align: center;
+    text-decoration: none; display: inline-flex; align-items: center;
+    justify-content: center; gap: 5px; background: #ffffff;
+    color: #334155; transition: all 0.12s ease; cursor: pointer;
 }
-.btn-rf    { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
-.btn-maps  { border-color: #fca5a5; color: #dc2626; background: #fef2f2; }
-.btn-site  { border-color: #d1d5db; color: #6b7280; }
-.btn-wa-main { border-color: #22c55e; color: #16a34a; background: #f0fdf4; font-weight: 600; }
+.btn-wa-main { border-color: #bbf7d0 !important; color: #15803d !important; background: #f0fdf4 !important; }
+.btn-wa-main:hover { background: #dcfce7 !important; border-color: #86efac !important; }
+.btn-mail { border-color: #bfdbfe !important; color: #1d4ed8 !important; background: #eff6ff !important; }
+.btn-mail:hover { background: #dbeafe !important; border-color: #93c5fd !important; }
+.btn-rf { border-color: #e2e8f0 !important; color: #475569 !important; background: #f8fafc !important; }
+.btn-rf:hover { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }
+.btn-maps { border-color: #fecaca !important; color: #b91c1c !important; background: #fef2f2 !important; }
+.btn-maps:hover { background: #fee2e2 !important; border-color: #fca5a5 !important; }
 
 /* ── Expand (details/summary) ── */
-details.card-expand { border-top: 1px solid #f3f4f6; }
+details.card-expand { border-top: 1px solid #f1f5f9; }
 details.card-expand summary {
-    padding: 8px 12px; font-size: 12px; color: #1D9E75;
+    padding: 8px 16px; font-size: 11.5px; color: #64748b;
     cursor: pointer; list-style: none; display: flex;
-    align-items: center; gap: 5px;
+    align-items: center; gap: 6px; font-weight: 500;
 }
 details.card-expand summary::-webkit-details-marker { display: none; }
-details.card-expand summary::before { content: "▶"; font-size: 9px; transition: transform .15s; }
-details.card-expand[open] summary::before { content: "▼"; }
-.expand-body { padding: 10px 12px 12px; border-top: 1px solid #f3f4f6; background: #f9fafb; }
+details.card-expand summary::before { content: "›"; font-size: 12px; font-weight: 600; transition: transform .15s; }
+details.card-expand[open] summary::before { transform: rotate(90deg); }
+.expand-body { padding: 12px 16px; border-top: 1px solid #f1f5f9; background: #f8fafc; }
 
 /* ── Seções dentro do expand ── */
-.exp-section { margin-bottom: 10px; }
+.exp-section { margin-bottom: 12px; }
 .exp-section-title {
     font-size: 10px; font-weight: 600; letter-spacing: .05em;
-    color: #9ca3af; margin-bottom: 5px; text-transform: uppercase;
+    color: #94a3b8; margin-bottom: 5px; text-transform: uppercase;
 }
 .address-box {
-    background: white; border: 1px solid #e5e7eb; border-radius: 7px;
-    padding: 8px 10px; font-size: 12px; color: #374151; line-height: 1.7;
+    background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px;
+    padding: 8px 10px; font-size: 12px; color: #334155; line-height: 1.6;
 }
 .address-actions { display: flex; gap: 6px; margin-top: 6px; }
 .addr-btn {
-    padding: 4px 10px; border-radius: 6px; border: 1px solid #d1d5db;
-    font-size: 11px; text-decoration: none; color: #374151;
-    display: inline-flex; align-items: center; gap: 4px; background: white;
+    padding: 4px 10px; border-radius: 5px; border: 1px solid #e2e8f0;
+    font-size: 11px; text-decoration: none; color: #334155;
+    display: inline-flex; align-items: center; gap: 4px; background: #ffffff;
 }
-.addr-btn-maps { border-color: #fca5a5; color: #dc2626; }
-.cnae-list { background: white; border: 1px solid #e5e7eb; border-radius: 7px; padding: 7px 10px; }
-.cnae-item { display: flex; gap: 7px; align-items: center; font-size: 11px; color: #374151; padding: 3px 0; }
-.cnae-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; }
+.addr-btn-maps { border-color: #fecaca; color: #b91c1c; background: #fef2f2; }
+.cnae-list { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 7px 10px; }
+.cnae-item { display: flex; gap: 7px; align-items: center; font-size: 11px; color: #334155; padding: 3px 0; }
+.cnae-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
 .data-item { font-size: 11px; }
-.data-label { color: #9ca3af; display: block; margin-bottom: 1px; }
-.data-value { color: #374151; font-weight: 500; }
+.data-label { color: #94a3b8; display: block; margin-bottom: 1px; }
+.data-value { color: #1e293b; font-weight: 500; }
 
 /* ── Badges de status ── */
 .badge-nova { background: #dcfce7; color: #166534; font-size: 10px;
-    font-weight: 600; padding: 2px 7px; border-radius: 10px; margin-left: 5px; }
-.badge-mei  { background: #EEEDFE; color: #26215C; font-size: 10px;
-    font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+    font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 5px; }
 
-/* ── Tabela lista ── */
-.list-tbl { width: 100%; border-collapse: collapse; }
-.list-tbl th {
-    font-size: 11px; font-weight: 600; color: #6b7280; text-align: left;
-    padding: 8px 10px; border-bottom: 1px solid #e5e7eb;
-    background: #f9fafb; white-space: nowrap;
-}
-.list-tbl td { font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #f3f4f6; }
-.list-tbl tr:hover td { background: #f9fafb; }
-
-/* ── KPI card ── */
+/* ── KPI card Notion ── */
 .kpi-box {
-    background: white; border: 1px solid #e5e7eb; border-radius: 10px;
-    padding: 14px; font-family: -apple-system, sans-serif;
+    background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
-.kpi-label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
-.kpi-value { font-size: 24px; font-weight: 600; color: #111827; }
-.kpi-sub   { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+.kpi-label { font-size: 11.5px; color: #64748b; margin-bottom: 4px; font-weight: 500; }
+.kpi-value { font-size: 22px; font-weight: 600; color: #0f172a; }
+.kpi-sub   { font-size: 11px; color: #94a3b8; margin-top: 2px; }
 .kpi-green { color: #16a34a !important; }
-.kpi-blue  { color: #1d4ed8 !important; }
+.kpi-blue  { color: #2563eb !important; }
 .kpi-purple{ color: #7c3aed !important; }
 .kpi-red   { color: #dc2626 !important; }
 
-/* ── Barra de exportação ── */
-.export-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 0; border-top: 1px solid #e5e7eb; margin-top: 12px;
-    font-size: 12px; color: #6b7280;
-}
-
-/* ── Seção de charts ── */
+/* ── Seção de charts Notion ── */
 .chart-card {
-    background: white; border: 1px solid #e5e7eb; border-radius: 10px;
+    background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;
     padding: 14px; margin-bottom: 12px;
 }
-.chart-title { font-size: 11px; font-weight: 600; color: #6b7280;
-    letter-spacing: .04em; margin-bottom: 10px; }
-
-/* ── Mobile bottom sheet hint ── */
-@media (max-width: 768px) {
-    .lead-card { margin-bottom: 10px; }
-    .cards-grid { grid-template-columns: 1fr !important; }
-    .action-buttons { flex-wrap: wrap; }
-    .act-btn { min-width: 80px; }
-}
-
-/* ── Misc ── */
-.section-title-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px;
-}
-.result-count { font-size: 14px; font-weight: 600; color: #111827; }
-.result-sub   { font-size: 11px; color: #6b7280; }
-
-/* ── Layout ajustado conforme mockup (sem conflitos) ── */
-.card-info { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #6b7280; }
-.info-row { display: flex; align-items: flex-start; gap: 6px; }
-.contact-note { font-size: 10px; color: #9ca3af; line-height: 1.4; margin-bottom: 6px; }
-
-/* ── Botões com identidade visual clara ── */
-.btn-wa-main { border-color: #22c55e !important; color: #16a34a !important; background: #f0fdf4 !important; font-weight: 600 !important; }
-.btn-wa-main:hover { background: #dcfce7 !important; }
-.btn-mail { border-color: #93c5fd !important; color: #1d4ed8 !important; background: #eff6ff !important; }
-.btn-mail:hover { background: #dbeafe !important; }
-.btn-maps { border-color: #fca5a5 !important; color: #dc2626 !important; background: #fef2f2 !important; }
-.btn-maps:hover { background: #fee2e2 !important; }
-
-/* ── Lista compacta conforme mockup ── */
-.list-table-wrap { width: 100%; overflow: auto; max-height: 68vh; border: 1px solid #d1d5db; border-radius: 8px; }
-.list-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; }
-.list-table th {
-    background: #f3f4f6; color: #111827; font-size: 10px; font-weight: 600;
-    text-align: left; padding: 7px 9px; border-right: 1px solid #e5e7eb;
-    border-bottom: 1px solid #d1d5db; white-space: nowrap; text-transform: uppercase;
-    position: sticky; top: 0; z-index: 2;
-}
-.list-table td {
-    color: #374151; font-size: 11px; padding: 6px 9px;
-    border-right: 1px solid #f3f4f6; border-bottom: 1px solid #f3f4f6;
-    white-space: nowrap; vertical-align: middle; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
-}
-.list-table tbody tr:hover td { background: #f9fafb; }
-.list-table .list-group th { background: #e5e7eb; text-align: center; color: #4b5563; }
-.list-table th:first-child, .list-table td:first-child { position: sticky; left: 0; z-index: 1; background: #fff; }
-.list-table th:first-child { z-index: 3; background: #f3f4f6; }
-.list-table tbody tr:hover td:first-child { background: #f9fafb; }
-.list-segment { display: inline-flex; align-items: center; gap: 4px; }
-.list-contact-empty { color: #6b7280; }
-.list-map-link { color: #111827; text-decoration: none; }
-.list-map-link:hover { text-decoration: underline; }
-.list-link { color: #2563eb; text-decoration: none; }
-.list-link:hover { text-decoration: underline; }
+.chart-title { font-size: 11px; font-weight: 600; color: #64748b;
+    letter-spacing: .04em; margin-bottom: 10px; text-transform: uppercase; }
 
 /* ── Mobile-first responsivo ── */
 @media (max-width: 768px) {
     .lead-card { margin-bottom: 10px; }
     .action-buttons { flex-wrap: wrap; }
-    .act-btn { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 12px; padding: 10px 4px; }
+    .act-btn { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 11.5px; padding: 8px 4px; }
     .data-grid { grid-template-columns: 1fr !important; }
     .kpi-box { padding: 10px; }
-    .kpi-value { font-size: 20px; }
-    .chart-card { padding: 10px; }
+    .kpi-value { font-size: 18px; }
 }
+
+.section-title-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.result-count { font-size: 14px; font-weight: 600; color: #0f172a; }
+.result-sub   { font-size: 11px; color: #64748b; }
+.contact-note { font-size: 10.5px; color: #94a3b8; line-height: 1.4; margin-bottom: 6px; }
 
 </style>
 """, unsafe_allow_html=True)
@@ -1074,11 +1009,41 @@ def minify(html: str) -> str:
 
 
 # ══════════════════════════════════════════════════════
-# 6. HELPER FUNCTIONS
-# ══════════════════════════════════════════════════════
+# ── SVG ICONS (Notion / Linear / Tabler Style) ──
+SVG_WHATSAPP = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.764.459 3.487 1.334 5.006l-1.417 5.176 5.297-1.389c1.464.798 3.116 1.218 4.774 1.219h.004c5.507 0 9.991-4.479 9.991-9.986 0-2.668-1.038-5.177-2.924-7.062a9.924 9.924 0 0 0-7.063-2.948zm5.952 14.183c-.252.71-1.464 1.348-2.016 1.408-.504.055-1.156.079-3.704-.972-3.08-1.272-5.074-4.423-5.228-4.63-.151-.205-1.246-1.657-1.246-3.161 0-1.503.785-2.241 1.063-2.548.277-.307.605-.383.807-.383.202 0 .404.001.58.01.187.008.439-.071.687.525.252.605.856 2.091.932 2.244.076.153.126.332.025.535-.1.205-.151.332-.302.508-.151.176-.317.393-.453.528-.151.151-.31.316-.134.619.176.303.78 1.288 1.674 2.085 1.15 1.025 2.119 1.343 2.422 1.494.303.151.48.126.657-.076.176-.202.756-.883.958-1.186.202-.303.404-.252.681-.151.277.101 1.764.832 2.067.983.303.151.504.227.58.353.076.126.076.73-.176 1.44z"/></svg>'
+
+SVG_MAPS = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>'
+
+SVG_MAIL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+
+SVG_RECEITA = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
+
+SVG_PIN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+
+SVG_BUILDING = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/></svg>'
+
+SVG_CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="20 6 9 17 4 12"/></svg>'
+
+SVG_ALERT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+
+
+def format_phone_display(phone_str):
+    if not phone_str or pd.isna(phone_str) or str(phone_str).strip() in ("", "nan", "None"):
+        return ""
+    s = str(phone_str).strip()
+    digits = "".join(c for c in s if c.isdigit())
+    if digits.startswith("55") and len(digits) >= 12:
+        digits = digits[2:]
+    if len(digits) == 11:
+        return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
+    elif len(digits) == 10:
+        return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
+    return s.split(".")[0]
+
+
 def get_display_name(row):
-    nf = str(row.get("NOME FANTASIA", "")).strip()
-    rs = str(row.get("RAZÃO SOCIAL", "")).strip()
+    nf = escape(str(row.get("NOME FANTASIA", "")).strip())
+    rs = escape(str(row.get("RAZÃO SOCIAL", "")).strip())
     return (nf, rs) if nf else (rs, "")
 
 
@@ -1497,26 +1462,23 @@ def build_card_html(row):
     seg_info = SEG_CFG.get(seg, SEG_CFG["Salões e Barbearias"])
     av_cls   = seg_info["av"]
     pill_cls = seg_info["pill"]
-    emoji    = seg_info["e"]
 
     # CNAE status
     cnae_status, cnae_cod, cnae_nom = get_cnae_status(row)
-    cod_p = str(row.get("CNAE_PRINCIPAL_CODIGO",""))
-    nom_p = str(row.get("CNAE_PRINCIPAL_NOME",""))
-    cod_s = str(row.get("CNAE_SECUNDARIO_CODIGO",""))
-    nom_s = str(row.get("CNAE_SECUNDARIO_NOME",""))
+    cod_p = escape(str(row.get("CNAE_PRINCIPAL_CODIGO","")))
+    nom_p = escape(str(row.get("CNAE_PRINCIPAL_NOME","")))
+    cod_s = escape(str(row.get("CNAE_SECUNDARIO_CODIGO","")))
+    nom_s = escape(str(row.get("CNAE_SECUNDARIO_NOME","")))
 
     if cnae_status == "primary":
-        badge_html = '<span class="cnae-badge cnae-primary">✔ Beleza — CNAE principal</span>'
+        badge_html = f'<span class="cnae-badge cnae-primary">{SVG_CHECK} Beleza — CNAE principal</span>'
         strip_class = "cnae-strip cnae-strip-primary"
-        strip_html  = f'{badge_html}<div class="cnae-strip-code">{cod_p} · {nom_p}</div>' \
-                      '<div class="cnae-strip-link">⌄ Ver CNAE secundário</div>'
+        strip_html  = f'{badge_html}<div class="cnae-strip-code">{cod_p} · {nom_p}</div>'
     else:
-        badge_html  = '<span class="cnae-badge cnae-outside">⚠ Principal fora da beleza</span>'
+        badge_html  = f'<span class="cnae-badge cnae-outside">{SVG_ALERT} CNAE Principal fora da beleza</span>'
         strip_class = "cnae-strip cnae-strip-outside"
-        strip_html  = f'{badge_html}<div class="cnae-strip-warn">Principal: {cod_p} · {nom_p}</div>' \
-                      f'<span class="cnae-badge cnae-secondary" style="margin-top:5px">✔ Beleza no CNAE secundário</span>' \
-                      '<div class="cnae-strip-link">⌄ Analisar todos os CNAEs</div>'
+        strip_html  = f'{badge_html}<div class="cnae-strip-code">Principal: {cod_p} · {nom_p}</div>' \
+                      f'<span class="cnae-badge cnae-secondary" style="margin-top:4px">{SVG_CHECK} Beleza no CNAE secundário</span>'
 
     # Nova badge
     nova_badge = ""
@@ -1524,109 +1486,107 @@ def build_card_html(row):
         nova_badge = '<span class="badge-nova">NOVA</span>'
 
     # Localização
-    loc = f"{row.get('BAIRRO','')} · {row.get('MUNICIPIO','')}"
+    bairro_str = escape(str(row.get('BAIRRO','')))
+    mun_str    = escape(str(row.get('MUNICIPIO','')))
+    uf_str     = escape(str(row.get('ESTADO','')))
+    loc_text   = f"{bairro_str} · {mun_str} — {uf_str}" if bairro_str else f"{mun_str} — {uf_str}"
 
-    # Contatos
-    phones_html = ""
+    # Contatos (Notion Clean List)
     wa_list  = [(row.get(f"WHATSAPP_{i}","")) for i in range(1,4)]
     tel_list = [(row.get(f"TELEFONE_{i}","")) for i in range(1,4)]
 
-    wa_rows = ""
+    added_numbers = set()
+    c_rows = ""
+
     for num in wa_list:
-        if num and str(num).strip():
-            link = wa_link(str(num))
-            wa_rows += f"""
-            <div class="contact-row">
-                <span class="contact-type">WA</span>
-                <span class="contact-num">{num}</span>
-                <span class="contact-icons">
-                    <a class="c-icon c-icon-wa" href="{link}" target="_blank" title="Enviar mensagem no WhatsApp">📲</a>
-                </span>
-            </div>"""
+        if num and str(num).strip() and str(num).strip() != "nan":
+            fmt_num = format_phone_display(num)
+            if fmt_num and fmt_num not in added_numbers:
+                added_numbers.add(fmt_num)
+                link = wa_link(str(num))
+                c_rows += f"""
+                <div class="c-row">
+                    <div class="c-left">
+                        <span class="c-icon-badge c-wa">{SVG_WHATSAPP}</span>
+                        <span class="c-val">{fmt_num}</span>
+                    </div>
+                    <a class="c-link c-wa-link" href="{link}" target="_blank">WhatsApp</a>
+                </div>"""
 
-    tel_rows = ""
     for num in tel_list:
-        if num and str(num).strip():
-            tel_rows += f"""
-            <div class="contact-row">
-                <span class="contact-type">Tel</span>
-                <span class="contact-num">{num}</span>
-                <span class="contact-icons">
-                    <a class="c-icon c-icon-tel" href="tel:{clean_phone(str(num))}" title="Ligar">📞</a>
-                </span>
-            </div>"""
+        if num and str(num).strip() and str(num).strip() != "nan":
+            fmt_num = format_phone_display(num)
+            if fmt_num and fmt_num not in added_numbers:
+                added_numbers.add(fmt_num)
+                c_rows += f"""
+                <div class="c-row">
+                    <div class="c-left">
+                        <span class="c-icon-badge c-tel">{SVG_MAIL}</span>
+                        <span class="c-val">{fmt_num}</span>
+                    </div>
+                    <a class="c-link c-tel-link" href="tel:{clean_phone(str(num))}">Ligar</a>
+                </div>"""
 
-    email_row = ""
-    email = str(row.get("E-MAIL","")).strip()
+    email = escape(str(row.get("E-MAIL","")).strip())
     is_contador = row.get("EMAIL_CONTABILIDADE", False)
-    if email and not is_contador:
-        email_row = f"""
-        <div class="contact-row">
-            <span class="contact-type">Email</span>
-            <span class="contact-num" style="font-size:11px">{email}</span>
-            <span class="contact-icons">
-                <a class="c-icon" href="mailto:{email}" title="Enviar e-mail">✉️</a>
-            </span>
+    if email and email != "nan" and not is_contador:
+        c_rows += f"""
+        <div class="c-row">
+            <div class="c-left">
+                <span class="c-icon-badge c-email">{SVG_MAIL}</span>
+                <span class="c-val">{email}</span>
+            </div>
+            <a class="c-link c-email-link" href="mailto:{email}">E-mail</a>
         </div>"""
-    elif email and is_contador:
-        email_row = f"""
-        <div style="font-size:10px;color:#9ca3af;padding:5px 0;font-style:italic">
-            ⚠️ E-mail de contador — não usar para prospecção
+    elif email and email != "nan" and is_contador:
+        c_rows += f"""
+        <div class="c-note-warn">
+            {SVG_ALERT} E-mail de contador — não recomendado para prospecção
         </div>"""
-    elif not email:
-        email_row = '<div style="font-size:10px;color:#9ca3af;padding:5px 0">Sem e-mail cadastrado</div>'
 
-    wa_block  = ""
-    tel_block = ""
-    if wa_rows:
-        wa_block = f'<div class="contact-label">WHATSAPP</div>{wa_rows}'
-    if tel_rows:
-        tel_block = f'<div class="contact-label" style="margin-top:6px">TELEFONE</div>{tel_rows}'
-
-    has_any_contact = bool(wa_rows or tel_rows or (email and not is_contador))
-    contact_note = '<div class="contact-note">Números cadastrados na Receita Federal — confirme antes de usar</div>' if has_any_contact else '<div class="contact-note">Nenhum contato direto encontrado neste cadastro</div>'
+    if not c_rows:
+        c_rows = '<div style="font-size:11px;color:#94a3b8;padding:4px 0">Nenhum contato direto encontrado neste cadastro</div>'
 
     contact_html = f"""
     <div class="contact-section">
-        {contact_note}
-        {wa_block}
-        {tel_block}
-        {email_row}
+        {c_rows}
     </div>"""
 
-    # Botões de ação
+    # Botões de ação inferiores (Com ícones SVG oficiais)
     maps_url = str(row.get("MAPS","#"))
     rf_url   = str(row.get("RECEITA FEDERAL", "#")).strip()
-    first_wa = next((str(num) for num in wa_list if num and str(num).strip()), "")
-    first_email = email if email and not is_contador else ""
-    wa_action = f'<a class="act-btn btn-wa-main" href="{wa_link(first_wa)}" target="_blank">◉ Iniciar contato</a>' if first_wa else \
-                '<span class="act-btn btn-wa-main" style="opacity:.4;cursor:default">◉ Sem WhatsApp</span>'
-    email_action = f'<a class="act-btn btn-mail" href="mailto:{first_email}">✉ E-mail</a>' if first_email else \
-                   '<span class="act-btn btn-mail" style="opacity:.4;cursor:default">✉ Sem e-mail</span>'
-    rf_action = f'<a class="act-btn btn-rf" href="{rf_url}" target="_blank">📋 Receita</a>' if rf_url and rf_url != "#" else ""
+    first_wa = next((str(num) for num in wa_list if num and str(num).strip() and str(num).strip() != "nan"), "")
+    first_email = email if email and email != "nan" and not is_contador else ""
+
+    wa_action = f'<a class="act-btn btn-wa-main" href="{wa_link(first_wa)}" target="_blank">{SVG_WHATSAPP} WhatsApp</a>' if first_wa else \
+                f'<span class="act-btn btn-wa-main" style="opacity:.4;cursor:default">{SVG_WHATSAPP} Sem WhatsApp</span>'
+    email_action = f'<a class="act-btn btn-mail" href="mailto:{first_email}">{SVG_MAIL} E-mail</a>' if first_email else \
+                   f'<span class="act-btn btn-mail" style="opacity:.4;cursor:default">{SVG_MAIL} Sem e-mail</span>'
+    rf_action = f'<a class="act-btn btn-rf" href="{rf_url}" target="_blank">{SVG_RECEITA} Receita</a>' if rf_url and rf_url != "#" else ""
 
     # Expand — endereço e dados cadastrais
-    endereco = str(row.get("ENDERECO MAPA","—"))
-    bairro   = str(row.get("BAIRRO",""))
-    cep      = str(row.get("CEP",""))
-    municipio= str(row.get("MUNICIPIO",""))
-    estado   = str(row.get("ESTADO",""))
+    endereco = escape(str(row.get("ENDERECO MAPA","—")))
+    bairro   = escape(str(row.get("BAIRRO","")))
+    cep      = escape(str(row.get("CEP","")))
+    municipio= escape(str(row.get("MUNICIPIO","")))
+    estado   = escape(str(row.get("ESTADO","")))
 
     anos_str = f"{row.get('ANOS_ATIVIDADE',0):.1f} anos"
-    inicio   = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%d/%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
     abertura = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
+    inicio   = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%d/%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
+    porte    = escape(str(row.get('PORTE','—')))
 
     all_cnaes = []
     if cod_p:
         is_b_p = cod_p.replace("-","").replace("/","") in BEAUTY_CNAES
-        dot_c  = "#1D9E75" if is_b_p else "#E24B4A"
+        dot_c  = "#10b981" if is_b_p else "#f43f5e"
         all_cnaes.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_c}"></div>Principal: {cod_p} · {nom_p}</div>')
     if cod_s:
         is_b_s = cod_s.replace("-","").replace("/","") in BEAUTY_CNAES
-        dot_c  = "#1D9E75" if is_b_s else "#888780"
+        dot_c  = "#10b981" if is_b_s else "#94a3b8"
         all_cnaes.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_c}"></div>Secundário: {cod_s} · {nom_s}</div>')
     else:
-        all_cnaes.append('<div class="cnae-item"><div class="cnae-dot" style="background:#d1d5db"></div>Sem CNAE secundário</div>')
+        all_cnaes.append('<div class="cnae-item"><div class="cnae-dot" style="background:#cbd5e1"></div>Sem CNAE secundário</div>')
     cnaes_html = "".join(all_cnaes)
 
     mei_txt    = "Sim" if row.get("MEI") else "Não"
@@ -1640,24 +1600,24 @@ def build_card_html(row):
       <div class="name-block">
         <div class="company-main">{main_name}{nova_badge}</div>
         {"<div class='company-sub'>"+sub_name+"</div>" if sub_name else ""}
-        <span class="seg-pill {pill_cls}">{emoji} {seg}</span>
+        <span class="seg-pill {pill_cls}">{escape(seg)}</span>
       </div>
     </div>
-                <div class="card-info">
-                    <div class="info-row">⌖ {loc} — {row.get('ESTADO','')}</div>
-                    <div class="info-row">▦ {row.get('PORTE','')} · Abertura: {abertura} · {anos_str}</div>
-                </div>
-        <div class="{strip_class}">{strip_html}</div>
+    <div class="card-info">
+        <div class="info-row">{SVG_PIN} {loc_text}</div>
+        <div class="info-row">{SVG_BUILDING} {porte} · Abertura: {abertura} · {anos_str}</div>
     </div>
+    <div class="{strip_class}">{strip_html}</div>
+  </div>
   {contact_html}
   <div class="action-buttons">
         {wa_action}
         {email_action}
         {rf_action}
-        <a class="act-btn btn-maps" href="{maps_url}" target="_blank">⌖ Maps</a>
+        <a class="act-btn btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Maps</a>
   </div>
   <details class="card-expand">
-    <summary>Ver endereço completo e dados cadastrais</summary>
+    <summary>Ver dados cadastrais completos</summary>
     <div class="expand-body">
       <div class="exp-section">
         <div class="exp-section-title">ENDEREÇO COMPLETO</div>
@@ -1665,7 +1625,7 @@ def build_card_html(row):
           {endereco}<br>
           {bairro} · {municipio}/{estado} · CEP {cep}
           <div class="address-actions">
-            <a class="addr-btn addr-btn-maps" href="{maps_url}" target="_blank">📍 Abrir no Maps</a>
+            <a class="addr-btn addr-btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Abrir no Maps</a>
           </div>
         </div>
       </div>
@@ -1676,14 +1636,14 @@ def build_card_html(row):
       <div class="exp-section">
         <div class="exp-section-title">DADOS CADASTRAIS</div>
         <div class="data-grid">
-          <div class="data-item"><span class="data-label">CNPJ</span><span class="data-value">{row.get('CNPJ','—')}</span></div>
-          <div class="data-item"><span class="data-label">Porte</span><span class="data-value">{row.get('PORTE','—')}</span></div>
+          <div class="data-item"><span class="data-label">CNPJ</span><span class="data-value">{escape(str(row.get('CNPJ','—')))}</span></div>
+          <div class="data-item"><span class="data-label">Porte</span><span class="data-value">{porte}</span></div>
           <div class="data-item"><span class="data-label">Capital Social</span><span class="data-value">{format_capital(row.get('CAPITAL SOCIAL',0))}</span></div>
-          <div class="data-item"><span class="data-label">Natureza Jurídica</span><span class="data-value">{row.get('NATUREZA_JURIDICA','—')}</span></div>
+          <div class="data-item"><span class="data-label">Natureza Jurídica</span><span class="data-value">{escape(str(row.get('NATUREZA_JURIDICA','—')))}</span></div>
           <div class="data-item"><span class="data-label">MEI</span><span class="data-value">{mei_txt}</span></div>
           <div class="data-item"><span class="data-label">Simples Nacional</span><span class="data-value">{simples_txt}</span></div>
           <div class="data-item"><span class="data-label">Início de atividade</span><span class="data-value">{inicio} ({anos_str})</span></div>
-          <div class="data-item"><span class="data-label">Matriz / Filial</span><span class="data-value">{row.get('MATRIZ FILIAL','—')}</span></div>
+          <div class="data-item"><span class="data-label">Matriz / Filial</span><span class="data-value">{escape(str(row.get('MATRIZ FILIAL','—')))}</span></div>
         </div>
       </div>
     </div>
