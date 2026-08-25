@@ -180,37 +180,30 @@ div[role="radiogroup"] label:has(input:checked){ background:var(--surface); box-
   color:var(--muted); margin:6px 0 10px;
 }
 
-/* ══════════════════════ KPIs — cards compactos estilo PBI ══════════════════════ */
-.kpi2{
-  border:1px solid var(--border); border-radius:8px; overflow:hidden;
-  box-shadow:var(--shadow-sm); background:var(--surface); height:100%;
+/* ══════════════════════ KPIs — cor com propósito, não decoração ══════════════════════ */
+.kpi{
+  background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--kpi-c, var(--navy));
+  border-radius:var(--radius); padding:15px 17px; height:100%; box-shadow:var(--shadow-sm);
   transition:box-shadow .15s ease, transform .15s ease;
 }
-.kpi2:hover{ box-shadow:var(--shadow-md); transform:translateY(-1px); }
-.kpi2-head{
-  padding:6px 11px; font-size:10px; font-weight:800; letter-spacing:.05em;
-  text-transform:uppercase; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.kpi2-body{ padding:8px 11px 10px; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
-.kpi2-value{ font-size:22px; font-weight:800; letter-spacing:-0.02em; color:var(--text); line-height:1; }
-.kpi2-sub{ font-size:10.5px; color:var(--text-2); font-weight:600; }
+.kpi:hover{ box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.kpi-top{ display:flex; align-items:center; justify-content:space-between; }
+.kpi-label{ font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); }
+.kpi-icon{ width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center;
+  background:var(--kpi-soft, var(--navy-soft)); color:var(--kpi-c, var(--navy)); flex-shrink:0; }
+.kpi-value{ font-size:28px; font-weight:800; letter-spacing:-0.03em; color:var(--text); margin-top:8px; line-height:1.05; }
+.kpi-sub{ font-size:11.5px; color:var(--text-2); margin-top:5px; font-weight:500; }
+.kpi-accent{ color:var(--green); }
+.kpi-warn{ color:var(--coral-dark); }
 
-.mini-strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.mini-strip{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
 .mini{
-  flex:1 1 200px; border:1px solid var(--border); border-radius:8px;
-  background:var(--surface-2); padding:8px 12px; display:flex;
+  flex:1 1 200px; border:1px solid var(--border); border-radius:var(--radius);
+  background:var(--surface-2); padding:10px 14px; display:flex;
   align-items:center; justify-content:space-between; gap:10px;
 }
-.mini-k{ font-size:11px; color:var(--text-2); font-weight:500; }
-.mini-v{ font-size:13px; font-weight:700; color:var(--navy); }
-
-/* ── Painéis de gráfico (visuais estilo PBI) ── */
-[data-testid="stVerticalBlockBorderWrapper"]{ border-radius:8px !important; }
-.panel-head{
-  padding:6px 12px; font-size:10px; font-weight:800; letter-spacing:.05em;
-  text-transform:uppercase; color:#fff; border-radius:6px; margin-bottom:10px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
+.mini-k{ font-size:11.5px; color:var(--text-2); font-weight:500; }
+.mini-v{ font-size:14px; font-weight:700; color:var(--navy); }
 
 /* ── Chips de filtro ── */
 .chip{
@@ -256,33 +249,45 @@ div[role="radiogroup"] label:has(input:checked){ background:var(--surface); box-
 .cnae-badge-out{ color:var(--amber); }
 .cnae-code{ font-family:var(--mono); font-size:11px; color:var(--text); line-height:1.45; }
 
-/* ── Contatos ── */
-.contact-section{ border-top:1px solid var(--border); background:var(--surface-2); padding:7px 17px; }
+/* ── Contatos — Ícones enxutos e compactos ── */
+.contact-section{ border-top:1px solid var(--border); background:var(--surface-2); padding:6px 17px; }
 .c-row{ display:flex; align-items:center; justify-content:space-between; gap:10px;
-  padding:8px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
 .c-row:last-child{ border-bottom:none; }
 .c-left{ display:flex; align-items:center; gap:9px; min-width:0; }
 .c-ico{ width:24px; height:24px; border-radius:6px; display:inline-flex; align-items:center;
   justify-content:center; flex-shrink:0; background:#fff; border:1px solid var(--border); color:var(--text-2); }
 .c-ico-wa{ color:var(--green); background:var(--green-soft); border-color:#bfe4d1; }
 .c-val{ font-family:var(--mono); font-size:11.5px; color:var(--text); overflow:hidden; text-overflow:ellipsis; }
-.c-link{ font-size:11px; font-weight:600; text-decoration:none; padding:4px 10px;
-  border-radius:6px; border:1px solid var(--border); background:#fff; color:var(--text-2); white-space:nowrap; }
-.c-link:hover{ border-color:var(--muted); color:var(--text); }
-.c-link-wa{ color:var(--green); border-color:#bfe4d1; background:var(--green-soft); }
-.c-link-wa:hover{ background:#d8f0e3; }
-.c-note{ font-size:11px; color:var(--amber); padding:8px 0; display:flex; align-items:center; gap:6px; font-weight:500; }
-.c-empty{ font-size:11px; color:var(--muted); padding:8px 0; }
+.c-icon-btn{
+  width:28px; height:28px; border-radius:7px; display:inline-flex; align-items:center;
+  justify-content:center; text-decoration:none; border:1px solid var(--border);
+  background:var(--surface); color:var(--text-2); flex-shrink:0;
+  transition:all .12s ease; box-shadow:var(--shadow-sm);
+}
+.c-icon-btn:hover{ transform:scale(1.08); }
+.c-wa-btn{ color:var(--green); background:var(--green-soft); border-color:#bfe4d1; }
+.c-wa-btn:hover{ background:#d8f0e3; }
+.c-tel-btn{ color:var(--navy); background:var(--navy-soft); border-color:#c3cde3; }
+.c-tel-btn:hover{ background:#dbe3f5; }
+.c-mail-btn{ color:var(--coral-dark); background:var(--coral-soft); border-color:#f5d0c5; }
+.c-mail-btn:hover{ background:#fadad0; }
+.c-note{ font-size:11px; color:var(--amber); padding:6px 0; display:flex; align-items:center; gap:6px; font-weight:500; }
+.c-empty{ font-size:11px; color:var(--muted); padding:6px 0; }
 
-/* ── Ações ── */
-.action-buttons{ display:flex; gap:7px; padding:11px 17px; background:var(--surface); border-top:1px solid var(--border); }
+/* ── Ações — Botões enxutos com ícones oficiais ── */
+.action-buttons{ display:flex; gap:7px; padding:9px 17px; background:var(--surface); border-top:1px solid var(--border); }
 .act-btn{
-  flex:1; padding:7px 8px; border-radius:7px; border:1px solid var(--border);
+  flex:1; padding:6px 8px; border-radius:7px; border:1px solid var(--border);
   font-size:11.5px; font-weight:600; text-align:center; text-decoration:none;
   display:inline-flex; align-items:center; justify-content:center; gap:6px;
   background:var(--surface); color:var(--navy); transition:all .12s ease;
 }
 .act-btn:hover{ background:var(--navy-soft); border-color:#c3cde3; color:var(--navy); }
+.act-btn-rf{ color:#475569; background:#f8fafc; border-color:#e2e8f0; }
+.act-btn-rf:hover{ background:#f1f5f9; border-color:#cbd5e1; color:#0f172a; }
+.act-btn-maps{ color:#b91c1c; background:#fef2f2; border-color:#fecaca; }
+.act-btn-maps:hover{ background:#fee2e2; border-color:#fca5a5; color:#991b1b; }
 .act-btn-off{ opacity:.4; }
 
 details.card-expand{ border-top:1px solid var(--border); }
@@ -669,17 +674,21 @@ def get_secondary_cnaes(row):
 
 
 def format_phone_display(phone_str):
-    if not phone_str or pd.isna(phone_str) or str(phone_str).strip() in ("", "nan", "None"):
+    if not phone_str or pd.isna(phone_str):
         return ""
     s = str(phone_str).strip()
+    if not s or s.lower() in ("nan", "none", "#", "null"):
+        return ""
     digits = "".join(c for c in s if c.isdigit())
-    if digits.startswith("55") and len(digits) >= 12:
+    if not digits or digits.count("0") == len(digits):
+        return ""
+    if digits.startswith("55") and len(digits) in (12, 13):
         digits = digits[2:]
     if len(digits) == 11:
         return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
     if len(digits) == 10:
         return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
-    return s.split(".")[0]
+    return ""
 
 
 def get_display_name(row):
@@ -1052,13 +1061,17 @@ def show_topbar(df_full):
 # ══════════════════════════════════════════════════════════════
 # 10. KPIs
 # ══════════════════════════════════════════════════════════════
-def kpi(label, value, sub, color="var(--navy)"):
-    return f"""<div class="kpi2">
-      <div class="kpi2-head" style="background:{color}">{label}</div>
-      <div class="kpi2-body">
-        <span class="kpi2-value">{value}</span>
-        <span class="kpi2-sub">{sub}</span>
+def kpi(label, value, sub, cls="", icon="", color="", soft=""):
+    style = ""
+    if color:
+        style = f' style="--kpi-c:{color};--kpi-soft:{soft or color}"'
+    return f"""<div class="kpi"{style}>
+      <div class="kpi-top">
+        <div class="kpi-label">{label}</div>
+        <div class="kpi-icon">{icon}</div>
       </div>
+      <div class="kpi-value {cls}">{value}</div>
+      <div class="kpi-sub">{sub}</div>
     </div>"""
 
 
@@ -1086,10 +1099,14 @@ def show_kpis(df, user):
 
     cols = st.columns(4)
     cards = [
-        kpi("Leads", f"{total:,}".replace(",", "."), "no filtro atual", "var(--navy)"),
-        kpi("Com WhatsApp", f"{c_whats:,}".replace(",", "."), pct_w, "var(--green)"),
-        kpi("Com e-mail", f"{c_email:,}".replace(",", "."), pct_e, "var(--coral)"),
-        kpi("Novas no mês", f"{c_nova:,}".replace(",", "."), "últimos 30 dias", "var(--gold)"),
+        kpi("Leads", f"{total:,}".replace(",", "."), "no filtro atual",
+            icon=SVG_BUILDING, color="var(--navy)", soft="var(--navy-soft)"),
+        kpi("Com WhatsApp", f"{c_whats:,}".replace(",", "."), pct_w, "kpi-accent",
+            icon=SVG_WHATSAPP, color="var(--green)", soft="var(--green-soft)"),
+        kpi("Com e-mail", f"{c_email:,}".replace(",", "."), pct_e,
+            icon=SVG_MAIL, color="var(--coral-dark)", soft="var(--coral-soft)"),
+        kpi("Novas no mês", f"{c_nova:,}".replace(",", "."), "abertas nos últimos 30 dias",
+            icon=SVG_CHECK, color="var(--gold)", soft="var(--gold-soft)"),
     ]
     for col, card in zip(cols, cards):
         col.markdown(minify(card), unsafe_allow_html=True)
@@ -1107,41 +1124,37 @@ def show_kpis(df, user):
 # ══════════════════════════════════════════════════════════════
 # 11. GRÁFICOS
 # ══════════════════════════════════════════════════════════════
-def bar_fig(labels, values, color="#1c2b4a"):
-    max_v = max(values) if values else 1
+def bar_fig(labels, values):
     fig = go.Figure(
         go.Bar(
             x=values, y=labels, orientation="h",
-            marker_color=color, marker_line_width=0,
-            text=[f"{v:,}".replace(",", ".") for v in values], textposition="outside",
-            textfont=dict(size=12, color="#211f1c", family="Inter"),
+            marker_color="#37352f", marker_line_width=0,
+            text=values, textposition="outside",
+            textfont=dict(size=11, color="#6b6b66"),
             hovertemplate="%{y}: %{x}<extra></extra>",
-            cliponaxis=False,
         )
     )
     fig.update_layout(
-        margin=dict(l=4, r=46, t=6, b=4),
-        height=max(160, 42 * len(labels)),
+        margin=dict(l=0, r=34, t=4, b=0),
+        height=max(120, 34 * len(labels)),
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(visible=False, range=[0, max_v * 1.24]),
-        yaxis=dict(autorange="reversed", tickfont=dict(size=12, color="#3a362f"), automargin=True),
-        showlegend=False, bargap=0.42,
-        font=dict(family="Inter, -apple-system, BlinkMacSystemFont, sans-serif"),
+        xaxis=dict(visible=False),
+        yaxis=dict(autorange="reversed", tickfont=dict(size=11, color="#37352f")),
+        showlegend=False, bargap=0.35,
+        font=dict(family="-apple-system, BlinkMacSystemFont, Inter, sans-serif"),
     )
     return fig
 
 
-def bars_html(pairs, accent="var(--navy)"):
+def bars_html(pairs, accent="var(--text)"):
     max_c = max([v for _, v in pairs], default=0)
     out = []
     for name, val in pairs:
         pct = (val / max_c * 100) if max_c else 0
-        pct = max(pct, 3)
-        val_str = f"{val:,}".replace(",", ".")
         out.append(
             f'<div class="bar-row"><span class="bar-name">{escape(str(name))}</span>'
             f'<div class="bar-track"><div class="bar-fill" style="width:{pct:.0f}%;background:{accent}"></div></div>'
-            f'<span class="bar-val">{val_str}</span></div>'
+            f'<span class="bar-val">{val}</span></div>'
         )
     return "".join(out)
 
@@ -1152,31 +1165,32 @@ def show_charts(df):
     c1, c2 = st.columns(2)
 
     with c1:
-        with st.container(border=True):
-            st.markdown('<div class="panel-head" style="background:var(--navy)">CNAE principal · top 5</div>', unsafe_allow_html=True)
-            top_p = df.groupby("CNAE_PRINCIPAL_NOME").size().sort_values(ascending=False).head(5).reset_index()
-            top_p.columns = ["CNAE", "Count"]
-            labels = [c[:38] + ("…" if len(c) > 38 else "") for c in top_p["CNAE"]]
-            st.plotly_chart(bar_fig(labels, top_p["Count"].tolist(), color="#1c2b4a"), width="stretch", config={"displayModeBar": False})
+        st.markdown('<div class="sec-label">CNAE principal — top 5</div>', unsafe_allow_html=True)
+        top_p = df.groupby("CNAE_PRINCIPAL_NOME").size().sort_values(ascending=False).head(5).reset_index()
+        top_p.columns = ["CNAE", "Count"]
+        labels = [c[:30] + ("…" if len(c) > 30 else "") for c in top_p["CNAE"]]
+        st.plotly_chart(bar_fig(labels, top_p["Count"].tolist()), width="stretch", config={"displayModeBar": False})
 
     with c2:
-        with st.container(border=True):
-            st.markdown('<div class="panel-head" style="background:var(--green)">CNAE secundário · top 5</div>', unsafe_allow_html=True)
-            sec_df = df[df["CNAE_SECUNDARIO_NOME"].astype(str).str.strip() != ""]
-            if len(sec_df) == 0:
-                st.markdown('<div class="notice">Nenhum CNAE secundário no filtro atual.</div>', unsafe_allow_html=True)
-            else:
-                top_s = sec_df.groupby("CNAE_SECUNDARIO_NOME").size().sort_values(ascending=False).head(5).reset_index()
-                top_s.columns = ["CNAE", "Count"]
-                labels = [c[:38] + ("…" if len(c) > 38 else "") for c in top_s["CNAE"]]
-                st.plotly_chart(bar_fig(labels, top_s["Count"].tolist(), color="#0e7a4f"), width="stretch", config={"displayModeBar": False})
+        st.markdown('<div class="sec-label">CNAE secundário — top 5</div>', unsafe_allow_html=True)
+        sec_df = df[df["CNAE_SECUNDARIO_NOME"].astype(str).str.strip() != ""]
+        if len(sec_df) == 0:
+            st.markdown('<div class="notice">Nenhum CNAE secundário no filtro atual.</div>', unsafe_allow_html=True)
+        else:
+            top_s = sec_df.groupby("CNAE_SECUNDARIO_NOME").size().sort_values(ascending=False).head(5).reset_index()
+            top_s.columns = ["CNAE", "Count"]
+            labels = [c[:30] + ("…" if len(c) > 30 else "") for c in top_s["CNAE"]]
+            st.plotly_chart(bar_fig(labels, top_s["Count"].tolist()), width="stretch", config={"displayModeBar": False})
 
-    with st.container(border=True):
-        st.markdown('<div class="panel-head" style="background:var(--coral)">Empresas por município · top 6</div>', unsafe_allow_html=True)
-        top_m = df.groupby("MUNICIPIO").size().sort_values(ascending=False).head(6).reset_index()
-        top_m.columns = ["Município", "Count"]
-        pairs = list(zip(top_m["Município"], top_m["Count"]))
-        st.markdown(minify(bars_html(pairs, accent="linear-gradient(90deg,var(--navy),var(--coral))")), unsafe_allow_html=True)
+    st.markdown('<div class="sec-label">Empresas por município — top 6</div>', unsafe_allow_html=True)
+    top_m = df.groupby("MUNICIPIO").size().sort_values(ascending=False).head(6).reset_index()
+    top_m.columns = ["Município", "Count"]
+    pairs = list(zip(top_m["Município"], top_m["Count"]))
+    cols_m = st.columns(3)
+    for i in range(3):
+        chunk = pairs[i::3]
+        if chunk:
+            cols_m[i].markdown(minify(bars_html(chunk)), unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1234,7 +1248,7 @@ def build_card_html(row):
             c_rows += (
                 f'<div class="c-row"><div class="c-left">'
                 f'<span class="c-ico c-ico-wa">{SVG_WHATSAPP}</span><span class="c-val">{fmt}</span></div>'
-                f'<a class="c-link c-link-wa" href="{wa_link(str(num))}" target="_blank">WhatsApp</a></div>'
+                f'<a class="c-icon-btn c-wa-btn" href="{wa_link(str(num))}" target="_blank" title="Abrir no WhatsApp">{SVG_WHATSAPP}</a></div>'
             )
     for i in range(1, 4):
         num = row.get(f"TELEFONE_{i}", "")
@@ -1244,7 +1258,7 @@ def build_card_html(row):
             c_rows += (
                 f'<div class="c-row"><div class="c-left">'
                 f'<span class="c-ico">{SVG_PHONE}</span><span class="c-val">{fmt}</span></div>'
-                f'<a class="c-link" href="tel:{clean_phone(str(num))}">Ligar</a></div>'
+                f'<a class="c-icon-btn c-tel-btn" href="tel:{clean_phone(str(num))}" title="Ligar">{SVG_PHONE}</a></div>'
             )
 
     email = escape(str(row.get("E-MAIL", "")).strip())
@@ -1253,7 +1267,7 @@ def build_card_html(row):
         c_rows += (
             f'<div class="c-row"><div class="c-left">'
             f'<span class="c-ico">{SVG_MAIL}</span><span class="c-val">{email}</span></div>'
-            f'<a class="c-link" href="mailto:{email}">E-mail</a></div>'
+            f'<a class="c-icon-btn c-mail-btn" href="mailto:{email}" title="Enviar E-mail">{SVG_MAIL}</a></div>'
         )
     elif email and email != "nan" and is_contador:
         c_rows += f'<div class="c-note">{SVG_ALERT} E-mail de contador — evite usar em prospecção</div>'
@@ -1264,12 +1278,12 @@ def build_card_html(row):
     maps_url = escape(str(row.get("MAPS", "#")), quote=True)
     rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
     rf_btn = (
-        f'<a class="act-btn" href="{rf_url}" target="_blank">{SVG_RECEITA} Receita Federal</a>'
+        f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank" title="Cartão CNPJ na Receita Federal">{SVG_RECEITA} Receita Federal</a>'
         if rf_url and rf_url != "#" else
         f'<span class="act-btn act-btn-off">{SVG_RECEITA} Sem Receita</span>'
     )
     maps_btn = (
-        f'<a class="act-btn" href="{maps_url}" target="_blank">{SVG_MAPS} Google Maps</a>'
+        f'<a class="act-btn act-btn-maps" href="{maps_url}" target="_blank" title="Ver no Google Maps">{SVG_MAPS} Google Maps</a>'
         if maps_url and maps_url != "#" else
         f'<span class="act-btn act-btn-off">{SVG_MAPS} Sem Maps</span>'
     )
@@ -1627,7 +1641,7 @@ def main():
 
     show_kpis(df, st.session_state.user)
 
-    with st.expander("Visão geral dos dados", expanded=True):
+    with st.expander("Visão geral dos dados", expanded=False):
         show_charts(df)
 
     # Chips de filtros ativos (clicar remove)
