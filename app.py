@@ -915,7 +915,7 @@ def show_login():
         st.markdown("---")
         email = st.text_input("E-mail", placeholder="seu@email.com")
         senha = st.text_input("Senha", type="password", placeholder="••••••••")
-        if st.button("Entrar", use_container_width=True, type="primary"):
+        if st.button("Entrar", width="stretch", type="primary"):
             if email in MOCK_USERS and MOCK_USERS[email]["senha"] == senha:
                 st.session_state.logged_in = True
                 st.session_state.user_email = email
@@ -939,7 +939,7 @@ def show_sidebar(df):
         tier = st.session_state.user.get("tier", "operacional")
         tier_label = TIER_CFG[tier]["label"]
         st.caption(f"👤 {st.session_state.user.get('nome','Usuário')} · Plano {tier_label}")
-        if st.button("Sair", use_container_width=True):
+        if st.button("Sair", width="stretch"):
             st.session_state.logged_in = False
             st.rerun()
         st.markdown("---")
@@ -1012,7 +1012,7 @@ def show_sidebar(df):
         # Botão salvar
         st.markdown("---")
         save_name = st.text_input("Nome da visualização", placeholder="Ex: SP · Salões 2024")
-        if st.button("💾 Salvar filtro atual", use_container_width=True):
+        if st.button("💾 Salvar filtro atual", width="stretch"):
             if save_name:
                 st.session_state.saved_views.append({"name": save_name, "count": 0, "filters": filters})
                 st.success(f"'{save_name}' salvo!")
@@ -1178,7 +1178,7 @@ def show_charts(df):
             xaxis=dict(visible=False), yaxis=dict(autorange="reversed", tickfont_size=11),
             showlegend=False,
         )
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+        st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
         st.markdown('</div>', unsafe_allow_html=True)
 
     with c2:
@@ -1203,7 +1203,7 @@ def show_charts(df):
                 xaxis=dict(visible=False), yaxis=dict(autorange="reversed", tickfont_size=11),
                 showlegend=False,
             )
-            st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
+            st.plotly_chart(fig2, width="stretch", config={"displayModeBar": False})
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Municípios
@@ -1431,7 +1431,7 @@ def show_cards(df):
     rows_list = [df.iloc[i] for i in range(len(df))]
     cols = st.columns(2)
     for i, row in enumerate(rows_list):
-        with cols[i % 3]:
+        with cols[i % 2]:
             st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
 
 
@@ -1527,7 +1527,7 @@ def show_download(df, user):
         csv_buf = df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_csv(index=False, sep=";").encode("utf-8-sig")
         with c2:
             st.download_button("⬇️ CSV", csv_buf, f"achei_leads_{date.today()}.csv",
-                               "text/csv", use_container_width=True)
+                               "text/csv", width="stretch")
         # Excel
         xlsx_buf = BytesIO()
         df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_excel(xlsx_buf, index=False, engine="openpyxl")
@@ -1535,7 +1535,7 @@ def show_download(df, user):
         with c3:
             st.download_button("⬇️ Excel", xlsx_buf.read(), f"achei_leads_{date.today()}.xlsx",
                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                               use_container_width=True)
+                               width="stretch")
 
 
 # ══════════════════════════════════════════════════════
