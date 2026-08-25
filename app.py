@@ -254,9 +254,10 @@ TIER_CFG = {
 }
 
 MOCK_USERS = {
-    "demo@achei.com": {"nome":"Rafael","senha":"demo123","tier":"operacional","exports_used":253},
     "pro@achei.com":  {"nome":"Amanda","senha":"pro123", "tier":"regional",  "exports_used":45},
+    "demo@achei.com": {"nome":"Rafael","senha":"demo123","tier":"operacional","exports_used":253},
     "admin@achei.com":{"nome":"Admin", "senha":"admin123","tier":"nacional", "exports_used":0},
+    "explorador@achei.com": {"nome":"Explorador", "senha":"demo", "tier":"explorador", "exports_used":0},
 }
 
 
@@ -985,9 +986,9 @@ def get_data() -> pd.DataFrame:
 # ══════════════════════════════════════════════════════
 def init_state():
     defaults = {
-        "logged_in": False,
-        "user_email": "",
-        "user": {},
+        "logged_in": True,
+        "user_email": "pro@achei.com",
+        "user": MOCK_USERS["pro@achei.com"].copy(),
         "view_mode": "cards",
         "saved_views": [
             {"name": "SP · Salões com WhatsApp",   "count": 4,
@@ -1001,6 +1002,11 @@ def init_state():
     for k, v in defaults.items():
         if k not in st.session_state:
             st.session_state[k] = v
+
+    if not st.session_state.get("user"):
+        st.session_state.user = MOCK_USERS["pro@achei.com"].copy()
+        st.session_state.user_email = "pro@achei.com"
+        st.session_state.logged_in = True
 
 
 def minify(html: str) -> str:
@@ -1183,15 +1189,38 @@ def show_login():
 # ══════════════════════════════════════════════════════
 def show_sidebar(df):
     with st.sidebar:
-        st.markdown(f"### 🎯 AcheiMeuCliente")
-        tier = st.session_state.user.get("tier", "operacional")
-        tier_label = TIER_CFG[tier]["label"]
-        st.caption(f"👤 {st.session_state.user.get('nome','Usuário')} · Plano {tier_label}")
-        if st.button("Sair", width="stretch"):
-            st.session_state.logged_in = False
-            st.session_state.user = {}
-            st.session_state.user_email = ""
+        st.markdown("### 🎯 AcheiMeuCliente")
+        
+        # ── SWITCHER DE TIPO DE USUÁRIO (Sem obrigatoriedade de login) ──
+        profile_options = {
+            "pro@achei.com": "👑 Amanda (Plano Regional)",
+            "demo@achei.com": "⚡ Rafael (Plano Operacional)",
+            "admin@achei.com": "💎 Admin (Plano Nacional)",
+            "explorador@achei.com": "🔍 Explorador (Plano Gratuito)"
+        }
+
+        current_email = st.session_state.get("user_email", "pro@achei.com")
+        if current_email not in profile_options:
+            current_email = "pro@achei.com"
+
+        sel_profile = st.selectbox(
+            "👤 Simular Perfil de Usuário",
+            options=list(profile_options.keys()),
+            format_func=lambda x: profile_options[x],
+            index=list(profile_options.keys()).index(current_email),
+            key="profile_switcher"
+        )
+
+        if sel_profile != st.session_state.get("user_email"):
+            st.session_state.user_email = sel_profile
+            st.session_state.user = MOCK_USERS[sel_profile].copy()
+            st.session_state.logged_in = True
+            st.toast(f"Perfil alterado para {profile_options[sel_profile]}!", icon="🔄")
             st.rerun()
+
+        tier = st.session_state.user.get("tier", "regional")
+        tier_label = TIER_CFG[tier]["label"]
+        st.caption(f"Status: **{st.session_state.user.get('nome','Usuário')}** · Plano {tier_label}")
         st.markdown("---")
 
         if "active_filters" not in st.session_state:
@@ -1909,9 +1938,11 @@ def show_download(df, user):
 def main():
     init_state()
 
-    if not st.session_state.logged_in:
-        show_login()
-        return
+    # Acesso direto habilitado sem obrigatoriedade de login
+    if not st.session_state.get("logged_in") or not st.session_state.get("user"):
+        st.session_state.logged_in = True
+        st.session_state.user_email = "pro@achei.com"
+        st.session_state.user = MOCK_USERS["pro@achei.com"].copy()
 
     df_full = get_data()
     filters = show_sidebar(df_full)
