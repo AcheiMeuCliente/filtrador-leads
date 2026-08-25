@@ -459,6 +459,8 @@ SVG_PIN = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="c
 SVG_BUILDING = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/></svg>'
 SVG_CHECK = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="20 6 9 17 4 12"/></svg>'
 SVG_ALERT = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+SVG_INSTAGRAM = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'
+SVG_SEARCH = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1277,6 +1279,20 @@ def build_card_html(row):
 
     maps_url = escape(str(row.get("MAPS", "#")), quote=True)
     rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
+
+    query_base = escape(f"{main_name} {mun_str} {uf_str}".strip(), quote=True)
+    ig_url = f"https://www.google.com/search?q={query_base}+instagram"
+    web_url = f"https://www.google.com/search?q={query_base}"
+
+    intel_links = (
+        f'<div class="c-row" style="border-top:1px solid var(--border);padding-top:6px;">'
+        f'<div class="c-left">'
+        f'<a class="c-link" href="{ig_url}" target="_blank" style="color:#c13584;border-color:#f9a8d4;background:#fdf2f8;">{SVG_INSTAGRAM} Instagram</a>'
+        f'<a class="c-link" href="{web_url}" target="_blank" style="color:#2563eb;border-color:#bfdbfe;background:#eff6ff;">{SVG_SEARCH} Google Web</a>'
+        f'</div></div>'
+    )
+    c_rows += intel_links
+
     rf_btn = (
         f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank" title="Cartão CNPJ na Receita Federal">{SVG_RECEITA} Receita Federal</a>'
         if rf_url and rf_url != "#" else
@@ -1359,6 +1375,113 @@ def build_card_html(row):
 </div>"""
 
 
+@st.dialog("📋 Ficha Completa do Lead", width="large")
+def show_lead_details_dialog(row):
+    main_name, sub_name = get_display_name(row)
+    cnpj = escape(str(row.get("CNPJ", "—")))
+    mun_str = escape(str(row.get("MUNICIPIO", "")))
+    uf_str = escape(str(row.get("ESTADO", "")))
+    bairro_str = escape(str(row.get("BAIRRO", "")))
+    endereco = escape(str(row.get("ENDERECO MAPA", "—")))
+    cep = escape(str(row.get("CEP", "")))
+    porte = escape(str(row.get("PORTE", "—")))
+    capital = format_capital(row.get("CAPITAL SOCIAL", 0))
+    nat_jur = escape(str(row.get("NATUREZA_JURIDICA", "—")))
+
+    cod_p = escape(str(row.get("CNAE_PRINCIPAL_CODIGO", "")))
+    nom_p = escape(str(row.get("CNAE_PRINCIPAL_NOME", "")))
+    sec_cnaes = get_secondary_cnaes(row)
+
+    dt = row.get("INICIO ATIVIDADE")
+    abertura = pd.to_datetime(dt).strftime("%d/%m/%Y") if pd.notna(dt) else "—"
+    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} anos" if pd.notna(dt) else "—"
+
+    emails = escape(str(row.get("E-MAIL", "")).strip())
+    is_contador = bool(row.get("EMAIL_CONTABILIDADE", False))
+    site = escape(str(row.get("SITE", "")).strip())
+    maps_url = escape(str(row.get("MAPS", "#")), quote=True)
+    rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
+
+    query_base = escape(f"{main_name} {mun_str} {uf_str}".strip(), quote=True)
+    ig_url = f"https://www.google.com/search?q={query_base}+instagram"
+    web_url = f"https://www.google.com/search?q={query_base}"
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("### 🏢 Identificação & Localização")
+        st.markdown(f"**Razão Social / Nome:** {main_name}")
+        if sub_name:
+            st.markdown(f"**Nome Fantasia:** {sub_name}")
+        st.markdown(f"**CNPJ:** `{cnpj}`")
+        st.markdown(f"**Porte:** {porte} · **Matriz/Filial:** {row.get('MATRIZ FILIAL', 'Matriz')}")
+        st.markdown(f"**Natureza Jurídica:** {nat_jur}")
+        st.markdown(f"**Endereço:** {endereco}")
+        st.markdown(f"**Bairro / Cidade:** {bairro_str} · {mun_str}/{uf_str} (CEP {cep})")
+        if maps_url and maps_url != "#":
+            st.markdown(f"📍 [Abrir no Google Maps]({maps_url})")
+
+    with col2:
+        st.markdown("### 📞 Contato & Inteligência Comercial")
+
+        st.info(
+            "💡 **Dica de Apoio Comercial:** Caso o link do WhatsApp não abra diretamente, "
+            "o telefone cadastrado na Receita Federal pode ser um telefone fixo ou ter formato antigo. "
+            "Recomenda-se pesquisar no Instagram ou Google.",
+            icon="ℹ️",
+        )
+
+        has_any_contact = False
+        for i in range(1, 4):
+            num = row.get(f"WHATSAPP_{i}", "")
+            fmt = format_phone_display(num)
+            if fmt:
+                has_any_contact = True
+                st.markdown(f"💬 **WhatsApp:** `{fmt}` — [Abrir no WhatsApp]({wa_link(str(num))})")
+
+        for i in range(1, 4):
+            num = row.get(f"TELEFONE_{i}", "")
+            fmt = format_phone_display(num)
+            if fmt:
+                has_any_contact = True
+                st.markdown(f"📞 **Telefone:** `{fmt}` — [Ligar](tel:{clean_phone(str(num))})")
+
+        if emails and emails != "nan":
+            has_any_contact = True
+            if is_contador:
+                st.warning("⚠️ **E-mail de contador:** evite utilizar para prospecção comercial direta.")
+            else:
+                st.markdown(f"✉️ **E-mail:** `{emails}` — [Enviar E-mail](mailto:{emails})")
+
+        if site and site != "nan":
+            site_link = site if site.startswith("http") else f"http://{site}"
+            st.markdown(f"🌐 **Website:** [{site}]({site_link})")
+
+        if not has_any_contact:
+            st.caption("Nenhum telefone ou e-mail cadastrado diretamente.")
+
+        st.markdown("---")
+        st.markdown(f"📸 [Procurar no Instagram]({ig_url})  ·  🔍 [Pesquisar no Google]({web_url})")
+        if rf_url and rf_url != "#":
+            st.markdown(f"📄 [Consultar Cartão CNPJ na Receita Federal]({rf_url})")
+
+    st.markdown("---")
+    st.markdown("### 🏷️ Atividades Econômicas (CNAEs)")
+    st.markdown(f"**CNAE Principal:** `{cod_p}` — {nom_p}")
+    if sec_cnaes:
+        st.markdown("**CNAEs Secundários:**")
+        for sc in sec_cnaes:
+            tag_b = " *(Atividade de Beleza)*" if sc["is_beauty"] else ""
+            st.markdown(f"• `{sc['code']}` — {sc['name']}{tag_b}")
+
+    st.markdown("---")
+    st.markdown("### 💰 Dados Financeiros & Histórico")
+    fc1, fc2, fc3, fc4 = st.columns(4)
+    fc1.metric("Capital Social", capital)
+    fc2.metric("Início Atividade", abertura)
+    fc3.metric("Tempo de Mercado", anos_str)
+    fc4.metric("Regime", "MEI" if row.get("MEI") else ("Simples" if row.get("SIMPLES") else "Normal"))
+
+
 # ══════════════════════════════════════════════════════════════
 # 13. VIEWS
 # ══════════════════════════════════════════════════════════════
@@ -1396,8 +1519,11 @@ def show_cards(df):
     df_page = paginate(df, 20, "page_cards")
     cols = st.columns(2)
     for i in range(len(df_page)):
+        row = df_page.iloc[i]
         with cols[i % 2]:
-            st.markdown(minify(build_card_html(df_page.iloc[i])), unsafe_allow_html=True)
+            st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
+            if st.button("🔍 Ver Ficha Completa", key=f"btn_det_card_{i}_{row.get('CNPJ')}", width="stretch"):
+                show_lead_details_dialog(row)
 
 
 def build_row_label(row):
@@ -1431,6 +1557,8 @@ def show_leads_list(df):
         row = df_page.iloc[i]
         with st.expander(build_row_label(row)):
             st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
+            if st.button("🔍 Ver Ficha Completa", key=f"btn_det_exp_{i}_{row.get('CNPJ')}", width="stretch"):
+                show_lead_details_dialog(row)
 
 
 def show_list(df):
@@ -1503,6 +1631,22 @@ def show_list(df):
         )
 
     df_disp = pd.DataFrame(display_rows)
+
+    c1, c2 = st.columns([3, 1])
+    with c1:
+        cnpjs = [str(r.get("CNPJ", "")) for _, r in df_page.iterrows()]
+        selected_cnpj = st.selectbox(
+            "Selecione um lead da tabela abaixo para abrir a Ficha Completa",
+            options=cnpjs,
+            format_func=lambda c: f"CNPJ {c} · {df_page[df_page['CNPJ'] == c]['RAZÃO SOCIAL'].values[0]}" if not df_page[df_page['CNPJ'] == c].empty else c,
+            key="tbl_lead_picker",
+            label_visibility="collapsed",
+        )
+    with c2:
+        if st.button("🔍 Ficha Completa", key="btn_det_table", width="stretch"):
+            match = df_page[df_page["CNPJ"] == selected_cnpj]
+            if not match.empty:
+                show_lead_details_dialog(match.iloc[0])
 
     st.dataframe(
         df_disp,
