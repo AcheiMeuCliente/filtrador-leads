@@ -249,33 +249,45 @@ div[role="radiogroup"] label:has(input:checked){ background:var(--surface); box-
 .cnae-badge-out{ color:var(--amber); }
 .cnae-code{ font-family:var(--mono); font-size:11px; color:var(--text); line-height:1.45; }
 
-/* ── Contatos ── */
-.contact-section{ border-top:1px solid var(--border); background:var(--surface-2); padding:7px 17px; }
+/* ── Contatos — Ícones enxutos e compactos ── */
+.contact-section{ border-top:1px solid var(--border); background:var(--surface-2); padding:6px 17px; }
 .c-row{ display:flex; align-items:center; justify-content:space-between; gap:10px;
-  padding:8px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
 .c-row:last-child{ border-bottom:none; }
 .c-left{ display:flex; align-items:center; gap:9px; min-width:0; }
 .c-ico{ width:24px; height:24px; border-radius:6px; display:inline-flex; align-items:center;
   justify-content:center; flex-shrink:0; background:#fff; border:1px solid var(--border); color:var(--text-2); }
 .c-ico-wa{ color:var(--green); background:var(--green-soft); border-color:#bfe4d1; }
 .c-val{ font-family:var(--mono); font-size:11.5px; color:var(--text); overflow:hidden; text-overflow:ellipsis; }
-.c-link{ font-size:11px; font-weight:600; text-decoration:none; padding:4px 10px;
-  border-radius:6px; border:1px solid var(--border); background:#fff; color:var(--text-2); white-space:nowrap; }
-.c-link:hover{ border-color:var(--muted); color:var(--text); }
-.c-link-wa{ color:var(--green); border-color:#bfe4d1; background:var(--green-soft); }
-.c-link-wa:hover{ background:#d8f0e3; }
-.c-note{ font-size:11px; color:var(--amber); padding:8px 0; display:flex; align-items:center; gap:6px; font-weight:500; }
-.c-empty{ font-size:11px; color:var(--muted); padding:8px 0; }
+.c-icon-btn{
+  width:28px; height:28px; border-radius:7px; display:inline-flex; align-items:center;
+  justify-content:center; text-decoration:none; border:1px solid var(--border);
+  background:var(--surface); color:var(--text-2); flex-shrink:0;
+  transition:all .12s ease; box-shadow:var(--shadow-sm);
+}
+.c-icon-btn:hover{ transform:scale(1.08); }
+.c-wa-btn{ color:var(--green); background:var(--green-soft); border-color:#bfe4d1; }
+.c-wa-btn:hover{ background:#d8f0e3; }
+.c-tel-btn{ color:var(--navy); background:var(--navy-soft); border-color:#c3cde3; }
+.c-tel-btn:hover{ background:#dbe3f5; }
+.c-mail-btn{ color:var(--coral-dark); background:var(--coral-soft); border-color:#f5d0c5; }
+.c-mail-btn:hover{ background:#fadad0; }
+.c-note{ font-size:11px; color:var(--amber); padding:6px 0; display:flex; align-items:center; gap:6px; font-weight:500; }
+.c-empty{ font-size:11px; color:var(--muted); padding:6px 0; }
 
-/* ── Ações ── */
-.action-buttons{ display:flex; gap:7px; padding:11px 17px; background:var(--surface); border-top:1px solid var(--border); }
+/* ── Ações — Botões enxutos com ícones oficiais ── */
+.action-buttons{ display:flex; gap:7px; padding:9px 17px; background:var(--surface); border-top:1px solid var(--border); }
 .act-btn{
-  flex:1; padding:7px 8px; border-radius:7px; border:1px solid var(--border);
+  flex:1; padding:6px 8px; border-radius:7px; border:1px solid var(--border);
   font-size:11.5px; font-weight:600; text-align:center; text-decoration:none;
   display:inline-flex; align-items:center; justify-content:center; gap:6px;
   background:var(--surface); color:var(--navy); transition:all .12s ease;
 }
 .act-btn:hover{ background:var(--navy-soft); border-color:#c3cde3; color:var(--navy); }
+.act-btn-rf{ color:#475569; background:#f8fafc; border-color:#e2e8f0; }
+.act-btn-rf:hover{ background:#f1f5f9; border-color:#cbd5e1; color:#0f172a; }
+.act-btn-maps{ color:#b91c1c; background:#fef2f2; border-color:#fecaca; }
+.act-btn-maps:hover{ background:#fee2e2; border-color:#fca5a5; color:#991b1b; }
 .act-btn-off{ opacity:.4; }
 
 details.card-expand{ border-top:1px solid var(--border); }
@@ -462,7 +474,7 @@ def normalize_df(df: pd.DataFrame) -> pd.DataFrame:
 
     if "CNPJ" in df.columns:
         df["CNPJ"] = df["CNPJ"].apply(
-            lambda v: f"{int(v):014d}"
+            lambda v: f"{int(str(v).replace('.', '').replace('-', '').replace('/', '')):014d}"
             if pd.notna(v) and str(v).replace(".", "").replace("-", "").replace("/", "").isdigit()
             else str(v).strip()
         )
@@ -662,17 +674,21 @@ def get_secondary_cnaes(row):
 
 
 def format_phone_display(phone_str):
-    if not phone_str or pd.isna(phone_str) or str(phone_str).strip() in ("", "nan", "None"):
+    if not phone_str or pd.isna(phone_str):
         return ""
     s = str(phone_str).strip()
+    if not s or s.lower() in ("nan", "none", "#", "null"):
+        return ""
     digits = "".join(c for c in s if c.isdigit())
-    if digits.startswith("55") and len(digits) >= 12:
+    if not digits or digits.count("0") == len(digits):
+        return ""
+    if digits.startswith("55") and len(digits) in (12, 13):
         digits = digits[2:]
     if len(digits) == 11:
         return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
     if len(digits) == 10:
         return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
-    return s.split(".")[0]
+    return ""
 
 
 def get_display_name(row):
@@ -1232,7 +1248,7 @@ def build_card_html(row):
             c_rows += (
                 f'<div class="c-row"><div class="c-left">'
                 f'<span class="c-ico c-ico-wa">{SVG_WHATSAPP}</span><span class="c-val">{fmt}</span></div>'
-                f'<a class="c-link c-link-wa" href="{wa_link(str(num))}" target="_blank">WhatsApp</a></div>'
+                f'<a class="c-icon-btn c-wa-btn" href="{wa_link(str(num))}" target="_blank" title="Abrir no WhatsApp">{SVG_WHATSAPP}</a></div>'
             )
     for i in range(1, 4):
         num = row.get(f"TELEFONE_{i}", "")
@@ -1242,7 +1258,7 @@ def build_card_html(row):
             c_rows += (
                 f'<div class="c-row"><div class="c-left">'
                 f'<span class="c-ico">{SVG_PHONE}</span><span class="c-val">{fmt}</span></div>'
-                f'<a class="c-link" href="tel:{clean_phone(str(num))}">Ligar</a></div>'
+                f'<a class="c-icon-btn c-tel-btn" href="tel:{clean_phone(str(num))}" title="Ligar">{SVG_PHONE}</a></div>'
             )
 
     email = escape(str(row.get("E-MAIL", "")).strip())
@@ -1251,7 +1267,7 @@ def build_card_html(row):
         c_rows += (
             f'<div class="c-row"><div class="c-left">'
             f'<span class="c-ico">{SVG_MAIL}</span><span class="c-val">{email}</span></div>'
-            f'<a class="c-link" href="mailto:{email}">E-mail</a></div>'
+            f'<a class="c-icon-btn c-mail-btn" href="mailto:{email}" title="Enviar E-mail">{SVG_MAIL}</a></div>'
         )
     elif email and email != "nan" and is_contador:
         c_rows += f'<div class="c-note">{SVG_ALERT} E-mail de contador — evite usar em prospecção</div>'
@@ -1262,12 +1278,12 @@ def build_card_html(row):
     maps_url = escape(str(row.get("MAPS", "#")), quote=True)
     rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
     rf_btn = (
-        f'<a class="act-btn" href="{rf_url}" target="_blank">{SVG_RECEITA} Receita Federal</a>'
+        f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank" title="Cartão CNPJ na Receita Federal">{SVG_RECEITA} Receita Federal</a>'
         if rf_url and rf_url != "#" else
         f'<span class="act-btn act-btn-off">{SVG_RECEITA} Sem Receita</span>'
     )
     maps_btn = (
-        f'<a class="act-btn" href="{maps_url}" target="_blank">{SVG_MAPS} Google Maps</a>'
+        f'<a class="act-btn act-btn-maps" href="{maps_url}" target="_blank" title="Ver no Google Maps">{SVG_MAPS} Google Maps</a>'
         if maps_url and maps_url != "#" else
         f'<span class="act-btn act-btn-off">{SVG_MAPS} Sem Maps</span>'
     )
@@ -1509,7 +1525,7 @@ def show_list(df):
             "Receita Federal": st.column_config.LinkColumn("Receita Federal", display_text="Abrir 📄", width="small"),
             "Google Maps": st.column_config.LinkColumn("Google Maps", display_text="Ver 📍", width="small"),
         },
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
         height=620,
     )
