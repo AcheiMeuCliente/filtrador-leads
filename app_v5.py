@@ -23,7 +23,7 @@ st.set_page_config(
     page_title="AcheiMeuCliente",
     page_icon="◎",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="auto",
 )
 
 # ══════════════════════════════════════════════════════════════
@@ -406,15 +406,38 @@ details.card-expand[open] summary::before{ transform:rotate(90deg); }
   background:var(--navy-soft); padding:12px 15px; font-size:12.5px; color:var(--text-2);
 }
 .notice-lock{ border-left-color:var(--coral); background:var(--coral-soft); }
+.section-toolbar{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  margin:16px 0 10px; padding:10px 13px; border:1px solid var(--border);
+  border-radius:var(--radius); background:rgba(255,255,255,.55);
+}
+.results-summary{ font-size:13px; color:var(--text); line-height:1.4; }
+.results-summary strong{ font-size:16px; color:var(--navy); }
+.results-summary span{ color:var(--muted); font-size:11.5px; margin-left:4px; }
 
 @media (max-width:768px){
-  .block-container{ padding-top:1.2rem; }
+  .block-container{ padding:1rem .75rem 3rem !important; }
   .data-grid{ grid-template-columns:1fr !important; }
   .action-buttons{ flex-wrap:wrap; }
   .act-btn{ flex:1 1 calc(50% - 3px); }
   .kpi-value{ font-size:22px; }
   .bar-name{ width:100px; }
   .row-name, .row-meta{ flex-basis:100%; }
+  .topbar{ display:block; }
+  .topbar-search{ margin-top:14px; }
+  .brand-name{ font-size:18px; }
+  .brand-sub{ font-size:11px; }
+  .card-header-flex{ display:block; }
+  .card-meta-panel{ min-width:0; margin-top:12px; text-align:left; }
+  .meta-pills{ justify-content:flex-start; }
+  .contact-section{ padding-left:13px; padding-right:13px; }
+  .action-buttons{ padding-left:13px; padding-right:13px; }
+  .act-btn{ min-height:34px; }
+  .section-toolbar{ display:block; padding:10px 12px 4px; }
+}
+
+@media (min-width:769px){
+  .topbar-search{ max-width:440px; margin-left:auto; }
 }
 </style>
 """
@@ -1039,7 +1062,13 @@ def apply_filters(df, filters):
     if filters.get("sem_contador"):
         mask &= df["EMAIL_CONTABILIDADE"] == False  # noqa: E712
     if filters.get("tem_whatsapp"):
-        mask &= df["WHATSAPP_1"].astype(str).str.strip().str.len() > 0
+        wa_cols = [c for c in ("WHATSAPP_1", "WHATSAPP_2", "WHATSAPP_3") if c in df.columns]
+        if wa_cols:
+            mask &= df[wa_cols].fillna("").astype(str).apply(
+                lambda col: col.str.strip().str.len() > 0
+            ).any(axis=1)
+        else:
+            mask &= False
     if filters.get("segmentos"):
         mask &= df["SEGMENTO"].isin(filters["segmentos"])
     if filters.get("estados"):
@@ -1057,11 +1086,16 @@ def apply_filters(df, filters):
 
     if filters.get("busca_texto"):
         q = filters["busca_texto"].lower()
-        mask &= (
-            df["NOME FANTASIA"].astype(str).str.lower().str.contains(q, na=False)
-            | df["RAZÃO SOCIAL"].astype(str).str.lower().str.contains(q, na=False)
-            | df["CNPJ"].astype(str).str.lower().str.contains(q, na=False)
-        )
+        searchable = [
+            c for c in (
+                "NOME FANTASIA", "RAZÃO SOCIAL", "CNPJ", "MUNICIPIO",
+                "BAIRRO", "ESTADO", "E-MAIL", "SEGMENTO",
+            ) if c in df.columns
+        ]
+        text_match = pd.Series(False, index=df.index)
+        for col in searchable:
+            text_match |= df[col].astype(str).str.lower().str.contains(q, na=False, regex=False)
+        mask &= text_match
     if filters.get("portes"):
         mask &= df["PORTE"].isin(filters["portes"])
 
@@ -1084,6 +1118,29 @@ def apply_filters(df, filters):
     return df[mask].copy()
 
 
+def sort_dataframe(df, sort_choice):
+    """Ordena os leads sem alterar a fonte original nem os filtros."""
+    if len(df) == 0:
+        return df
+    result = df.copy()
+    if sort_choice == "Mais recentes":
+        return result.sort_values("INICIO ATIVIDADE", ascending=False, na_position="last")
+    if sort_choice == "Nome A–Z":
+        return result.sort_values("NOME FANTASIA", key=lambda s: s.astype(str).str.lower())
+    if sort_choice == "Maior capital":
+        return result.sort_values("CAPITAL SOCIAL", ascending=False, na_position="last")
+    if sort_choice == "Com contato primeiro":
+        wa_cols = [c for c in ("WHATSAPP_1", "WHATSAPP_2", "WHATSAPP_3") if c in result.columns]
+        has_wa = result[wa_cols].fillna("").astype(str).apply(
+            lambda col: col.str.strip().str.len() > 0
+        ).any(axis=1) if wa_cols else pd.Series(False, index=result.index)
+        has_email = result.get("TEM_EMAIL", pd.Series(False, index=result.index)).fillna(False)
+        return result.assign(_contact=(has_wa.astype(int) * 2 + has_email.astype(int))).sort_values(
+            ["_contact", "NOME FANTASIA"], ascending=[False, True]
+        ).drop(columns="_contact")
+    return result
+
+
 # ══════════════════════════════════════════════════════════════
 # 9. TOPBAR
 # ══════════════════════════════════════════════════════════════
@@ -1092,7 +1149,7 @@ def show_topbar(df_full):
     tier = user.get("tier", "operacional")
     tier_label = TIER_CFG[tier]["label"]
 
-    left, right = st.columns([2.4, 1])
+    left, right = st.columns([1.55, 1.45])
     with left:
         st.markdown(
             f"""<div class="brand">
@@ -1110,7 +1167,7 @@ def show_topbar(df_full):
         st.text_input(
             "Buscar",
             key=k("busca_texto"),
-            placeholder="Buscar por nome, razão social ou CNPJ",
+            placeholder="Buscar empresa, cidade, bairro ou CNPJ",
             label_visibility="collapsed",
         )
 
@@ -1749,6 +1806,26 @@ def main():
                 if st.button(f"✕  {label}", key=f"chip_{i}_{name}", width="stretch"):
                     remove_filter(name, value)
                     st.rerun()
+
+    st.markdown('<div class="section-toolbar">', unsafe_allow_html=True)
+    result_col, sort_col = st.columns([2.2, 1])
+    with result_col:
+        active_count = len(chips)
+        filter_label = f" · {active_count} filtros ativos" if active_count else ""
+        st.markdown(
+            f'<div class="results-summary"><strong>{len(df):,}</strong> leads encontrados'
+            f'<span> de {len(df_full):,}{filter_label}</span></div>'.replace(",", "."),
+            unsafe_allow_html=True,
+        )
+    with sort_col:
+        sort_choice = st.selectbox(
+            "Ordenar resultados",
+            ["Mais recentes", "Com contato primeiro", "Nome A–Z", "Maior capital"],
+            key="results_sort",
+            label_visibility="collapsed",
+        )
+    st.markdown("</div>", unsafe_allow_html=True)
+    df = sort_dataframe(df, sort_choice)
 
     tab_leads, tab_table, tab_geo = st.tabs(["Leads", "Tabela", "Por bairro"])
     with tab_leads:
