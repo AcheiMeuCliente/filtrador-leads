@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, date, timedelta
 from io import BytesIO
+from html import escape
 import re
 
 # ══════════════════════════════════════════════════════
@@ -255,6 +256,24 @@ details.card-expand[open] summary::before { content: "▼"; }
 .btn-wa-main:hover { background: #f9fafb; }
 .btn-mail { border-color: #d1d5db; color: #111827; background: #fff; }
 .btn-maps { border-color: #d1d5db; color: #111827; background: #fff; }
+
+/* ── Lista compacta conforme mockup ── */
+.list-table-wrap { width: 100%; overflow-x: auto; }
+.list-table { width: 100%; min-width: 680px; border-collapse: collapse; background: #fff; }
+.list-table th {
+    background: #f3f4f6; color: #111827; font-size: 10px; font-weight: 600;
+    text-align: left; padding: 7px 9px; border: 1px solid #d1d5db;
+    white-space: nowrap; text-transform: uppercase;
+}
+.list-table td {
+    color: #374151; font-size: 11px; padding: 6px 9px;
+    border: 1px solid #d1d5db; white-space: nowrap; vertical-align: middle;
+}
+.list-table tbody tr:hover td { background: #f9fafb; }
+.list-segment { display: inline-flex; align-items: center; gap: 4px; }
+.list-contact-empty { color: #6b7280; }
+.list-map-link { color: #111827; text-decoration: none; }
+.list-map-link:hover { text-decoration: underline; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1439,18 +1458,42 @@ def show_cards(df):
 # 14. VIEW LISTA
 # ══════════════════════════════════════════════════════
 def show_list(df):
-    for idx, row in df.iterrows():
-        main_name, sub_name = get_display_name(row)
-        seg = row.get("SEGMENTO","")
-        seg_info = SEG_CFG.get(seg, SEG_CFG["Salões e Barbearias"])
-        cnae_status, _, _ = get_cnae_status(row)
-        cnae_icon = "🟢" if cnae_status == "primary" else "🟡"
-        wa   = row.get("WHATSAPP_1","")
-        email= row.get("E-MAIL","")
-        nova  = "🆕" if is_new(row.get("INICIO ATIVIDADE")) else ""
+        table_rows = []
+        for _, row in df.iterrows():
+                razao = escape(str(row.get("RAZÃO SOCIAL", "—")))
+                municipio = escape(str(row.get("MUNICIPIO", "—")))
+                segmento = str(row.get("SEGMENTO", ""))
+                seg_info = SEG_CFG.get(segmento, SEG_CFG["Salões e Barbearias"])
+                whatsapp = escape(str(row.get("WHATSAPP_1", "")).strip() or "—")
+                email = escape(str(row.get("E-MAIL", "")).strip() or "—")
+                maps_url = escape(str(row.get("MAPS", "#")), quote=True)
+                table_rows.append(f"""
+                <tr>
+                    <td>{razao}</td>
+                    <td>{municipio}</td>
+                    <td><span class="list-segment">{seg_info['e']} {escape(segmento)}</span></td>
+                    <td class="{'list-contact-empty' if whatsapp == '—' else ''}">{whatsapp}</td>
+                    <td class="{'list-contact-empty' if email == '—' else ''}">{email}</td>
+                    <td><a class="list-map-link" href="{maps_url}" target="_blank">🗺️ Ver</a></td>
+                </tr>""")
 
-        with st.expander(f"{cnae_icon} **{main_name}** {nova}  —  {seg_info['e']} {seg}  ·  {row.get('MUNICIPIO','')} / {row.get('ESTADO','')}"):
-            st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
+        table_html = f"""
+        <div class="list-table-wrap">
+            <table class="list-table">
+                <thead>
+                    <tr>
+                        <th>Razão Social</th>
+                        <th>Município</th>
+                        <th>Segmento</th>
+                        <th>WhatsApp</th>
+                        <th>E-mail</th>
+                        <th>Maps</th>
+                    </tr>
+                </thead>
+                <tbody>{''.join(table_rows)}</tbody>
+            </table>
+        </div>"""
+        st.markdown(minify(table_html), unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════
