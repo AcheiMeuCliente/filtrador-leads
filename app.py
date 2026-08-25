@@ -232,6 +232,29 @@ details.card-expand[open] summary::before { content: "▼"; }
 }
 .result-count { font-size: 14px; font-weight: 600; color: #111827; }
 .result-sub   { font-size: 11px; color: #6b7280; }
+
+/* ── Layout principal dos cards conforme mockup ── */
+.lead-card { margin-bottom: 10px; }
+.card-top { padding: 14px 14px 10px; }
+.card-identity { margin-bottom: 10px; }
+.company-main { font-size: 13px; font-weight: 500; }
+.company-sub { font-size: 11px; }
+.seg-pill { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+.card-location { padding: 0; margin-bottom: 8px; font-size: 12px; }
+.card-info { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #6b7280; }
+.info-row { display: flex; align-items: flex-start; gap: 6px; }
+.cnae-strip { margin: 0; padding: 8px 10px; }
+.cnae-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
+.cnae-strip-title, .cnae-strip-warn { font-size: 11px; }
+.cnae-strip-code { font-size: 11px; }
+.contact-section { border-top: 1px solid #e5e7eb; border-bottom: 0; padding: 10px 14px 6px; text-align: center; }
+.contact-note { font-size: 10px; color: #9ca3af; line-height: 1.4; }
+.action-buttons { padding: 10px 14px; border-top: 1px solid #e5e7eb; }
+.act-btn { min-height: 52px; padding: 7px 4px; border-radius: 7px; font-size: 14px; font-weight: 500; }
+.btn-wa-main { border-color: #d1d5db; color: #111827; background: #fff; }
+.btn-wa-main:hover { background: #f9fafb; }
+.btn-mail { border-color: #d1d5db; color: #111827; background: #fff; }
+.btn-maps { border-color: #d1d5db; color: #111827; background: #fff; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1227,13 +1250,14 @@ def build_card_html(row):
     if cnae_status == "primary":
         badge_html = '<span class="cnae-badge cnae-primary">✔ Beleza — CNAE principal</span>'
         strip_class = "cnae-strip cnae-strip-primary"
-        strip_html  = f'<div class="cnae-strip-title" style="color:#085041">✔ Beleza confirmada</div>' \
-                      f'<div class="cnae-strip-code">{cod_p} · {nom_p}</div>'
+        strip_html  = f'{badge_html}<div class="cnae-strip-code">{cod_p} · {nom_p}</div>' \
+                      '<div class="cnae-strip-link">⌄ Ver CNAE secundário</div>'
     else:
         badge_html  = '<span class="cnae-badge cnae-outside">⚠ Principal fora da beleza</span>'
         strip_class = "cnae-strip cnae-strip-outside"
-        strip_html  = f'<div class="cnae-strip-warn">Principal: {cod_p} · {nom_p}</div>' \
-                      f'<span class="cnae-badge cnae-secondary" style="margin-top:5px">✔ Beleza no CNAE secundário</span>'
+        strip_html  = f'{badge_html}<div class="cnae-strip-warn">Principal: {cod_p} · {nom_p}</div>' \
+                      f'<span class="cnae-badge cnae-secondary" style="margin-top:5px">✔ Beleza no CNAE secundário</span>' \
+                      '<div class="cnae-strip-link">⌄ Analisar todos os CNAEs</div>'
 
     # Nova badge
     nova_badge = ""
@@ -1241,7 +1265,7 @@ def build_card_html(row):
         nova_badge = '<span class="badge-nova">NOVA</span>'
 
     # Localização
-    loc = f"{row.get('BAIRRO','')} · {row.get('MUNICIPIO','')} — {row.get('ESTADO','')}"
+    loc = f"{row.get('BAIRRO','')} · {row.get('MUNICIPIO','')}"
 
     # Contatos
     phones_html = ""
@@ -1302,17 +1326,17 @@ def build_card_html(row):
 
     contact_html = f"""
     <div class="contact-section">
-        {wa_block}{tel_block}
-        <div class="contact-label" style="margin-top:6px">E-MAIL</div>
-        {email_row}
+        <div class="contact-note">Número de telefone cadastrado na Receita Federal — confirme se é WhatsApp antes de usar</div>
     </div>"""
 
     # Botões de ação
     maps_url = str(row.get("MAPS","#"))
-    rf_url   = str(row.get("RECEITA FEDERAL","#"))
-    site_url = str(row.get("SITE","")).strip()
-    site_btn = f'<a class="act-btn btn-site" href="http://{site_url}" target="_blank">🌐 Site</a>' if site_url else \
-               '<span class="act-btn btn-site" style="opacity:.4;cursor:default">🌐 Sem site</span>'
+    first_wa = next((str(num) for num in wa_list if num and str(num).strip()), "")
+    first_email = email if email and not is_contador else ""
+    wa_action = f'<a class="act-btn btn-wa-main" href="{wa_link(first_wa)}" target="_blank">◉ Iniciar contato</a>' if first_wa else \
+                '<span class="act-btn btn-wa-main" style="opacity:.4;cursor:default">◉ Sem WhatsApp</span>'
+    email_action = f'<a class="act-btn btn-mail" href="mailto:{first_email}">✉ E-mail</a>' if first_email else \
+                   '<span class="act-btn btn-mail" style="opacity:.4;cursor:default">✉ Sem e-mail</span>'
 
     # Expand — endereço e dados cadastrais
     endereco = str(row.get("ENDERECO MAPA","—"))
@@ -1323,6 +1347,7 @@ def build_card_html(row):
 
     anos_str = f"{row.get('ANOS_ATIVIDADE',0):.1f} anos"
     inicio   = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%d/%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
+    abertura = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
 
     all_cnaes = []
     if cod_p:
@@ -1343,7 +1368,6 @@ def build_card_html(row):
     html = f"""
 <div class="lead-card">
   <div class="card-top">
-    {badge_html}
     <div class="card-identity">
       <div class="card-avatar {av_cls}">{initials}</div>
       <div class="name-block">
@@ -1352,14 +1376,17 @@ def build_card_html(row):
         <span class="seg-pill {pill_cls}">{emoji} {seg}</span>
       </div>
     </div>
-  </div>
-  <div class="card-location">📍 {loc} · {row.get('PORTE','')} · {anos_str}</div>
-  <div class="{strip_class}" style="margin:0 12px 8px">{strip_html}</div>
+                <div class="card-info">
+                    <div class="info-row">⌖ {loc} — {row.get('ESTADO','')}</div>
+                    <div class="info-row">▦ {row.get('PORTE','')} · Abertura: {abertura} · {anos_str}</div>
+                </div>
+        <div class="{strip_class}">{strip_html}</div>
+    </div>
   {contact_html}
   <div class="action-buttons">
-    <a class="act-btn btn-rf"   href="{rf_url}"   target="_blank">🏛️ Receita Federal</a>
-    <a class="act-btn btn-maps" href="{maps_url}" target="_blank">📍 Maps</a>
-    {site_btn}
+        {wa_action}
+        {email_action}
+        <a class="act-btn btn-maps" href="{maps_url}" target="_blank">⌖ Maps</a>
   </div>
   <details class="card-expand">
     <summary>Ver endereço completo e dados cadastrais</summary>
@@ -1402,7 +1429,7 @@ def build_card_html(row):
 # ══════════════════════════════════════════════════════
 def show_cards(df):
     rows_list = [df.iloc[i] for i in range(len(df))]
-    cols = st.columns(3)
+    cols = st.columns(2)
     for i, row in enumerate(rows_list):
         with cols[i % 3]:
             st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
