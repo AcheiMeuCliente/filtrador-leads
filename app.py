@@ -800,7 +800,7 @@ def get_data() -> pd.DataFrame:
 # ══════════════════════════════════════════════════════
 def init_state():
     defaults = {
-        "logged_in": True,
+        "logged_in": False,
         "user_email": "",
         "user": {},
         "view_mode": "cards",
