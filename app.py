@@ -324,8 +324,24 @@ details.card-expand[open] summary::before{ transform:rotate(90deg); }
   margin-bottom:6px; text-transform:uppercase; }
 .box{ background:#fff; border:1px solid var(--border); border-radius:7px; padding:10px 12px;
   font-size:12px; color:var(--text); line-height:1.6; }
-.cnae-item{ display:flex; gap:8px; align-items:center; font-size:11.5px; color:var(--text); padding:3px 0; }
-.cnae-dot{ width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.cnae-list-box{ display:flex; flex-direction:column; gap:8px; }
+.cnae-item-row{
+  display:flex; align-items:flex-start; gap:10px; padding:9px 12px;
+  background:#fff; border:1px solid var(--border); border-radius:8px; font-size:12px;
+}
+.cnae-item-row-beauty{ border-color:#bfe4d1; background:var(--green-soft); }
+.cnae-type-badge{
+  font-size:10px; font-weight:700; padding:2px 7px; border-radius:4px; text-transform:uppercase; flex-shrink:0; margin-top:1px;
+}
+.cnae-type-principal{ background:var(--navy); color:#fff; }
+.cnae-type-secundario{ background:var(--surface-sunk); color:var(--text-2); border:1px solid var(--border); }
+.cnae-sector-chip{
+  font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:12px;
+  background:#d1fae5; color:#065f46; border:1px solid #a7f3d0;
+  margin-left:6px; display:inline-flex; align-items:center; gap:4px;
+}
+.cnae-code-text{ font-family:var(--mono); font-weight:700; color:var(--text); margin-right:6px; }
+.cnae-desc-text{ color:var(--text-2); line-height:1.4; }
 .data-grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px 16px; }
 .data-item{ font-size:11.5px; }
 .data-label{ color:var(--muted); display:block; margin-bottom:1px; }
@@ -409,11 +425,17 @@ st.markdown(CSS, unsafe_allow_html=True)
 # ══════════════════════════════════════════════════════════════
 BEAUTY_CNAES = {
     "9602501": "Salões e Barbearias",
+    "9602-5/01": "Salões e Barbearias",
     "9602502": "Clínicas de Estética",
-    "4646001": "Distribuidores Atacadistas",
+    "9602-5/02": "Clínicas de Estética",
     "4772500": "Lojas e Pontos de Venda",
-    "4635401": "Representantes e Agentes",
+    "4772-5/00": "Lojas e Pontos de Venda",
+    "4646001": "Distribuidores Atacadistas",
+    "4646-0/01": "Distribuidores Atacadistas",
+    "4618401": "Representantes e Agentes",
+    "4618-4/01": "Representantes e Agentes",
     "2063100": "Fábricas e Marcas",
+    "2063-1/00": "Fábricas e Marcas",
 }
 
 SEG_CFG = {
@@ -447,12 +469,12 @@ PROFILE_LABELS = {
 }
 
 KNOWN_CNAES = {
-    "9602501": "Cabeleireiros, manicure e pedicure",
+    "9602501": "Cabeleireiros, barbearias, manicure e pedicure",
     "9602502": "Atividades de estética e outros serviços de cuidados com a beleza",
     "4772500": "Comércio varejista de cosméticos, produtos de perfumaria e de higiene pessoal",
     "4646001": "Comércio atacadista de cosméticos e produtos de perfumaria",
-    "4618401": "Representantes comerciais de cosméticos e perfumaria",
-    "2063100": "Fabricação de cosméticos, produtos de perfumaria e higiene pessoal",
+    "4618401": "Representantes comerciais e agentes do comércio de cosméticos e produtos de perfumaria",
+    "2063100": "Fabricação de cosméticos, produtos de perfumaria e de higiene pessoal",
     "4781400": "Comércio varejista de artigos do vestuário e acessórios",
     "4789002": "Comércio varejista de plantas e flores naturais",
     "4789001": "Comércio varejista de suvenires, bijuterias e artesanatos",
@@ -679,6 +701,22 @@ def minify(html: str) -> str:
     return re.sub(r"\n[ \t]*", " ", html).strip()
 
 
+def clean_cnae_code(code):
+    if not code or pd.isna(code):
+        return ""
+    return re.sub(r"\D", "", str(code)).strip()
+
+
+def is_beauty_cnae(code):
+    cp = clean_cnae_code(code)
+    return cp in BEAUTY_CNAES or str(code).strip() in BEAUTY_CNAES
+
+
+def get_cnae_label(code):
+    cp = clean_cnae_code(code)
+    return BEAUTY_CNAES.get(cp, BEAUTY_CNAES.get(str(code).strip(), ""))
+
+
 def get_secondary_cnaes(row):
     raw_cods = str(row.get("CNAE_SECUNDARIO_CODIGO", ""))
     raw_noms = str(row.get("CNAE_SECUNDARIO_NOME", ""))
@@ -688,47 +726,24 @@ def get_secondary_cnaes(row):
     noms = [n.strip() for n in raw_noms.split("|") if n.strip()]
     items = []
     for i, cod in enumerate(cods):
-        name = KNOWN_CNAES.get(cod) or (noms[i] if i < len(noms) else "Outra atividade cadastrada")
-        items.append({"code": cod, "name": name, "is_beauty": cod in BEAUTY_CNAES})
+        cp = clean_cnae_code(cod)
+        name = KNOWN_CNAES.get(cp) or KNOWN_CNAES.get(cod) or (noms[i] if i < len(noms) else "Outra atividade cadastrada")
+        is_b = is_beauty_cnae(cod)
+        label = get_cnae_label(cod)
+        items.append({"code": cod, "clean_code": cp, "name": name, "is_beauty": is_b, "beauty_label": label})
     return items
 
 
-def format_phone_display(phone_str):
-    if not phone_str or pd.isna(phone_str):
-        return ""
-    s = str(phone_str).strip()
-    if not s or s.lower() in ("nan", "none", "#", "null"):
-        return ""
-    digits = "".join(c for c in s if c.isdigit())
-    if not digits or digits.count("0") == len(digits):
-        return ""
-    if digits.startswith("55") and len(digits) in (12, 13):
-        digits = digits[2:]
-    if len(digits) == 11:
-        return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
-    if len(digits) == 10:
-        return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
-    return ""
-
-
-def get_display_name(row):
-    nf = escape(str(row.get("NOME FANTASIA", "")).strip())
-    rs = escape(str(row.get("RAZÃO SOCIAL", "")).strip())
-    return (nf, rs) if nf else (rs, "")
-
-
 def get_cnae_status(row):
-    origem = str(row.get("ORIGEM_CNAE", "")).lower()
-    cod_p = str(row.get("CNAE_PRINCIPAL_CODIGO", "")).replace("-", "").replace("/", "").replace(".", "")
+    cod_p = clean_cnae_code(row.get("CNAE_PRINCIPAL_CODIGO", ""))
     nom_p = str(row.get("CNAE_PRINCIPAL_NOME", ""))
-    cod_s = str(row.get("CNAE_SECUNDARIO_CODIGO", "")).replace("-", "").replace("/", "").replace(".", "")
+    cod_s = clean_cnae_code(row.get("CNAE_SECUNDARIO_CODIGO", ""))
     nom_s = str(row.get("CNAE_SECUNDARIO_NOME", ""))
-    is_beauty_principal = cod_p in BEAUTY_CNAES
-    if origem == "principal" and is_beauty_principal:
+    is_beauty_principal = is_beauty_cnae(cod_p)
+    if is_beauty_principal:
         return "primary", cod_p, nom_p
-    if origem == "secundario" or not is_beauty_principal:
+    else:
         return "secondary", cod_s, nom_s
-    return "primary", cod_p, nom_p
 
 
 def get_initials(name):
@@ -1228,11 +1243,15 @@ def build_card_html(row):
     sec_cnaes = get_secondary_cnaes(row)
     beauty_sec = sum(1 for c in sec_cnaes if c["is_beauty"])
 
-    if cnae_status == "primary":
+    is_b_p = is_beauty_cnae(cod_p)
+    b_label_p = get_cnae_label(cod_p)
+    b_icon_p = SEG_CFG.get(b_label_p, {}).get("e", "✦") if b_label_p else ""
+
+    if is_b_p:
         strip_cls = "cnae-strip"
         extra = f" · +{len(sec_cnaes)} secundário(s)" if sec_cnaes else ""
         strip_html = (
-            f'<div class="cnae-badge cnae-badge-ok">{SVG_CHECK} Beleza no CNAE principal</div>'
+            f'<div class="cnae-badge cnae-badge-ok">{SVG_CHECK} Beleza no CNAE Principal ({b_icon_p} {b_label_p})</div>'
             f'<div class="cnae-code">{cod_p} · {nom_p}{extra}</div>'
         )
     else:
@@ -1243,7 +1262,7 @@ def build_card_html(row):
             f'<div class="cnae-badge" style="margin-top:5px">{len(sec_cnaes)} CNAE(s) secundário(s)</div>'
         )
         strip_html = (
-            f'<div class="cnae-badge cnae-badge-out">{SVG_ALERT} CNAE principal fora da beleza</div>'
+            f'<div class="cnae-badge cnae-badge-out">{SVG_ALERT} CNAE principal fora do ecossistema de beleza</div>'
             f'<div class="cnae-code">{cod_p} · {nom_p}</div>{sec_line}'
         )
 
@@ -1348,19 +1367,29 @@ def build_card_html(row):
     cep = escape(str(row.get("CEP", "")))
 
     cnae_items = []
-    is_b_p = cod_p.replace("-", "").replace("/", "").replace(".", "") in BEAUTY_CNAES
+    chip_p = f'<span class="cnae-sector-chip">{b_icon_p} {b_label_p}</span>' if b_label_p else ""
     cnae_items.append(
-        f'<div class="cnae-item"><div class="cnae-dot" style="background:{"#0f7b47" if is_b_p else "#c9c9c5"}"></div>'
-        f'<b>Principal</b> · {cod_p} — {nom_p}</div>'
+        f'<div class="cnae-item-row {"cnae-item-row-beauty" if is_b_p else ""}">'
+        f'<span class="cnae-type-badge cnae-type-principal">Principal</span>'
+        f'<div><span class="cnae-code-text">{cod_p}</span>'
+        f'<span class="cnae-desc-text">{nom_p}</span>'
+        f'{chip_p}</div></div>'
     )
     if sec_cnaes:
         for sc in sec_cnaes:
+            is_b = sc["is_beauty"]
+            lbl = sc.get("beauty_label", "")
+            ic = SEG_CFG.get(lbl, {}).get("e", "✦") if lbl else ""
+            chip_s = f'<span class="cnae-sector-chip">{ic} {lbl}</span>' if lbl else ""
             cnae_items.append(
-                f'<div class="cnae-item"><div class="cnae-dot" style="background:{"#0f7b47" if sc["is_beauty"] else "#c9c9c5"}"></div>'
-                f'<b>Secundário</b> · {escape(sc["code"])} — {escape(sc["name"])}</div>'
+                f'<div class="cnae-item-row {"cnae-item-row-beauty" if is_b else ""}">'
+                f'<span class="cnae-type-badge cnae-type-secundario">Secundário</span>'
+                f'<div><span class="cnae-code-text">{escape(sc["code"])}</span>'
+                f'<span class="cnae-desc-text">{escape(sc["name"])}</span>'
+                f'{chip_s}</div></div>'
             )
     else:
-        cnae_items.append('<div class="cnae-item"><div class="cnae-dot" style="background:#e0e0dd"></div>Sem CNAEs secundários</div>')
+        cnae_items.append('<div class="cnae-item-row"><span class="cnae-type-badge cnae-type-secundario">Secundários</span><div>Sem CNAEs secundários</div></div>')
 
     return f"""
 <div class="lead-card">
@@ -1392,7 +1421,7 @@ def build_card_html(row):
       </div>
       <div class="exp-section">
         <div class="exp-title">Todas as Atividades Econômicas ({1 + len(sec_cnaes)})</div>
-        <div class="box">{"".join(cnae_items)}</div>
+        <div class="cnae-list-box">{"".join(cnae_items)}</div>
       </div>
     </div>
   </details>
