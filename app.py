@@ -89,30 +89,146 @@ h1,h2,h3,h4,h5{ font-family:var(--font) !important; color:var(--text) !important
 hr{ border-color:var(--border) !important; margin:1.1rem 0 !important; }
 p, span, div, label{ letter-spacing:-0.005em; }
 
-/* ══════════════════════ SIDEBAR (Slate/Navy Alto Contraste) ══════════════════════ */
+/* ══════════════════════ SIDEBAR (Slate/Navy Alto Contraste - Match React) ══════════════════════ */
 [data-testid="stSidebar"]{
-  background:linear-gradient(185deg, var(--navy) 0%, #0f172a 100%);
-  border-right:1px solid #0f1930;
+  background:linear-gradient(185deg, #1e1b4b 0%, #0f172a 100%) !important;
+  border-right:1px solid #1e293b !important;
 }
-[data-testid="stSidebar"] .block-container{ padding-top:1.6rem; }
-[data-testid="stSidebar"] *{ color:#e7ebf3; }
-[data-testid="stSidebar"] .sec-label{ color:#8b97b8 !important; }
+[data-testid="stSidebar"] .block-container{ padding-top:1.2rem; padding-left:1rem; padding-right:1rem; }
+[data-testid="stSidebar"] *{ color:#e2e8f0; }
+[data-testid="stSidebar"] .sec-label{ color:#94a3b8 !important; font-size:11px !important; font-weight:700 !important; letter-spacing:.06em !important; text-transform:uppercase; margin:10px 0 6px !important; display:flex; align-items:center; gap:6px; }
+
+/* Sidebar Expanders */
 [data-testid="stSidebar"] [data-testid="stExpander"]{
-  border:1px solid rgba(255,255,255,.09); border-radius:var(--radius);
-  background:rgba(255,255,255,.045); margin-bottom:8px;
+  border:1px solid rgba(255,255,255,.1) !important;
+  border-radius:10px !important;
+  background:rgba(255,255,255,.04) !important;
+  margin-bottom:8px !important;
+  box-shadow:none !important;
 }
-[data-testid="stSidebar"] [data-testid="stExpander"] summary:hover{ background:rgba(255,255,255,.04); }
-[data-testid="stSidebar"] summary p{ font-size:12.5px !important; font-weight:600 !important; color:#e7ebf3 !important; }
-[data-testid="stSidebar"] label p{ font-size:12px !important; color:#a7b0c7 !important; }
-[data-testid="stSidebar"] [data-baseweb="input"], [data-testid="stSidebar"] [data-baseweb="select"]>div{
-  background:rgba(255,255,255,.06) !important; border-color:rgba(255,255,255,.14) !important; color:#fff !important;
+[data-testid="stSidebar"] [data-testid="stExpander"] summary{
+  padding:8px 12px !important;
 }
-[data-testid="stSidebar"] [data-baseweb="tag"]{ background:var(--purple) !important; }
-[data-testid="stSidebar"] .stButton>button{
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#e7ebf3;
+[data-testid="stSidebar"] [data-testid="stExpander"] summary:hover{
+  background:rgba(255,255,255,.06) !important;
 }
-[data-testid="stSidebar"] .stButton>button:hover{ background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.28); color:#fff; }
-[data-testid="stSidebar"] hr{ border-color:rgba(255,255,255,.1) !important; }
+[data-testid="stSidebar"] summary p{
+  font-size:12.5px !important;
+  font-weight:700 !important;
+  color:#f8fafc !important;
+}
+[data-testid="stSidebar"] label p{
+  font-size:12px !important;
+  color:#cbd5e1 !important;
+}
+
+/* Sidebar Inputs & Selects - High Contrast Fix */
+[data-testid="stSidebar"] [data-baseweb="select"] > div{
+  background:#1e293b !important;
+  border:1px solid #334155 !important;
+  color:#f8fafc !important;
+  border-radius:8px !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] [data-baseweb="select"] div{
+  color:#f8fafc !important;
+}
+[data-testid="stSidebar"] [data-baseweb="input"]{
+  background:#1e293b !important;
+  border:1px solid #334155 !important;
+  border-radius:8px !important;
+}
+[data-testid="stSidebar"] [data-baseweb="input"] input{
+  color:#f8fafc !important;
+  background:transparent !important;
+}
+[data-testid="stSidebar"] [data-baseweb="input"] input::placeholder{
+  color:#64748b !important;
+}
+[data-testid="stSidebar"] [data-baseweb="tag"]{
+  background:#4f46e5 !important;
+  color:#ffffff !important;
+  border-radius:6px !important;
+}
+
+/* Sidebar File Uploader Fix */
+[data-testid="stSidebar"] [data-testid="stFileUploader"]{
+  background:rgba(255,255,255,.03);
+  border:1px dashed #334155;
+  border-radius:10px;
+  padding:8px;
+}
+[data-testid="stSidebar"] [data-testid="stFileUploader"] section{
+  background:transparent !important;
+  padding:4px !important;
+}
+[data-testid="stSidebar"] [data-testid="stFileUploader"] span,
+[data-testid="stSidebar"] [data-testid="stFileUploader"] small{
+  color:#94a3b8 !important;
+}
+
+/* Sidebar Buttons & Reset */
+[data-testid="stSidebar"] .stButton > button{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  color:#e2e8f0 !important;
+  border-radius:8px !important;
+  white-space:nowrap !important;
+  font-size:12px !important;
+  font-weight:600 !important;
+  padding:6px 12px !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover{
+  background:#4f46e5 !important;
+  border-color:#4f46e5 !important;
+  color:#ffffff !important;
+}
+[data-testid="stSidebar"] hr{ border-color:rgba(255,255,255,.1) !important; margin:12px 0 !important; }
+
+/* Preset Box Styling */
+.preset-btn-box{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;
+  padding:8px 10px;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  transition:all .12s ease;
+}
+.preset-btn-box:hover{
+  background:rgba(79,70,229,.15);
+  border-color:rgba(79,70,229,.4);
+}
+.preset-title{ font-size:11.5px; font-weight:600; color:#e2e8f0; }
+.preset-badge{ font-size:10px; font-weight:700; color:#818cf8; background:rgba(79,70,229,.2); padding:2px 6px; border-radius:4px; }
+
+/* Sidebar Header Bar */
+.sidebar-header-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:8px;
+  margin-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.sidebar-title{
+  font-size:13.5px;
+  font-weight:800;
+  color:#ffffff;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.sidebar-counter{
+  background:#4f46e5;
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:12px;
+}
 
 /* ── Botões Globais ── */
 .stButton>button, .stDownloadButton>button{
@@ -771,13 +887,21 @@ def show_sidebar(df):
     prev = read_filters()
 
     with st.sidebar:
+        # Brand Header matching React
         st.markdown(
-            '<div class="brand"><div class="brand-mark">✂️</div>'
-            '<div><div class="brand-name" style="font-size:15px;color:#fff;">AcheiMeuCliente</div>'
-            '<div class="brand-sub" style="color:#94a3b8;">Inteligência B2B Beleza</div></div></div>',
+            """
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div style="width:38px;height:38px;border-radius:10px;background:#4f46e5;color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(79,70,229,.35);">
+                ✂️
+              </div>
+              <div>
+                <div style="font-size:16px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.02em;">AcheiMeuCliente</div>
+                <div style="font-size:11.5px;color:#94a3b8;font-weight:500;">Inteligência B2B Beleza</div>
+              </div>
+            </div>
+            """,
             unsafe_allow_html=True,
         )
-        st.markdown("")
 
         sel = st.selectbox(
             "Perfil de Usuário (Simulação de Plano):",
@@ -805,20 +929,32 @@ def show_sidebar(df):
             except Exception as e:
                 st.error(f"Erro ao ler arquivo: {e}")
 
-        # Limpar filtros
+        st.markdown("<hr>", unsafe_allow_html=True)
+
+        # Header de Filtros com contador e botão de limpar sem quebra de texto
         total_active = len(active_filter_chips(prev))
-        c_head, c_clear = st.columns([3, 1])
-        with c_head:
-            st.markdown(f'<div style="font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;">⚙ Filtros {"<span style=\'background:#4f46e5;color:#fff;font-size:10.5px;padding:1px 6px;border-radius:10px;\'>" + str(total_active) + "</span>" if total_active else ""}</div>', unsafe_allow_html=True)
-        with c_clear:
-            if st.button("↺ Limpar", key="reset_all_btn"):
+        st.markdown(
+            f"""
+            <div class="sidebar-header-bar">
+              <div class="sidebar-title">
+                <span>⚙️ Filtros Avançados</span>
+                {"<span class='sidebar-counter'>" + str(total_active) + "</span>" if total_active else ""}
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if total_active > 0:
+            if st.button("↺ Limpar todos os filtros", key="reset_all_btn", use_container_width=True):
                 reset_filters()
                 st.rerun()
 
-        st.markdown('<div class="sec-label" style="margin-top:12px;">🔖 VISUALIZAÇÕES RÁPIDAS</div>', unsafe_allow_html=True)
+        # Visualizações Rápidas
+        st.markdown('<div class="sec-label">🔖 VISUALIZAÇÕES RÁPIDAS</div>', unsafe_allow_html=True)
         preset_list = [
             {"name": "Macapá · Salões com WhatsApp", "filters": {"estados": ["AP"], "municipios": ["Macapá"], "segmentos": ["Salões e Barbearias"], "tem_whatsapp": True}},
-            {"name": "Clínicas de Estética & Spas", "filters": {"segmentos": ["Clínicas de Estética"]}},
+            {"name": "Clínicas de Estética & Spas", "filters": {"segmentos": ["Clínicas de Estética"], "tem_whatsapp": True}},
             {"name": "Distribuidores e Fábricas B2B", "filters": {"segmentos": ["Distribuidores Atacadistas", "Fábricas e Marcas"]}},
             {"name": "Apenas CNAE Principal de Beleza", "filters": {"origem_cnae": "Apenas CNAE principal"}},
         ]
@@ -828,15 +964,16 @@ def show_sidebar(df):
                 st.toast(f"Filtro “{ps['name']}” aplicado")
                 st.rerun()
 
-        st.markdown('<div class="sec-label">🔍 FILTROS AVANÇADOS</div>', unsafe_allow_html=True)
+        # Grupos de Filtros Avançados
+        st.markdown('<div class="sec-label">🔍 CRITÉRIOS DE PROSPECÇÃO</div>', unsafe_allow_html=True)
 
-        with st.expander(group_title("📞 Contato", ["tem_email", "sem_contador", "tem_whatsapp"], prev), expanded=True):
+        with st.expander(group_title("📞 Canais de Contato", ["tem_email", "sem_contador", "tem_whatsapp"], prev), expanded=True):
             st.checkbox("Com WhatsApp confirmado", key=k("tem_whatsapp"))
             st.checkbox("Com e-mail cadastrado", key=k("tem_email"))
             st.checkbox("Excluir e-mail de contador", key=k("sem_contador"))
 
         with st.expander(group_title("✂️ Segmento e CNAE", ["segmentos", "origem_cnae"], prev), expanded=False):
-            st.multiselect("Segmento", list(SEG_CFG.keys()), key=k("segmentos"), placeholder="Todos")
+            st.multiselect("Segmentos de Beleza", list(SEG_CFG.keys()), key=k("segmentos"), placeholder="Todos os segmentos")
             st.selectbox(
                 "Origem do match CNAE",
                 ["Principal ou Secundário", "Apenas CNAE principal", "Apenas CNAE secundário"],
@@ -845,7 +982,7 @@ def show_sidebar(df):
 
         with st.expander(group_title("📍 Localização", ["estados", "municipios", "bairros"], prev), expanded=False):
             estados = sorted(df["ESTADO"].dropna().unique().tolist())
-            st.multiselect("Estado", estados, key=k("estados"), placeholder="Todos")
+            st.multiselect("Estados (UF)", estados, key=k("estados"), placeholder="Todos")
 
             sel_uf = st.session_state.get(k("estados"), [])
             base = df[df["ESTADO"].isin(sel_uf)] if sel_uf else df
@@ -858,19 +995,21 @@ def show_sidebar(df):
             st.session_state[k("bairros")] = [b for b in st.session_state.get(k("bairros"), []) if b in bai_opts]
             st.multiselect("Bairro", bai_opts, key=k("bairros"), placeholder="Todos os bairros")
 
-        with st.expander(group_title("🏢 Perfil da Empresa", ["portes", "mei", "simples", "anos_range"], prev), expanded=False):
-            st.multiselect("Porte", ["MEI", "ME", "EPP", "Grande"], key=k("portes"), placeholder="Todos")
-            st.selectbox("MEI", ["Todos", "Apenas MEI", "Excluir MEI"], key=k("mei"))
+        with st.expander(group_title("🏢 Porte & Tributação", ["portes", "mei", "simples", "anos_range"], prev), expanded=False):
+            st.multiselect("Porte da Empresa", ["MEI", "ME", "EPP", "Grande"], key=k("portes"), placeholder="Todos")
+            st.selectbox("Filtro MEI", ["Todos", "Apenas MEI", "Excluir MEI"], key=k("mei"))
             st.selectbox("Simples Nacional", ["Todos", "Sim", "Não"], key=k("simples"))
             st.slider("Anos de atividade", 0, 25, key=k("anos_range"))
 
-        st.markdown('<div class="sec-label">💾 SALVAR VISUALIZAÇÃO</div>', unsafe_allow_html=True)
-        name_v = st.text_input("Nome do filtro:", key="save_view_name", placeholder="Ex: SP · Salões 2026", label_visibility="collapsed")
+        st.markdown('<div class="sec-label">💾 SALVAR FILTRO ATUAL</div>', unsafe_allow_html=True)
+        name_v = st.text_input("Nome da visualização:", key="save_view_name", placeholder="Ex: Macapá · Salões WhatsApp", label_visibility="collapsed")
         if st.button("Salvar Filtro Atual", key="save_view_btn", use_container_width=True):
             if name_v.strip():
                 st.session_state.saved_views.append({"name": name_v.strip(), "filters": read_filters().copy()})
                 st.toast(f"“{name_v.strip()}” salvo com sucesso!")
                 st.rerun()
+
+        st.markdown("<hr>", unsafe_allow_html=True)
 
     return read_filters()
 
@@ -1170,11 +1309,11 @@ def main():
                     st.rerun()
         st.markdown("<br>", unsafe_allow_html=True)
 
-    # Abas Principais (Todas Integradas)
+    # Abas Principais (Matching React Tabs)
     tab_cards, tab_table, tab_geo, tab_pitch, tab_export = st.tabs([
-        "📋 Grade de Cards",
-        "📊 Tabela de Leads",
-        "🗺️ Concentração por Bairro",
+        "🗂️ Cards de Leads",
+        "📊 Tabela Dinâmica",
+        "🗺️ Bairros & Rotas",
         "💬 Smart Pitch WhatsApp",
         "📥 Exportar Base"
     ])
