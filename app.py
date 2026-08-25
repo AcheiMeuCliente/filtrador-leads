@@ -288,6 +288,10 @@ div[role="radiogroup"] label:has(input:checked){ background:var(--surface); box-
 .act-btn-rf:hover{ background:#f1f5f9; border-color:#cbd5e1; color:#0f172a; }
 .act-btn-maps{ color:#b91c1c; background:#fef2f2; border-color:#fecaca; }
 .act-btn-maps:hover{ background:#fee2e2; border-color:#fca5a5; color:#991b1b; }
+.act-btn-ig{ color:#c13584; background:#fdf2f8; border-color:#f9a8d4; }
+.act-btn-ig:hover{ background:#fce7f3; border-color:#f472b6; color:#9d174d; }
+.act-btn-web{ color:#2563eb; background:#eff6ff; border-color:#bfdbfe; }
+.act-btn-web:hover{ background:#dbeafe; border-color:#93c5fd; color:#1e40af; }
 .act-btn-off{ opacity:.4; }
 
 details.card-expand{ border-top:1px solid var(--border); }
@@ -1284,25 +1288,18 @@ def build_card_html(row):
     ig_url = f"https://www.google.com/search?q={query_base}+instagram"
     web_url = f"https://www.google.com/search?q={query_base}"
 
-    intel_links = (
-        f'<div class="c-row" style="border-top:1px solid var(--border);padding-top:6px;">'
-        f'<div class="c-left">'
-        f'<a class="c-link" href="{ig_url}" target="_blank" style="color:#c13584;border-color:#f9a8d4;background:#fdf2f8;">{SVG_INSTAGRAM} Instagram</a>'
-        f'<a class="c-link" href="{web_url}" target="_blank" style="color:#2563eb;border-color:#bfdbfe;background:#eff6ff;">{SVG_SEARCH} Google Web</a>'
-        f'</div></div>'
-    )
-    c_rows += intel_links
-
     rf_btn = (
-        f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank" title="Cartão CNPJ na Receita Federal">{SVG_RECEITA} Receita Federal</a>'
+        f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank" title="Cartão CNPJ na Receita Federal">{SVG_RECEITA} Receita</a>'
         if rf_url and rf_url != "#" else
-        f'<span class="act-btn act-btn-off">{SVG_RECEITA} Sem Receita</span>'
+        f'<span class="act-btn act-btn-off">{SVG_RECEITA} Sem RF</span>'
     )
     maps_btn = (
-        f'<a class="act-btn act-btn-maps" href="{maps_url}" target="_blank" title="Ver no Google Maps">{SVG_MAPS} Google Maps</a>'
+        f'<a class="act-btn act-btn-maps" href="{maps_url}" target="_blank" title="Ver no Google Maps">{SVG_MAPS} Maps</a>'
         if maps_url and maps_url != "#" else
         f'<span class="act-btn act-btn-off">{SVG_MAPS} Sem Maps</span>'
     )
+    ig_btn = f'<a class="act-btn act-btn-ig" href="{ig_url}" target="_blank" title="Buscar no Instagram">{SVG_INSTAGRAM} Instagram</a>'
+    web_btn = f'<a class="act-btn act-btn-web" href="{web_url}" target="_blank" title="Pesquisar no Google">{SVG_SEARCH} Google</a>'
 
     endereco = escape(str(row.get("ENDERECO MAPA", "—")))
     cep = escape(str(row.get("CEP", "")))
@@ -1345,20 +1342,20 @@ def build_card_html(row):
     <div class="{strip_cls}">{strip_html}</div>
   </div>
   <div class="contact-section">{c_rows}</div>
-  <div class="action-buttons">{rf_btn}{maps_btn}</div>
+  <div class="action-buttons">{rf_btn}{maps_btn}{ig_btn}{web_btn}</div>
   <details class="card-expand">
-    <summary>Dados cadastrais completos</summary>
+    <summary>Ficha cadastral completa (CNPJ, Capital, CNAEs, Endereço)</summary>
     <div class="expand-body">
       <div class="exp-section">
-        <div class="exp-title">Endereço</div>
+        <div class="exp-title">Endereço & CEP</div>
         <div class="box">{endereco}<br>{bairro_str} · {mun_str}/{uf_str} · CEP {cep}</div>
       </div>
       <div class="exp-section">
-        <div class="exp-title">CNAEs ({1 + len(sec_cnaes)})</div>
+        <div class="exp-title">Atividades Econômicas ({1 + len(sec_cnaes)})</div>
         <div class="box">{"".join(cnae_items)}</div>
       </div>
       <div class="exp-section">
-        <div class="exp-title">Cadastro</div>
+        <div class="exp-title">Dados Financeiros & Regime</div>
         <div class="data-grid">
           <div class="data-item"><span class="data-label">CNPJ</span><span class="data-value">{escape(str(row.get('CNPJ','—')))}</span></div>
           <div class="data-item"><span class="data-label">Porte</span><span class="data-value">{porte}</span></div>
@@ -1373,113 +1370,6 @@ def build_card_html(row):
     </div>
   </details>
 </div>"""
-
-
-@st.dialog("📋 Ficha Completa do Lead", width="large")
-def show_lead_details_dialog(row):
-    main_name, sub_name = get_display_name(row)
-    cnpj = escape(str(row.get("CNPJ", "—")))
-    mun_str = escape(str(row.get("MUNICIPIO", "")))
-    uf_str = escape(str(row.get("ESTADO", "")))
-    bairro_str = escape(str(row.get("BAIRRO", "")))
-    endereco = escape(str(row.get("ENDERECO MAPA", "—")))
-    cep = escape(str(row.get("CEP", "")))
-    porte = escape(str(row.get("PORTE", "—")))
-    capital = format_capital(row.get("CAPITAL SOCIAL", 0))
-    nat_jur = escape(str(row.get("NATUREZA_JURIDICA", "—")))
-
-    cod_p = escape(str(row.get("CNAE_PRINCIPAL_CODIGO", "")))
-    nom_p = escape(str(row.get("CNAE_PRINCIPAL_NOME", "")))
-    sec_cnaes = get_secondary_cnaes(row)
-
-    dt = row.get("INICIO ATIVIDADE")
-    abertura = pd.to_datetime(dt).strftime("%d/%m/%Y") if pd.notna(dt) else "—"
-    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} anos" if pd.notna(dt) else "—"
-
-    emails = escape(str(row.get("E-MAIL", "")).strip())
-    is_contador = bool(row.get("EMAIL_CONTABILIDADE", False))
-    site = escape(str(row.get("SITE", "")).strip())
-    maps_url = escape(str(row.get("MAPS", "#")), quote=True)
-    rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
-
-    query_base = escape(f"{main_name} {mun_str} {uf_str}".strip(), quote=True)
-    ig_url = f"https://www.google.com/search?q={query_base}+instagram"
-    web_url = f"https://www.google.com/search?q={query_base}"
-
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("### 🏢 Identificação & Localização")
-        st.markdown(f"**Razão Social / Nome:** {main_name}")
-        if sub_name:
-            st.markdown(f"**Nome Fantasia:** {sub_name}")
-        st.markdown(f"**CNPJ:** `{cnpj}`")
-        st.markdown(f"**Porte:** {porte} · **Matriz/Filial:** {row.get('MATRIZ FILIAL', 'Matriz')}")
-        st.markdown(f"**Natureza Jurídica:** {nat_jur}")
-        st.markdown(f"**Endereço:** {endereco}")
-        st.markdown(f"**Bairro / Cidade:** {bairro_str} · {mun_str}/{uf_str} (CEP {cep})")
-        if maps_url and maps_url != "#":
-            st.markdown(f"📍 [Abrir no Google Maps]({maps_url})")
-
-    with col2:
-        st.markdown("### 📞 Contato & Inteligência Comercial")
-
-        st.info(
-            "💡 **Dica de Apoio Comercial:** Caso o link do WhatsApp não abra diretamente, "
-            "o telefone cadastrado na Receita Federal pode ser um telefone fixo ou ter formato antigo. "
-            "Recomenda-se pesquisar no Instagram ou Google.",
-            icon="ℹ️",
-        )
-
-        has_any_contact = False
-        for i in range(1, 4):
-            num = row.get(f"WHATSAPP_{i}", "")
-            fmt = format_phone_display(num)
-            if fmt:
-                has_any_contact = True
-                st.markdown(f"💬 **WhatsApp:** `{fmt}` — [Abrir no WhatsApp]({wa_link(str(num))})")
-
-        for i in range(1, 4):
-            num = row.get(f"TELEFONE_{i}", "")
-            fmt = format_phone_display(num)
-            if fmt:
-                has_any_contact = True
-                st.markdown(f"📞 **Telefone:** `{fmt}` — [Ligar](tel:{clean_phone(str(num))})")
-
-        if emails and emails != "nan":
-            has_any_contact = True
-            if is_contador:
-                st.warning("⚠️ **E-mail de contador:** evite utilizar para prospecção comercial direta.")
-            else:
-                st.markdown(f"✉️ **E-mail:** `{emails}` — [Enviar E-mail](mailto:{emails})")
-
-        if site and site != "nan":
-            site_link = site if site.startswith("http") else f"http://{site}"
-            st.markdown(f"🌐 **Website:** [{site}]({site_link})")
-
-        if not has_any_contact:
-            st.caption("Nenhum telefone ou e-mail cadastrado diretamente.")
-
-        st.markdown("---")
-        st.markdown(f"📸 [Procurar no Instagram]({ig_url})  ·  🔍 [Pesquisar no Google]({web_url})")
-        if rf_url and rf_url != "#":
-            st.markdown(f"📄 [Consultar Cartão CNPJ na Receita Federal]({rf_url})")
-
-    st.markdown("---")
-    st.markdown("### 🏷️ Atividades Econômicas (CNAEs)")
-    st.markdown(f"**CNAE Principal:** `{cod_p}` — {nom_p}")
-    if sec_cnaes:
-        st.markdown("**CNAEs Secundários:**")
-        for sc in sec_cnaes:
-            tag_b = " *(Atividade de Beleza)*" if sc["is_beauty"] else ""
-            st.markdown(f"• `{sc['code']}` — {sc['name']}{tag_b}")
-
-    st.markdown("---")
-    st.markdown("### 💰 Dados Financeiros & Histórico")
-    fc1, fc2, fc3, fc4 = st.columns(4)
-    fc1.metric("Capital Social", capital)
-    fc2.metric("Início Atividade", abertura)
-    fc3.metric("Tempo de Mercado", anos_str)
-    fc4.metric("Regime", "MEI" if row.get("MEI") else ("Simples" if row.get("SIMPLES") else "Normal"))
 
 
 # ══════════════════════════════════════════════════════════════
@@ -1522,8 +1412,6 @@ def show_cards(df):
         row = df_page.iloc[i]
         with cols[i % 2]:
             st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
-            if st.button("🔍 Ver Ficha Completa", key=f"btn_det_card_{i}_{row.get('CNPJ')}", width="stretch"):
-                show_lead_details_dialog(row)
 
 
 def build_row_label(row):
@@ -1557,8 +1445,6 @@ def show_leads_list(df):
         row = df_page.iloc[i]
         with st.expander(build_row_label(row)):
             st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
-            if st.button("🔍 Ver Ficha Completa", key=f"btn_det_exp_{i}_{row.get('CNPJ')}", width="stretch"):
-                show_lead_details_dialog(row)
 
 
 def show_list(df):
@@ -1599,7 +1485,7 @@ def show_list(df):
             email = "—"
 
         maps_url = str(row.get("MAPS", "")).strip()
-        rf_url = str(row.get("RECEITA FEDERAL", "")).strip()
+        rf_url = str(row.get("RECEITA FEDERAL", "#")).strip()
 
         abertura = (
             pd.to_datetime(row.get("INICIO ATIVIDADE", "")).strftime("%d/%m/%Y")
@@ -1631,22 +1517,6 @@ def show_list(df):
         )
 
     df_disp = pd.DataFrame(display_rows)
-
-    c1, c2 = st.columns([3, 1])
-    with c1:
-        cnpjs = [str(r.get("CNPJ", "")) for _, r in df_page.iterrows()]
-        selected_cnpj = st.selectbox(
-            "Selecione um lead da tabela abaixo para abrir a Ficha Completa",
-            options=cnpjs,
-            format_func=lambda c: f"CNPJ {c} · {df_page[df_page['CNPJ'] == c]['RAZÃO SOCIAL'].values[0]}" if not df_page[df_page['CNPJ'] == c].empty else c,
-            key="tbl_lead_picker",
-            label_visibility="collapsed",
-        )
-    with c2:
-        if st.button("🔍 Ficha Completa", key="btn_det_table", width="stretch"):
-            match = df_page[df_page["CNPJ"] == selected_cnpj]
-            if not match.empty:
-                show_lead_details_dialog(match.iloc[0])
 
     st.dataframe(
         df_disp,
