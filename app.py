@@ -34,43 +34,110 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
-  /* ── Base cromática: navy profundo (confiança/dados) + terracota (calor/beleza) ── */
-  --bg:#f4f2ee;
-  --bg-tint:#eef0f4;
+  /* ── Base cromática: Purple/Indigo Linear Theme ── */
+  --bg:#f8fafc;
+  --bg-tint:#f1f5f9;
   --surface:#ffffff;
-  --surface-2:#faf9f6;
-  --surface-sunk:#f0eee9;
-  --border:#e6e2da;
-  --border-strong:#d8d3c8;
-  --text:#211f1c;
-  --text-2:#5f5b53;
-  --muted:#8f8a7f;
+  --surface-2:#fafaf9;
+  --surface-sunk:#f1f5f9;
+  --border:#e2e8f0;
+  --border-strong:#cbd5e1;
+  --text:#0f172a;
+  --text-2:#475569;
+  --muted:#94a3b8;
 
-  --navy:#1c2b4a;
-  --navy-2:#2a3f68;
-  --navy-soft:#eaeef6;
+  --navy:#1e1b4b;
+  --navy-2:#312e81;
+  --purple:#4f46e5;
+  --purple-dark:#4338ca;
+  --purple-soft:#eeeffd;
   --coral:#e2603f;
   --coral-dark:#c74d2f;
   --coral-soft:#fdece6;
   --gold:#c98a1c;
   --gold-soft:#faf1de;
 
-  --accent:#2a3f68;
-  --accent-soft:#eaeef6;
-  --green:#0e7a4f;
-  --green-soft:#e7f5ee;
-  --amber:#b0700f;
-  --amber-soft:#fbf1de;
+  --accent:#4f46e5;
+  --accent-soft:#eeeffd;
+  --green:#047857;
+  --green-soft:#ecfdf5;
+  --amber:#b45309;
+  --amber-soft:#fef3c7;
   --red:#c23b2e;
   --red-soft:#fcebe8;
 
   --radius:10px;
   --radius-sm:6px;
-  --shadow-sm:0 1px 2px rgba(28,24,16,.04), 0 1px 1px rgba(28,24,16,.03);
-  --shadow-md:0 4px 14px rgba(28,24,16,.07), 0 1px 3px rgba(28,24,16,.05);
-  --shadow-lg:0 12px 28px rgba(20,17,12,.12), 0 2px 6px rgba(20,17,12,.06);
+  --shadow-sm:0 1px 2px rgba(15,23,42,.04), 0 1px 1px rgba(15,23,42,.03);
+  --shadow-md:0 4px 14px rgba(15,23,42,.07), 0 1px 3px rgba(15,23,42,.05);
+  --shadow-lg:0 12px 28px rgba(15,23,42,.12), 0 2px 6px rgba(15,23,42,.06);
   --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+
+/* Preset Pills (Visualizações Rápidas) */
+.preset-box{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+.preset-pill-btn{
+  background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;
+  padding:7px 12px; font-size:12px; font-weight:600; color:#334155;
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; transition:all .12s ease; text-decoration:none;
+}
+.preset-pill-btn:hover{ background:#f1f5f9; border-color:#cbd5e1; }
+.preset-active{ background:#eef2ff; border-color:#c7d2fe; color:#4338ca; }
+.preset-tag{ color:#4f46e5; font-size:11px; font-weight:700; }
+
+/* Lead Card Upgrade */
+.card-avatar-purple{
+  width:42px; height:42px; border-radius:10px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:800; background:linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color:#fff; box-shadow:0 2px 6px rgba(99, 102, 241, 0.25);
+}
+
+.cnae-strip-highlight{
+  background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;
+  padding:9px 12px; font-size:11.5px; color:#065f46; margin:10px 0;
+}
+.cnae-strip-title{
+  font-size:10.5px; font-weight:800; letter-spacing:.04em;
+  text-transform:uppercase; color:#047857; margin-bottom:3px;
+  display:flex; align-items:center; gap:5px;
+}
+
+/* Contact Pills in Card */
+.contact-pill-box{ display:flex; flex-direction:column; gap:7px; padding:10px 17px; background:var(--surface-2); border-top:1px solid var(--border); }
+.contact-pill-wa{
+  display:flex; align-items:center; justify-content:space-between;
+  background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;
+  padding:6px 10px; font-size:12px;
+}
+.contact-pill-mail{
+  display:flex; align-items:center; justify-content:space-between;
+  background:#fff7ed; border:1px solid #fed7aa; border-radius:8px;
+  padding:6px 10px; font-size:12px;
+}
+.btn-abordar{
+  background:#4f46e5; color:#fff !important; border-radius:7px;
+  padding:4px 12px; font-size:11.5px; font-weight:700; text-decoration:none;
+  display:inline-flex; align-items:center; gap:5px; box-shadow:0 1px 3px rgba(79,70,229,.3);
+  transition:background .12s ease;
+}
+.btn-abordar:hover{ background:#4338ca; }
+.btn-email{
+  background:#fff; border:1px solid #e2e8f0; color:#475569 !important; border-radius:7px;
+  padding:4px 12px; font-size:11.5px; font-weight:600; text-decoration:none;
+}
+.btn-email:hover{ background:#f8fafc; }
+
+/* Internal Expander Cards */
+.exp-card{
+  background:#fff; border:1px solid var(--border); border-radius:8px;
+  padding:10px 12px; margin-bottom:10px; font-size:12px;
+}
+.exp-card-title{
+  font-size:10px; font-weight:800; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:6px;
 }
 
 html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"]{
@@ -964,11 +1031,29 @@ def show_sidebar(df):
             st.toast(f"Perfil: {PROFILE_LABELS[sel]}")
             st.rerun()
 
-        st.markdown('<div class="sec-label">Visualizações salvas</div>', unsafe_allow_html=True)
-        for i, sv in enumerate(st.session_state.saved_views):
-            if st.button(sv["name"], key=f"sv_{i}", width="stretch"):
-                reset_filters(sv["filters"])
-                st.toast(f"Visualização “{sv['name']}” aplicada")
+        # ── Header de Filtros com Limpar ──
+        total_active = len(active_filter_chips(prev))
+        c_head, c_clear = st.columns([3, 1])
+        with c_head:
+            st.markdown(f'<div style="font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;">⚙ Filtros Avançados {"<span style=\'background:#4f46e5;color:#fff;font-size:11px;padding:1px 7px;border-radius:10px;\'>" + str(total_active) + "</span>" if total_active else ""}</div>', unsafe_allow_html=True)
+        with c_clear:
+            if st.button("↺ Limpar", key="reset_all_btn", help="Resetar todos os filtros"):
+                reset_filters()
+                st.rerun()
+
+        st.markdown('<div class="sec-label" style="margin-top:14px;">🔖 VISUALIZAÇÕES RÁPIDAS</div>', unsafe_allow_html=True)
+        
+        preset_list = [
+            {"name": "Macapá · Salões com WhatsApp", "filters": {"estados": ["AP"], "municipios": ["Macapá"], "segmentos": ["Salões e Barbearias"], "tem_whatsapp": True}},
+            {"name": "Clínicas de Estética & Spas", "filters": {"segmentos": ["Clínicas de Estética"]}},
+            {"name": "Distribuidores e Fábricas B2B", "filters": {"segmentos": ["Distribuidores Atacadistas", "Fábricas e Marcas"]}},
+            {"name": "Apenas CNAE Principal em Beleza", "filters": {"origem_cnae": "Apenas CNAE principal"}},
+        ]
+        
+        for i, ps in enumerate(preset_list):
+            if st.button(f"{ps['name']}", key=f"ps_btn_{i}", use_container_width=True):
+                reset_filters(ps["filters"])
+                st.toast(f"Filtro “{ps['name']}” aplicado")
                 st.rerun()
 
         st.markdown('<div class="sec-label">Filtros</div>', unsafe_allow_html=True)
@@ -1261,7 +1346,6 @@ def build_card_html(row):
     seg = row.get("SEGMENTO", "Salões e Barbearias")
     seg_icon = SEG_CFG.get(seg, {"e": "◇"})["e"]
 
-    cnae_status, _, _ = get_cnae_status(row)
     cod_p = escape(str(row.get("CNAE_PRINCIPAL_CODIGO", "")))
     nom_p = escape(str(row.get("CNAE_PRINCIPAL_NOME", "")))
     sec_cnaes = get_secondary_cnaes(row)
@@ -1272,22 +1356,23 @@ def build_card_html(row):
     b_icon_p = SEG_CFG.get(b_label_p, {}).get("e", "✦") if b_label_p else ""
 
     if is_b_p:
-        strip_cls = "cnae-strip"
-        extra = f" · +{len(sec_cnaes)} secundário(s)" if sec_cnaes else ""
         strip_html = (
-            f'<div class="cnae-badge cnae-badge-ok">{SVG_CHECK} Beleza no CNAE Principal ({b_icon_p} {b_label_p})</div>'
-            f'<div class="cnae-code">{cod_p} · {nom_p}{extra}</div>'
+            f'<div class="cnae-strip-highlight">'
+            f'<div class="cnae-strip-title">{SVG_CHECK} BELEZA NO CNAE PRINCIPAL ({b_label_p.upper()})</div>'
+            f'<div class="cnae-code"><b>{cod_p}</b> · {nom_p} {"· (+" + str(len(sec_cnaes)) + " secundários)" if sec_cnaes else ""}</div>'
+            f'</div>'
         )
     else:
-        strip_cls = "cnae-strip cnae-strip-outside"
         sec_line = (
-            f'<div class="cnae-badge cnae-badge-ok" style="margin-top:5px">{SVG_CHECK} Beleza em {beauty_sec} CNAE secundário(s)</div>'
+            f'<div class="cnae-badge cnae-badge-ok" style="margin-top:4px">{SVG_CHECK} Beleza em {beauty_sec} CNAE secundário(s)</div>'
             if beauty_sec else
-            f'<div class="cnae-badge" style="margin-top:5px">{len(sec_cnaes)} CNAE(s) secundário(s)</div>'
+            f'<div class="cnae-badge" style="margin-top:4px">{len(sec_cnaes)} CNAE(s) secundário(s)</div>'
         )
         strip_html = (
-            f'<div class="cnae-badge cnae-badge-out">{SVG_ALERT} CNAE principal fora do ecossistema de beleza</div>'
-            f'<div class="cnae-code">{cod_p} · {nom_p}</div>{sec_line}'
+            f'<div class="cnae-strip-highlight" style="background:#fef3c7;border-color:#fde047;color:#92400e;">'
+            f'<div class="cnae-strip-title" style="color:#b45309;">{SVG_ALERT} CNAE PRINCIPAL FORA DA BELEZA</div>'
+            f'<div class="cnae-code"><b>{cod_p}</b> · {nom_p}</div>{sec_line}'
+            f'</div>'
         )
 
     tags = f'<span class="tag">{seg_icon} {escape(seg)}</span>'
@@ -1299,7 +1384,8 @@ def build_card_html(row):
     bairro_str = escape(str(row.get("BAIRRO", "")))
     mun_str = escape(str(row.get("MUNICIPIO", "")))
     uf_str = escape(str(row.get("ESTADO", "")))
-    loc_text = f"{bairro_str} · {mun_str} — {uf_str}" if bairro_str else f"{mun_str} — {uf_str}"
+    cep = escape(str(row.get("CEP", "")))
+    loc_text = f"{bairro_str} · {mun_str} — {uf_str} · {cep}" if bairro_str else f"{mun_str} — {uf_str} · {cep}"
 
     # ── Painel de Ficha Cadastral Rápida (Canto Direito Superior) ──
     cnpj = escape(str(row.get("CNPJ", "—")))
@@ -1308,7 +1394,7 @@ def build_card_html(row):
     nat_jur = escape(str(row.get("NATUREZA_JURIDICA", "—")))
     dt = row.get("INICIO ATIVIDADE")
     inicio_full = pd.to_datetime(dt).strftime("%d/%m/%Y") if pd.notna(dt) else "—"
-    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} anos" if pd.notna(dt) else "—"
+    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} a" if pd.notna(dt) else "—"
     matriz_filial = escape(str(row.get("MATRIZ FILIAL", "Matriz")))
 
     pills_html = f'<span class="meta-pill meta-pill-porte">{porte}</span>'
@@ -1316,21 +1402,17 @@ def build_card_html(row):
         pills_html += '<span class="meta-pill meta-pill-simples">SIMPLES</span>'
     if row.get("MEI"):
         pills_html += '<span class="meta-pill meta-pill-mei">MEI</span>'
-    pills_html += f'<span class="meta-pill">{matriz_filial}</span>'
-
-    nat_jur_short = nat_jur[:28] + "..." if len(nat_jur) > 30 else nat_jur
 
     meta_panel_html = f"""
     <div class="card-meta-panel">
-      <div class="meta-cnpj">CNPJ {cnpj}</div>
+      <div class="meta-cnpj">{cnpj} 📋</div>
       <div class="meta-capital">Capital {capital}</div>
       <div class="meta-pills">{pills_html}</div>
       <div class="meta-sub">Abertura: <b>{inicio_full}</b> ({anos_str})</div>
-      <div class="meta-sub" title="{nat_jur}">{nat_jur_short}</div>
     </div>
     """
 
-    # ── Contatos ──
+    # ── Contatos Pílulas ──
     added, c_rows = set(), ""
     for i in range(1, 4):
         num = row.get(f"WHATSAPP_{i}", "")
@@ -1338,9 +1420,12 @@ def build_card_html(row):
         if fmt and fmt not in added:
             added.add(fmt)
             c_rows += (
-                f'<div class="c-row"><div class="c-left">'
-                f'<span class="c-ico c-ico-wa">{SVG_WHATSAPP}</span><span class="c-val">{fmt}</span></div>'
-                f'<a class="c-icon-btn c-wa-btn" href="{wa_link(str(num))}" target="_blank" title="Abrir no WhatsApp">{SVG_WHATSAPP}</a></div>'
+                f'<div class="contact-pill-wa">'
+                f'<div style="display:flex;align-items:center;gap:8px;">'
+                f'<span style="color:#059669">{SVG_WHATSAPP}</span><b style="font-family:var(--mono)">{fmt}</b>'
+                f'</div>'
+                f'<a class="btn-abordar" href="{wa_link(str(num))}" target="_blank">🚀 Abordar ↗</a>'
+                f'</div>'
             )
     for i in range(1, 4):
         num = row.get(f"TELEFONE_{i}", "")
@@ -1357,9 +1442,12 @@ def build_card_html(row):
     is_contador = bool(row.get("EMAIL_CONTABILIDADE", False))
     if email and email != "nan" and not is_contador:
         c_rows += (
-            f'<div class="c-row"><div class="c-left">'
-            f'<span class="c-ico">{SVG_MAIL}</span><span class="c-val">{email}</span></div>'
-            f'<a class="c-icon-btn c-mail-btn" href="mailto:{email}" title="Enviar E-mail">{SVG_MAIL}</a></div>'
+            f'<div class="contact-pill-mail">'
+            f'<div style="display:flex;align-items:center;gap:8px;color:#c2410c;">'
+            f'<span>{SVG_MAIL}</span><span>{email}</span>'
+            f'</div>'
+            f'<a class="btn-email" href="mailto:{email}">E-mail</a>'
+            f'</div>'
         )
     elif email and email != "nan" and is_contador:
         c_rows += f'<div class="c-note">{SVG_ALERT} E-mail de contador — evite usar em prospecção</div>'
@@ -1388,13 +1476,12 @@ def build_card_html(row):
     web_btn = f'<a class="act-btn act-btn-web" href="{web_url}" target="_blank" title="Pesquisar no Google">{SVG_SEARCH} Google</a>'
 
     endereco = escape(str(row.get("ENDERECO MAPA", "—")))
-    cep = escape(str(row.get("CEP", "")))
 
     cnae_items = []
     chip_p = f'<span class="cnae-sector-chip">{b_icon_p} {b_label_p}</span>' if b_label_p else ""
     cnae_items.append(
         f'<div class="cnae-item-row {"cnae-item-row-beauty" if is_b_p else ""}">'
-        f'<span class="cnae-type-badge cnae-type-principal">Principal</span>'
+        f'<span class="cnae-type-badge cnae-type-principal">PRINCIPAL</span>'
         f'<div><span class="cnae-code-text">{cod_p}</span>'
         f'<span class="cnae-desc-text">{nom_p}</span>'
         f'{chip_p}</div></div>'
@@ -1407,20 +1494,20 @@ def build_card_html(row):
             chip_s = f'<span class="cnae-sector-chip">{ic} {lbl}</span>' if lbl else ""
             cnae_items.append(
                 f'<div class="cnae-item-row {"cnae-item-row-beauty" if is_b else ""}">'
-                f'<span class="cnae-type-badge cnae-type-secundario">Secundário</span>'
+                f'<span class="cnae-type-badge cnae-type-secundario">SECUNDÁRIO</span>'
                 f'<div><span class="cnae-code-text">{escape(sc["code"])}</span>'
                 f'<span class="cnae-desc-text">{escape(sc["name"])}</span>'
                 f'{chip_s}</div></div>'
             )
     else:
-        cnae_items.append('<div class="cnae-item-row"><span class="cnae-type-badge cnae-type-secundario">Secundários</span><div>Sem CNAEs secundários</div></div>')
+        cnae_items.append('<div class="cnae-item-row"><span class="cnae-type-badge cnae-type-secundario">SECUNDÁRIO</span><div>Sem CNAEs secundários</div></div>')
 
     return f"""
 <div class="lead-card">
   <div class="card-top">
     <div class="card-header-flex">
       <div class="card-identity">
-        <div class="card-avatar">{initials}</div>
+        <div class="card-avatar-purple">{initials}</div>
         <div class="name-block">
           <div class="company-main">{main_name}</div>
           {"<div class='company-sub'>" + sub_name + "</div>" if sub_name else ""}
@@ -1432,19 +1519,20 @@ def build_card_html(row):
     <div class="card-info">
       <div class="info-row">{SVG_PIN} {loc_text}</div>
     </div>
-    <div class="{strip_cls}">{strip_html}</div>
+    {strip_html}
   </div>
-  <div class="contact-section">{c_rows}</div>
+  <div class="contact-pill-box">{c_rows}</div>
   <div class="action-buttons">{rf_btn}{maps_btn}{ig_btn}{web_btn}</div>
   <details class="card-expand">
-    <summary>Endereço completo e CNAEs secundários</summary>
+    <summary>Endereço completo e CNAEs secundários ({len(sec_cnaes)})</summary>
     <div class="expand-body">
-      <div class="exp-section">
-        <div class="exp-title">Endereço Completo & CEP</div>
-        <div class="box">{endereco}<br>{bairro_str} · {mun_str}/{uf_str} · CEP {cep}</div>
+      <div class="exp-card">
+        <div class="exp-card-title">ENDEREÇO CADASTRADO</div>
+        <div style="font-weight:700;color:var(--text);">{endereco}</div>
+        <div style="font-size:11.5px;color:var(--text-2);margin-top:2px;">Bairro {bairro_str} · CEP {cep} · {nat_jur}</div>
       </div>
-      <div class="exp-section">
-        <div class="exp-title">Todas as Atividades Econômicas ({1 + len(sec_cnaes)})</div>
+      <div class="exp-card">
+        <div class="exp-card-title">TODAS AS ATIVIDADES ECONÔMICAS ({1 + len(sec_cnaes)})</div>
         <div class="cnae-list-box">{"".join(cnae_items)}</div>
       </div>
     </div>
