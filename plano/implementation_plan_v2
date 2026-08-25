@@ -1,0 +1,217 @@
+# 🔍 Auditoria Completa — Fase 1 AcheiMeuCliente
+
+> **Nota atual**: 4/10 · **Alvo**: 9/10
+> **Data**: 24/08/2026 · **Arquivos**: [app.py](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py) (1.671 linhas) + [9602501_AP.csv](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/plano/bd_teste/9602501_AP.csv) (1.815 registros reais)
+
+---
+
+## Sumário Executivo
+
+| Severidade | Qtd | Impacto |
+|------------|-----|---------|
+| 🔴 CRÍTICO | **6** | Funcionalidade quebrada — usuário não consegue usar |
+| 🟠 ALTO | 7 | UX severamente prejudicada — confusão ou frustração |
+| 🟡 MÉDIO | 12 | Experiência degradada — parece amador/incompleto |
+| ⚪ BAIXO | 8 | Polish fino — detalhes que separam nota 7 de nota 9 |
+
+---
+
+## 🔴 CRÍTICOS
+
+### C1. Contatos NÃO APARECEM nos cards
+**Linhas**: [1298-1357](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py#L1298-L1357)
+
+O código constrói `wa_rows`, `tel_rows`, `email_row`, `wa_block`, `tel_block`... **e depois DESCARTA tudo**:
+
+```python
+# L1347-1352: Monta os blocos com números reais
+wa_block = f'<div class="contact-label">WHATSAPP CONFIRMADO</div>{wa_rows}'
+tel_block = f'<div class="contact-label">TELEFONE</div>{tel_rows}'
+
+# L1354-1357: MAS contact_html é HARDCODED sem nenhum contato!
+contact_html = f"""
+<div class="contact-section">
+    <div class="contact-note">Número de telefone cadastrado na RF...</div>
+</div>"""  # ❌ wa_block, tel_block, email_row IGNORADOS
+```
+
+**Resultado**: O card mostra apenas uma nota genérica. **ZERO números de telefone, WhatsApp ou e-mail visíveis.** O principal valor do produto está invisível.
+
+> [!CAUTION]
+> Variável morta: `phones_html = ""` (L1298) declarada e nunca usada.
+
+---
+
+### C2. View Lista com 4 colunas FANTASMA
+**Linha**: [1471](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py#L1471)
+
+```python
+("Classificação", [..., "COLUNA_MATCH", "KEYWORD_MATCH", "TODOS_MATCHES", "QTD_MATCHES"]),
+```
+
+Essas 4 colunas **não existem** nos dados. Resultado: 4 colunas na tabela mostrando "—" em TODAS as linhas. Desperdício de espaço + confusão.
+
+---
+
+### C3. CSS com 12+ regras DUPLICADAS que anulam o design
+**Linhas**: [28-285](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py#L28-L285)
+
+Dois blocos CSS conflitantes (L30-227 original vs L237-284 "conforme mockup"). O segundo **destrói** o primeiro:
+
+| O que quebra | Original | Override | Impacto |
+|-------------|----------|----------|---------|
+| `.btn-wa-main` | `border:#22c55e; color:#16a34a; bg:#f0fdf4` (VERDE) | `border:#d1d5db; color:#111827; bg:#fff` (BRANCO) | **Botão WhatsApp perde TODA a cor verde** |
+| `.btn-maps` | `border:#fca5a5; color:#dc2626; bg:#fef2f2` (VERMELHO) | `border:#d1d5db; color:#111827; bg:#fff` (BRANCO) | Botão Maps perde cor |
+| `.company-main` | `14px; font-weight:600` | `13px; font-weight:500` | Nome fica **menor e mais fraco** |
+| `.act-btn` | `padding:7px 0; font-size:11px` | `min-height:52px; font-size:14px` | Botões ficam **gigantes** (52px!) |
+| `.contact-section` | `border-top+bottom; padding:8px 12px` | `border-bottom:0; text-align:center` | Perde borda, centraliza |
+
+> [!CAUTION]
+> O botão "Iniciar contato" (WhatsApp) — **a ação mais importante** — virou branco genérico idêntico aos outros.
+
+---
+
+### C4. Login auto-logado impede testar fluxo
+**Linha**: [854](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py#L854)
+
+```python
+"logged_in": True,        # ❌ Sempre logado
+"user_email": "admin@achei.com",  # ❌ Sempre admin (ilimitado)
+```
+
+Impossível testar login, diferentes tiers, ou bloqueio de download.
+
+---
+
+### C5. Visualizações salvas não funcionam
+**Linhas**: [976-982](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/app.py#L976-L982)
+
+```python
+if st.button("▶", key=f"load_sv_{i}", help="Carregar"):
+    st.info(f"Visualização '{sv['name']}' carregada!")
+    # ❌ Não aplica NENHUM filtro. Só mostra msg e pronto.
+```
+
+---
+
+### C6. 🆕 11 incompatibilidades entre CSV real e mock que vão QUEBRAR tudo
+
+Analisei o arquivo real [9602501_AP.csv](file:///r:/2026/Documentos%20-%202026/Sites/filtrador-leads/plano/bd_teste/9602501_AP.csv) (1.815 registros, CNAE 9602501 — Cabeleireiros do Amapá). **Os dados reais são completamente diferentes do que o mock assume:**
+
+| # | Campo | Mock (app.py) | CSV Real | Impacto |
+|---|-------|---------------|----------|---------|
+| 1 | **CNAE_MATCHED** | `True` / `False` (boolean) | `9602501` (código numérico int) | Filtro `CNAE_MATCHED` quebra — nunca é boolean |
+| 2 | **ORIGEM_CNAE** | `"principal"` / `"secundario"` (minúsculas) | `"PRINCIPAL"` / `"SECUNDARIO"` (MAIÚSCULAS) | Filtro L1075 `str.lower() == "principal"` funciona, mas comparações diretas falham |
+| 3 | **CNPJ** | `"12.345.678/0001-90"` (formatado) | `62891615000102` (int64 sem formatação) | Exibição e busca por CNPJ quebram |
+| 4 | **TELEFONE_1** | `"(11) 3456-7890"` (formatado) | `+559681430456` (prefixo +55, sem formatação) | `clean_phone()` e exibição quebram |
+| 5 | **WHATSAPP_1** | `"(11) 98765-4321"` (número) | `https://wa.me/559681430456` (URL completa!) | `wa_link()` gera URL dupla `wa.me/55https://wa.me/...` |
+| 6 | **TEM_EMAIL** | `True` / `False` (boolean) | `"SIM"` / `"NÃO"` (string) | Filtro `TEM_EMAIL == True` nunca matcha string |
+| 7 | **MEI** | `True` / `False` (boolean) | `"SIM"` / `"NÃO"` / `"OUTROS"` (string) | Filtro MEI quebra completamente |
+| 8 | **SIMPLES** | `True` / `False` (boolean) | `"SIM"` / `"NÃO"` / `"OUTROS"` (string) | Idem |
+| 9 | **EMAIL_CONTABILIDADE** | `True` / `False` (boolean) | `"SIM"` / `"NÃO"` (string) | Idem |
+| 10 | **PORTE** | `"ME"`, `"EPP"`, `"MEI"`, `"Grande"` | `"MICRO EMPRESA"`, `"EMPRESA DE PEQUENO PORTE"`, `"DEMAIS"` | Filtro de porte e exibição não batem |
+| 11 | **CNAE_SECUNDARIO** | 1 código só (`"4772500"`) | Múltiplos separados por vírgula (`"4639701,4642701,4646001,4649408"`) + nomes separados por `\|` | Toda a lógica de CNAE secundário precisa parse |
+
+**Dados adicionais do CSV real que o mock ignora:**
+- **82% não têm NOME FANTASIA** (1.485 de 1.815 vazios) — o card precisa lidar com isso
+- **CAPITAL SOCIAL** é float (`5000.0`), não string — `format_capital()` pode falhar
+- **SITE** não é URL do site da empresa, mas URL de busca Google (`https://www.google.com/search?q=...`)
+- **WHATSAPP** vem como URL `wa.me/...`, não como número formatado
+
+> [!CAUTION]
+> **Quando trocar de mock para DuckDB com dados reais, TODOS os filtros, TODA a exibição, e TODAS as ações vão quebrar.** O mock foi construído com formatos inventados que não correspondem ao CSV real. O `get_data()` precisa incluir uma camada de normalização.
+
+---
+
+## 🟠 ALTO (7 problemas)
+
+### A1. Filtros MEI e Simples sem label visível
+**L1033-1034**: `label_visibility="collapsed"` — usuário vê dropdowns "Todos" sem saber o que controlam.
+
+### A2. Sem botão "Limpar todos os filtros"
+O mockup tinha; o app não implementou. Resetar manualmente ~15 filtros é inviável.
+
+### A3. Sem paginação em nenhuma view
+Cards renderiza TODOS de uma vez. Com 1.815 registros (só AP!), vai travar o browser.
+
+### A4. View Bairro com selectbox duplicado
+**L1558**: Selectbox de município DENTRO da view, duplicando o filtro da sidebar.
+
+### A5. CNAE strip "⌄ Ver CNAE secundário" não é interativo
+Texto parece link clicável (cor verde, cursor pointer) mas **não faz nada**. Não é `<a>`, não tem JS, não usa `<details>`.
+
+### A6. Sem botão Receita Federal nos cards
+Cards têm WhatsApp, E-mail e Maps — mas não o botão RF que os mockups incluíam.
+
+### A7. Sem feedback de filtros ativos
+Texto "Filtros ativos aplicados" (L1656) é genérico — não diz QUAIS filtros estão ativos.
+
+---
+
+## 🟡 MÉDIO (12 problemas)
+
+| # | Problema | Detalhe |
+|---|----------|---------|
+| M1 | **Mobile com adaptação mínima** | Apenas 1 media query (L222-227). Faltam: KPIs empilhados, gráficos redimensionados, sidebar colapsável, font-sizes |
+| M2 | **KPIs não responsivos** | 7 KPIs em `st.columns(4)` e `st.columns(3)` — estouram em mobile |
+| M3 | **Gráficos Plotly altura fixa** | `height=180` (L1203) — muito pequeno em mobile, desperdício em desktop |
+| M4 | **Exports não contabilizam** | Download funciona, mas `exports_used` nunca incrementa no session_state |
+| M5 | **Sem estado vazio** | Filtros sem resultado = nada renderizado, sem mensagem |
+| M6 | **Tabela sem indicação de scroll** | 30+ colunas com scroll horizontal, sem seta ou sombra indicando |
+| M7 | **Header não mostra plano/tier** | Tier só aparece na sidebar (fácil de perder se colapsada) |
+| M8 | **CSS hardcoded `white`** | `.chart-card`, `.kpi-box` com `background: white` — quebra dark mode |
+| M9 | **Cards carregam todos na memória** | L1458: `[df.iloc[i] for i in range(len(df))]` — ineficiente |
+| M10 | **Sidebar longa sem seções colapsáveis** | ~15 controles sem accordion/expander |
+| M11 | **View Bairro sem ação de saída** | Mostra dados mas não filtra, não exporta, não abre Maps |
+| M12 | **Download sem filtro obrigatório** | Permite exportar TUDO (2.97M registros no futuro) |
+
+---
+
+## ⚪ BAIXO (8 detalhes)
+
+| # | Problema |
+|---|----------|
+| B1 | `phones_html = ""` declarada e nunca usada (L1298) |
+| B2 | Indentação HTML inconsistente no template do card |
+| B3 | Emojis como ícones (⌖, ▦, ◉) em vez de SVG/font reais |
+| B4 | `format_capital()` com replace encadeado em vez de locale |
+| B5 | `get_initials()` não trata nomes com 1 caractere |
+| B6 | XSS: nomes de empresa não escapados nos cards |
+| B7 | `.card-location` CSS definido mas nunca usado no HTML |
+| B8 | `.list-tbl` CSS definido (L184-191) mas tabela usa `.list-table` |
+
+---
+
+## Plano de Correção Proposto
+
+### Etapa 1 — Bugs Críticos (C1-C6) ⏱️ ~2h
+
+| Bug | Correção | Tempo |
+|-----|----------|-------|
+| **C1** Contatos invisíveis | Injetar `wa_block + tel_block + email_row` dentro de `contact_html` | 5 min |
+| **C2** Colunas fantasma | Remover 4 colunas inexistentes do `column_groups` | 2 min |
+| **C3** CSS duplicado | Unificar 2 blocos: manter cores nos botões (verde WA, vermelho Maps), remover overrides | 30 min |
+| **C4** Login auto-logado | `"logged_in": False` no `init_state` | 1 min |
+| **C5** Saved views | Implementar aplicação real dos filtros ao clicar ▶ | 20 min |
+| **C6** Incompatibilidades CSV | Criar camada de normalização em `get_data()`: converter booleans, formatar CNPJ, parsear WA URLs, mapear PORTE | 60 min |
+
+### Etapa 2 — Problemas Altos (A1-A7) ⏱️ ~1h
+
+| Bug | Correção |
+|-----|----------|
+| **A1** | Adicionar labels antes dos selectbox MEI/Simples |
+| **A2** | Botão "Limpar filtros" que reseta session_state + `st.rerun()` |
+| **A3** | Paginação com selectbox de página + slice do DataFrame |
+| **A4** | Remover selectbox duplicado da view Bairro |
+| **A5** | Tornar CNAE strip interativo (usar `<details>` ou merge com expand existente) |
+| **A6** | Adicionar botão RF nos action-buttons |
+| **A7** | Mostrar tags dos filtros ativos abaixo do header |
+
+### Etapa 3 — Médios + Polish (M1-M12, B1-B8) ⏱️ ~2h
+
+Mobile-first, dark mode support, paginação, estado vazio, segurança XSS.
+
+---
+
+> [!IMPORTANT]
+> **Posso começar as correções da Etapa 1 imediatamente?** Os 6 bugs críticos em ~2h levam o app de nota 4 para nota 7. Depois Etapa 2 (+1h) → nota 8. Etapa 3 (+2h) → nota 9+.

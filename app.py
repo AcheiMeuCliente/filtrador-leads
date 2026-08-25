@@ -4,6 +4,8 @@ app.py — Frontend de validação com dados mock (Fase 1)
 Para produção: substituir get_data() por consulta DuckDB
 """
 
+import os
+import math
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -234,41 +236,31 @@ details.card-expand[open] summary::before { content: "▼"; }
 .result-count { font-size: 14px; font-weight: 600; color: #111827; }
 .result-sub   { font-size: 11px; color: #6b7280; }
 
-/* ── Layout principal dos cards conforme mockup ── */
-.lead-card { margin-bottom: 10px; }
-.card-top { padding: 14px 14px 10px; }
-.card-identity { margin-bottom: 10px; }
-.company-main { font-size: 13px; font-weight: 500; }
-.company-sub { font-size: 11px; }
-.seg-pill { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
-.card-location { padding: 0; margin-bottom: 8px; font-size: 12px; }
+/* ── Layout ajustado conforme mockup (sem conflitos) ── */
 .card-info { display: flex; flex-direction: column; gap: 5px; font-size: 12px; color: #6b7280; }
 .info-row { display: flex; align-items: flex-start; gap: 6px; }
-.cnae-strip { margin: 0; padding: 8px 10px; }
-.cnae-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
-.cnae-strip-title, .cnae-strip-warn { font-size: 11px; }
-.cnae-strip-code { font-size: 11px; }
-.contact-section { border-top: 1px solid #e5e7eb; border-bottom: 0; padding: 10px 14px 6px; text-align: center; }
-.contact-note { font-size: 10px; color: #9ca3af; line-height: 1.4; }
-.action-buttons { padding: 10px 14px; border-top: 1px solid #e5e7eb; }
-.act-btn { min-height: 52px; padding: 7px 4px; border-radius: 7px; font-size: 14px; font-weight: 500; }
-.btn-wa-main { border-color: #d1d5db; color: #111827; background: #fff; }
-.btn-wa-main:hover { background: #f9fafb; }
-.btn-mail { border-color: #d1d5db; color: #111827; background: #fff; }
-.btn-maps { border-color: #d1d5db; color: #111827; background: #fff; }
+.contact-note { font-size: 10px; color: #9ca3af; line-height: 1.4; margin-bottom: 6px; }
+
+/* ── Botões com identidade visual clara ── */
+.btn-wa-main { border-color: #22c55e !important; color: #16a34a !important; background: #f0fdf4 !important; font-weight: 600 !important; }
+.btn-wa-main:hover { background: #dcfce7 !important; }
+.btn-mail { border-color: #93c5fd !important; color: #1d4ed8 !important; background: #eff6ff !important; }
+.btn-mail:hover { background: #dbeafe !important; }
+.btn-maps { border-color: #fca5a5 !important; color: #dc2626 !important; background: #fef2f2 !important; }
+.btn-maps:hover { background: #fee2e2 !important; }
 
 /* ── Lista compacta conforme mockup ── */
-.list-table-wrap { width: 100%; overflow: auto; max-height: 68vh; border: 1px solid #d1d5db; }
+.list-table-wrap { width: 100%; overflow: auto; max-height: 68vh; border: 1px solid #d1d5db; border-radius: 8px; }
 .list-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; }
 .list-table th {
     background: #f3f4f6; color: #111827; font-size: 10px; font-weight: 600;
-    text-align: left; padding: 7px 9px; border-right: 1px solid #d1d5db;
+    text-align: left; padding: 7px 9px; border-right: 1px solid #e5e7eb;
     border-bottom: 1px solid #d1d5db; white-space: nowrap; text-transform: uppercase;
     position: sticky; top: 0; z-index: 2;
 }
 .list-table td {
-    color: #374151; font-size: 10px; padding: 6px 9px;
-    border-right: 1px solid #d1d5db; border-bottom: 1px solid #d1d5db;
+    color: #374151; font-size: 11px; padding: 6px 9px;
+    border-right: 1px solid #f3f4f6; border-bottom: 1px solid #f3f4f6;
     white-space: nowrap; vertical-align: middle; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
 }
 .list-table tbody tr:hover td { background: #f9fafb; }
@@ -282,6 +274,18 @@ details.card-expand[open] summary::before { content: "▼"; }
 .list-map-link:hover { text-decoration: underline; }
 .list-link { color: #2563eb; text-decoration: none; }
 .list-link:hover { text-decoration: underline; }
+
+/* ── Mobile-first responsivo ── */
+@media (max-width: 768px) {
+    .lead-card { margin-bottom: 10px; }
+    .action-buttons { flex-wrap: wrap; }
+    .act-btn { flex: 1 1 calc(50% - 3px); min-width: 0; font-size: 12px; padding: 10px 4px; }
+    .data-grid { grid-template-columns: 1fr !important; }
+    .kpi-box { padding: 10px; }
+    .kpi-value { font-size: 20px; }
+    .chart-card { padding: 10px; }
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -839,11 +843,206 @@ def get_data() -> pd.DataFrame:
              SEGMENTO="Fábricas e Marcas"),
     ]
 
-    df = pd.DataFrame(rows)
-    df["INICIO ATIVIDADE"] = pd.to_datetime(df["INICIO ATIVIDADE"])
-    df["CAPITAL SOCIAL"] = pd.to_numeric(df["CAPITAL SOCIAL"], errors="coerce").fillna(0)
-    df["ANOS_ATIVIDADE"] = ((datetime.now() - df["INICIO ATIVIDADE"]).dt.days / 365).round(1)
+def normalize_df(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    # Base string cleaning
+    str_cols = ["RAZÃO SOCIAL", "NOME FANTASIA", "MUNICIPIO", "ESTADO", "BAIRRO", "CEP", "ORIGEM_CNAE", "SEGMENTO"]
+    for c in str_cols:
+        if c in df.columns:
+            df[c] = df[c].fillna("").astype(str).str.strip()
+
+    # CNPJ string formatting
+    if "CNPJ" in df.columns:
+        df["CNPJ"] = df["CNPJ"].apply(lambda v: f"{int(v):014d}" if pd.notna(v) and str(v).replace(".","").replace("-","").replace("/","").isdigit() else str(v).strip())
+
+    # Boolean flags normalization (handles True/False, "SIM"/"NÃO", 1/0)
+    bool_cols = ["TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE", "MEI", "SIMPLES"]
+    for c in bool_cols:
+        if c in df.columns:
+            df[c] = df[c].apply(lambda v: True if v is True or str(v).strip().upper() in ("SIM", "TRUE", "1") else False)
+
+    # PORTE normalization
+    porte_map = {
+        "MICRO EMPRESA": "ME",
+        "EMPRESA DE PEQUENO PORTE": "EPP",
+        "DEMAIS": "Grande",
+        "MEI": "MEI",
+        "ME": "ME",
+        "EPP": "EPP",
+        "GRANDE": "Grande",
+    }
+    if "PORTE" in df.columns:
+        df["PORTE"] = df["PORTE"].apply(lambda v: porte_map.get(str(v).strip().upper(), str(v).strip()))
+
+    # SEGMENTO mapping if missing or uniform
+    if "SEGMENTO" not in df.columns or df["SEGMENTO"].eq("").all():
+        if "CNAE_MATCHED" in df.columns:
+            cnae_seg_map = {
+                "9602501": "Salões e Barbearias", "9602-5/01": "Salões e Barbearias",
+                "9602502": "Clínicas de Estética", "9602-5/02": "Clínicas de Estética",
+                "4646001": "Distribuidores Atacadistas", "4772500": "Lojas e Pontos de Venda",
+                "4635401": "Representantes e Agentes", "2063100": "Fábricas e Marcas"
+            }
+            df["SEGMENTO"] = df["CNAE_MATCHED"].astype(str).map(lambda c: cnae_seg_map.get(c, "Salões e Barbearias"))
+        else:
+            df["SEGMENTO"] = "Salões e Barbearias"
+
+    # Datetime and age
+    if "INICIO ATIVIDADE" in df.columns:
+        df["INICIO ATIVIDADE"] = pd.to_datetime(df["INICIO ATIVIDADE"], errors="coerce")
+        today = datetime.now()
+        df["ANOS_ATIVIDADE"] = ((today - df["INICIO ATIVIDADE"]).dt.days / 365.25).fillna(0).round(1)
+
+    # CAPITAL SOCIAL
+    if "CAPITAL SOCIAL" in df.columns:
+        df["CAPITAL SOCIAL"] = pd.to_numeric(df["CAPITAL SOCIAL"], errors="coerce").fillna(0)
+
+    # Phone & Whatsapp normalization
+    for i in range(1, 4):
+        w_col = f"WHATSAPP_{i}"
+        t_col = f"TELEFONE_{i}"
+        if w_col in df.columns:
+            df[w_col] = df[w_col].fillna("").astype(str).str.strip().replace("nan", "")
+        if t_col in df.columns:
+            df[t_col] = df[t_col].fillna("").astype(str).str.strip().replace("nan", "")
+
     return df
+
+
+@st.cache_data
+def get_data() -> pd.DataFrame:
+    csv_path = "plano/bd_teste/9602501_AP.csv"
+    if os.path.exists(csv_path):
+        try:
+            df_csv = pd.read_csv(csv_path, sep=";", encoding="utf-8")
+            return normalize_df(df_csv)
+        except Exception:
+            pass
+
+    today = date.today()
+    this_month = date(today.year, today.month, 1)
+
+    rows = [
+        # ── SP · Beleza principal ──────────────────────────────────
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="principal",
+             CNPJ="12.345.678/0001-90",
+             CNAE_PRINCIPAL_CODIGO="9602501", CNAE_PRINCIPAL_NOME="Cabeleireiros, manicure e pedicure",
+             CNAE_SECUNDARIO_CODIGO="4772500", CNAE_SECUNDARIO_NOME="Comércio varejista de cosméticos",
+             **{"RAZÃO SOCIAL":"Studio Bella Arte Cabeleireiros Ltda","NOME FANTASIA":"Studio Bella Arte"},
+             TELEFONE_1="(11) 3456-7890", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="(11) 98765-4321", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"contato@studiobella.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=False,
+             BAIRRO="Pinheiros", CEP="05422-001", MUNICIPIO="São Paulo", ESTADO="SP",
+             **{"ENDERECO MAPA":"Rua dos Pinheiros, 100 - Pinheiros, São Paulo - SP",
+                "MAPS":"https://maps.google.com/?q=Studio+Bella+Arte+Pinheiros"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"ME", "CAPITAL SOCIAL":"50000"},
+             MEI=True, SIMPLES=True,
+             **{"INICIO ATIVIDADE":"2018-03-15",
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=12345678000190",
+                "NATUREZA_JURIDICA":"Empresário Individual", "SITE":"www.studiobella.com.br"},
+             SEGMENTO="Salões e Barbearias"),
+
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="principal",
+             CNPJ="98.765.432/0001-10",
+             CNAE_PRINCIPAL_CODIGO="9602501", CNAE_PRINCIPAL_NOME="Cabeleireiros, manicure e pedicure",
+             CNAE_SECUNDARIO_CODIGO="", CNAE_SECUNDARIO_NOME="",
+             **{"RAZÃO SOCIAL":"Barbearia Vintage Club Eireli","NOME FANTASIA":"Barbearia Vintage"},
+             TELEFONE_1="(11) 3333-4444", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="(11) 97777-8888", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"barba@vintageclub.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=False,
+             BAIRRO="Moema", CEP="04510-000", MUNICIPIO="São Paulo", ESTADO="SP",
+             **{"ENDERECO MAPA":"Av. Moema, 450 - Moema, São Paulo - SP",
+                "MAPS":"https://maps.google.com/?q=Barbearia+Vintage+Moema"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"ME", "CAPITAL SOCIAL":"30000"},
+             MEI=False, SIMPLES=True,
+             **{"INICIO ATIVIDADE":"2020-07-01",
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=98765432000110",
+                "NATUREZA_JURIDICA":"EIRELI", "SITE":""},
+             SEGMENTO="Salões e Barbearias"),
+
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="secundario",
+             CNPJ="55.666.777/0001-88",
+             CNAE_PRINCIPAL_CODIGO="4729699", CNAE_PRINCIPAL_NOME="Comércio varejista de produtos alimentícios",
+             CNAE_SECUNDARIO_CODIGO="4772500", CNAE_SECUNDARIO_NOME="Comércio varejista de cosméticos e perfumaria",
+             **{"RAZÃO SOCIAL":"Mercado Rosa Cosméticos ME","NOME FANTASIA":"Rosa Cosméticos"},
+             TELEFONE_1="(11) 2222-3333", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"rosa@cosm.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=False,
+             BAIRRO="Tatuapé", CEP="03308-000", MUNICIPIO="São Paulo", ESTADO="SP",
+             **{"ENDERECO MAPA":"Rua Tuiuti, 1200 - Tatuapé, São Paulo - SP",
+                "MAPS":"https://maps.google.com/?q=Rosa+Cosmeticos+Tatuape"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"EPP", "CAPITAL SOCIAL":"120000"},
+             MEI=False, SIMPLES=True,
+             **{"INICIO ATIVIDADE":"2015-11-20",
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=55666777000188",
+                "NATUREZA_JURIDICA":"Sociedade Empresária Limitada", "SITE":""},
+             SEGMENTO="Lojas e Pontos de Venda"),
+
+        # ── MG · Estética e Distribuidores ─────────────────────────
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="principal",
+             CNPJ="78.901.234/0001-56",
+             CNAE_PRINCIPAL_CODIGO="9602502", CNAE_PRINCIPAL_NOME="Atividades de estética e cuidados com a beleza",
+             CNAE_SECUNDARIO_CODIGO="9602501", CNAE_SECUNDARIO_NOME="Cabeleireiros, manicure e pedicure",
+             **{"RAZÃO SOCIAL":"Clínica Estética Evolução Ltda","NOME FANTASIA":"Evolução Estética"},
+             TELEFONE_1="(31) 3111-2222", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="(31) 99111-2222", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"contato@evolucaoestetica.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=False,
+             BAIRRO="Savassi", CEP="30140-071", MUNICIPIO="Belo Horizonte", ESTADO="MG",
+             **{"ENDERECO MAPA":"Rua Pernambuco, 1000 - Savassi, Belo Horizonte - MG",
+                "MAPS":"https://maps.google.com/?q=Evolucao+Estetica+Savassi"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"ME", "CAPITAL SOCIAL":"80000"},
+             MEI=False, SIMPLES=True,
+             **{"INICIO ATIVIDADE": this_month.strftime("%Y-%m-%d"),
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=78901234000156",
+                "NATUREZA_JURIDICA":"Sociedade Empresária Limitada", "SITE":"www.evolucaoestetica.com.br"},
+             SEGMENTO="Clínicas de Estética"),
+
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="principal",
+             CNPJ="44.333.222/0001-99",
+             CNAE_PRINCIPAL_CODIGO="4646001", CNAE_PRINCIPAL_NOME="Comércio atacadista de cosméticos e produtos de perfumaria",
+             CNAE_SECUNDARIO_CODIGO="", CNAE_SECUNDARIO_NOME="",
+             **{"RAZÃO SOCIAL":"Distribuidora Belezamix MG Ltda","NOME FANTASIA":"Belezamix Distribuidora"},
+             TELEFONE_1="(31) 3444-5555", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="(31) 98444-5555", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"vendas@belezamixmg.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=False,
+             BAIRRO="Centro", CEP="30110-000", MUNICIPIO="Belo Horizonte", ESTADO="MG",
+             **{"ENDERECO MAPA":"Av. Afonso Pena, 1500 - Centro, Belo Horizonte - MG",
+                "MAPS":"https://maps.google.com/?q=Belezamix+BH"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"EPP", "CAPITAL SOCIAL":"500000"},
+             MEI=False, SIMPLES=False,
+             **{"INICIO ATIVIDADE":"2012-05-10",
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=44333222000199",
+                "NATUREZA_JURIDICA":"Sociedade Empresária Limitada", "SITE":"www.belezamixmg.com.br"},
+             SEGMENTO="Distribuidores Atacadistas"),
+
+        dict(CNAE_MATCHED=True, ORIGEM_CNAE="secundario",
+             CNPJ="88.111.333/0001-55",
+             CNAE_PRINCIPAL_CODIGO="2063100", CNAE_PRINCIPAL_NOME="Fabricação de cosméticos, produtos de perfumaria e de higiene pessoal",
+             CNAE_SECUNDARIO_CODIGO="4646001", CNAE_SECUNDARIO_NOME="Comércio atacadista de cosméticos",
+             **{"RAZÃO SOCIAL":"Indústria Mineira de Cosméticos S/A","NOME FANTASIA":"MineCosm Indústria"},
+             TELEFONE_1="(31) 3666-7777", TELEFONE_2="", TELEFONE_3="",
+             WHATSAPP_1="", WHATSAPP_2="", WHATSAPP_3="",
+             **{"E-MAIL":"contato@contabil-mg.com.br"},
+             TEM_EMAIL=True, TEM_TELEFONE=True, EMAIL_CONTABILIDADE=True,
+             BAIRRO="Distrito Industrial", CEP="32670-000", MUNICIPIO="Betim", ESTADO="MG",
+             **{"ENDERECO MAPA":"Av. das Indústrias, 500 - Betim - MG",
+                "MAPS":"https://maps.google.com/?q=MineCosm+Betim+MG"},
+             **{"MATRIZ FILIAL":"Matriz", "PORTE":"Grande", "CAPITAL SOCIAL":"10000000"},
+             MEI=False, SIMPLES=False,
+             **{"INICIO ATIVIDADE":"2001-03-20",
+                "RECEITA FEDERAL":"https://www.receita.fazenda.gov.br/pessoajuridica/cnpj/cnpjreva/cnpjrevaesic.asp?cnpj=88111333000155",
+                "NATUREZA_JURIDICA":"Sociedade Anônima", "SITE":"www.minecosm.ind.br"},
+             SEGMENTO="Fábricas e Marcas"),
+    ]
+
+    df = pd.DataFrame(rows)
+    return normalize_df(df)
 
 
 # ══════════════════════════════════════════════════════
@@ -851,8 +1050,8 @@ def get_data() -> pd.DataFrame:
 # ══════════════════════════════════════════════════════
 def init_state():
     defaults = {
-        "logged_in": True,
-        "user_email": "admin@achei.com",
+        "logged_in": False,
+        "user_email": "",
         "user": {},
         "view_mode": "cards",
         "saved_views": [
@@ -899,19 +1098,28 @@ def get_cnae_status(row):
 
 
 def get_initials(name):
-    parts = name.split()
+    if not name or not str(name).strip():
+        return "CN"
+    parts = str(name).strip().split()
     if len(parts) >= 2:
         return (parts[0][0] + parts[1][0]).upper()
-    return name[:2].upper()
+    return str(name)[:2].upper()
 
 
 def clean_phone(phone):
-    return "".join(c for c in phone if c.isdigit())
+    return "".join(c for c in str(phone) if c.isdigit())
 
 
 def wa_link(phone):
-    cp = clean_phone(phone)
-    if len(cp) >= 10:
+    if not phone or str(phone).strip() in ("", "#", "nan", "None"):
+        return "#"
+    raw = str(phone).strip()
+    if raw.startswith("http://") or raw.startswith("https://"):
+        return raw
+    cp = clean_phone(raw)
+    if cp.startswith("55") and len(cp) >= 12:
+        return f"https://wa.me/{cp}"
+    elif len(cp) >= 10:
         return f"https://wa.me/55{cp}"
     return "#"
 
@@ -960,6 +1168,12 @@ def show_login():
 # ══════════════════════════════════════════════════════
 # 8. SIDEBAR
 # ══════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════
+# 8. SIDEBAR
+# ══════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════
+# 8. SIDEBAR
+# ══════════════════════════════════════════════════════
 def show_sidebar(df):
     with st.sidebar:
         st.markdown(f"### 🎯 AcheiMeuCliente")
@@ -968,81 +1182,98 @@ def show_sidebar(df):
         st.caption(f"👤 {st.session_state.user.get('nome','Usuário')} · Plano {tier_label}")
         if st.button("Sair", width="stretch"):
             st.session_state.logged_in = False
+            st.session_state.user = {}
+            st.session_state.user_email = ""
             st.rerun()
         st.markdown("---")
 
+        if "active_filters" not in st.session_state:
+            st.session_state.active_filters = {}
+
         # ── Visualizações salvas ──
-        st.markdown("#### 🔖 Visualizações salvas")
-        for i, sv in enumerate(st.session_state.saved_views):
-            col_n, col_b = st.columns([4, 1])
-            with col_n:
-                st.caption(f"**{sv['name']}** · {sv['count']} leads")
-            with col_b:
-                if st.button("▶", key=f"load_sv_{i}", help="Carregar"):
-                    st.info(f"Visualização '{sv['name']}' carregada!")
+        with st.expander("🔖 Visualizações salvas", expanded=True):
+            for i, sv in enumerate(st.session_state.saved_views):
+                col_n, col_b = st.columns([4, 1])
+                with col_n:
+                    st.caption(f"**{sv['name']}** · {sv['count']} leads")
+                with col_b:
+                    if st.button("▶", key=f"load_sv_{i}", help="Carregar filtro"):
+                        st.session_state.active_filters = sv["filters"].copy()
+                        st.toast(f"Filtro '{sv['name']}' aplicado!", icon="🔖")
+                        st.rerun()
+
         st.markdown("---")
 
         # ── FILTROS ──
+        if st.button("🧹 Limpar todos os filtros", width="stretch"):
+            st.session_state.active_filters = {}
+            st.toast("Filtros resetados!", icon="🧹")
+            st.rerun()
+
+        af = st.session_state.active_filters
         filters = {}
 
-        st.markdown("#### 📋 Filtros")
-
         # Contato
-        st.markdown("**Contato**")
-        filters["tem_email"]       = st.checkbox("Com e-mail",          value=False)
-        filters["sem_contador"]    = st.checkbox("Excluir e-mail contador", value=False)
-        filters["tem_whatsapp"]    = st.checkbox("Com WhatsApp confirmado", value=False)
+        with st.expander("📲 Contato & Canais", expanded=True):
+            filters["tem_email"]       = st.checkbox("Com e-mail",          value=af.get("tem_email", False))
+            filters["sem_contador"]    = st.checkbox("Excluir e-mail contador", value=af.get("sem_contador", False))
+            filters["tem_whatsapp"]    = st.checkbox("Com WhatsApp confirmado", value=af.get("tem_whatsapp", False))
 
         # Segmento
-        st.markdown("**Segmento**")
-        segs = list(SEG_CFG.keys())
-        filters["segmentos"] = st.multiselect("Segmento(s)", segs, placeholder="Todos")
+        with st.expander("💇 Segmento & CNAE", expanded=True):
+            segs = list(SEG_CFG.keys())
+            filters["segmentos"] = st.multiselect("Segmento(s)", segs, default=af.get("segmentos", []), placeholder="Todos")
 
-        # Origem CNAE
-        st.markdown("**Origem CNAE**")
-        filters["origem_cnae"] = st.selectbox(
-            "Origem do match",
-            ["Principal ou Secundário", "Apenas CNAE principal", "Apenas CNAE secundário"],
-            label_visibility="collapsed"
-        )
+            orig_opts = ["Principal ou Secundário", "Apenas CNAE principal", "Apenas CNAE secundário"]
+            orig_def = af.get("origem_cnae", "Principal ou Secundário")
+            orig_idx = orig_opts.index(orig_def) if orig_def in orig_opts else 0
+            filters["origem_cnae"] = st.selectbox("Origem do match CNAE", orig_opts, index=orig_idx)
 
         # Localização
-        st.markdown("**Localização**")
-        estados = sorted(df["ESTADO"].dropna().unique().tolist())
-        filters["estados"] = st.multiselect("Estado(s)", estados, placeholder="Todos")
+        with st.expander("📍 Localização (UF, Cidade, Bairro)", expanded=True):
+            estados = sorted(df["ESTADO"].dropna().unique().tolist())
+            filters["estados"] = st.multiselect("Estado(s)", estados, default=af.get("estados", []), placeholder="Todos")
 
-        municipios_opts = []
-        if filters["estados"]:
-            municipios_opts = sorted(df[df["ESTADO"].isin(filters["estados"])]["MUNICIPIO"].dropna().unique().tolist())
-        else:
-            municipios_opts = sorted(df["MUNICIPIO"].dropna().unique().tolist())
-        filters["municipios"] = st.multiselect("Município(s)", municipios_opts, placeholder="Todos")
+            municipios_opts = []
+            if filters["estados"]:
+                municipios_opts = sorted(df[df["ESTADO"].isin(filters["estados"])]["MUNICIPIO"].dropna().unique().tolist())
+            else:
+                municipios_opts = sorted(df["MUNICIPIO"].dropna().unique().tolist())
+            filters["municipios"] = st.multiselect("Município(s)", municipios_opts, default=af.get("municipios", []), placeholder="Todos")
 
-        bairros_opts = []
-        if filters["municipios"]:
-            bairros_opts = sorted(df[df["MUNICIPIO"].isin(filters["municipios"])]["BAIRRO"].dropna().unique().tolist())
-        filters["bairros"] = st.multiselect("Bairro(s)", bairros_opts, placeholder="Todos")
+            bairros_opts = []
+            if filters["municipios"]:
+                bairros_opts = sorted(df[df["MUNICIPIO"].isin(filters["municipios"])]["BAIRRO"].dropna().unique().tolist())
+            filters["bairros"] = st.multiselect("Bairro(s)", bairros_opts, default=af.get("bairros", []), placeholder="Todos")
 
         # Identificação
-        st.markdown("**Identificação**")
-        filters["busca_texto"] = st.text_input("Nome / Razão Social / CNPJ", placeholder="Buscar...")
+        with st.expander("🔍 Busca por Nome / CNPJ", expanded=False):
+            filters["busca_texto"] = st.text_input("Buscar texto", value=af.get("busca_texto", ""), placeholder="Ex: Studio Bella, 12.345...")
 
         # Características
-        st.markdown("**Características**")
-        filters["portes"] = st.multiselect("Porte", ["MEI","ME","EPP","Grande"], placeholder="Todos")
-        filters["mei"]    = st.selectbox("MEI", ["Todos","Apenas MEI","Excluir MEI"], label_visibility="collapsed")
-        filters["simples"]= st.selectbox("Simples Nacional", ["Todos","Sim","Não"], label_visibility="collapsed")
+        with st.expander("💼 Porte & Características", expanded=False):
+            filters["portes"] = st.multiselect("Porte", ["MEI","ME","EPP","Grande"], default=af.get("portes", []), placeholder="Todos")
 
-        anos_min, anos_max = 0, 25
-        filters["anos_range"] = st.slider("Anos de atividade", 0, 25, (0, 25))
+            mei_opts = ["Todos","Apenas MEI","Excluir MEI"]
+            mei_def = af.get("mei", "Todos")
+            filters["mei"] = st.selectbox("Filtrar MEI", mei_opts, index=mei_opts.index(mei_def) if mei_def in mei_opts else 0)
+
+            simples_opts = ["Todos","Sim","Não"]
+            simples_def = af.get("simples", "Todos")
+            filters["simples"] = st.selectbox("Filtrar Simples Nacional", simples_opts, index=simples_opts.index(simples_def) if simples_def in simples_opts else 0)
+
+            anos_def = af.get("anos_range", (0, 25))
+            filters["anos_range"] = st.slider("Anos de atividade", 0, 25, anos_def)
+
+        st.session_state.active_filters = filters
 
         # Botão salvar
         st.markdown("---")
-        save_name = st.text_input("Nome da visualização", placeholder="Ex: SP · Salões 2024")
-        if st.button("💾 Salvar filtro atual", width="stretch"):
+        save_name = st.text_input("Salvar visualização atual", placeholder="Ex: SP · Salões 2024")
+        if st.button("💾 Salvar visualização", width="stretch"):
             if save_name:
-                st.session_state.saved_views.append({"name": save_name, "count": 0, "filters": filters})
-                st.success(f"'{save_name}' salvo!")
+                st.session_state.saved_views.append({"name": save_name, "count": len(df), "filters": filters.copy()})
+                st.success(f"Visualização '{save_name}' salva!")
             else:
                 st.warning("Digite um nome para salvar.")
 
@@ -1060,7 +1291,7 @@ def apply_filters(df, filters):
     if filters.get("sem_contador"):
         mask &= df["EMAIL_CONTABILIDADE"] == False
     if filters.get("tem_whatsapp"):
-        mask &= df["WHATSAPP_1"].str.strip().str.len() > 0
+        mask &= df["WHATSAPP_1"].astype(str).str.strip().str.len() > 0
     if filters.get("segmentos"):
         mask &= df["SEGMENTO"].isin(filters["segmentos"])
     if filters.get("estados"):
@@ -1072,16 +1303,16 @@ def apply_filters(df, filters):
 
     origem = filters.get("origem_cnae", "Principal ou Secundário")
     if origem == "Apenas CNAE principal":
-        mask &= df["ORIGEM_CNAE"].str.lower() == "principal"
+        mask &= df["ORIGEM_CNAE"].astype(str).str.lower() == "principal"
     elif origem == "Apenas CNAE secundário":
-        mask &= df["ORIGEM_CNAE"].str.lower() == "secundario"
+        mask &= df["ORIGEM_CNAE"].astype(str).str.lower() == "secundario"
 
     if filters.get("busca_texto"):
         q = filters["busca_texto"].lower()
         mask &= (
-            df["NOME FANTASIA"].str.lower().str.contains(q, na=False) |
-            df["RAZÃO SOCIAL"].str.lower().str.contains(q, na=False) |
-            df["CNPJ"].str.lower().str.contains(q, na=False)
+            df["NOME FANTASIA"].astype(str).str.lower().str.contains(q, na=False) |
+            df["RAZÃO SOCIAL"].astype(str).str.lower().str.contains(q, na=False) |
+            df["CNPJ"].astype(str).str.lower().str.contains(q, na=False)
         )
     if filters.get("portes"):
         mask &= df["PORTE"].isin(filters["portes"])
@@ -1099,7 +1330,8 @@ def apply_filters(df, filters):
         mask &= df["SIMPLES"] == False
 
     anos_r = filters.get("anos_range", (0, 25))
-    mask &= (df["ANOS_ATIVIDADE"] >= anos_r[0]) & (df["ANOS_ATIVIDADE"] <= anos_r[1])
+    if "ANOS_ATIVIDADE" in df.columns:
+        mask &= (df["ANOS_ATIVIDADE"] >= anos_r[0]) & (df["ANOS_ATIVIDADE"] <= anos_r[1])
 
     return df[mask].copy()
 
@@ -1347,23 +1579,31 @@ def build_card_html(row):
     wa_block  = ""
     tel_block = ""
     if wa_rows:
-        wa_block = f'<div class="contact-label">WHATSAPP CONFIRMADO</div>{wa_rows}'
+        wa_block = f'<div class="contact-label">WHATSAPP</div>{wa_rows}'
     if tel_rows:
         tel_block = f'<div class="contact-label" style="margin-top:6px">TELEFONE</div>{tel_rows}'
 
+    has_any_contact = bool(wa_rows or tel_rows or (email and not is_contador))
+    contact_note = '<div class="contact-note">Números cadastrados na Receita Federal — confirme antes de usar</div>' if has_any_contact else '<div class="contact-note">Nenhum contato direto encontrado neste cadastro</div>'
+
     contact_html = f"""
     <div class="contact-section">
-        <div class="contact-note">Número de telefone cadastrado na Receita Federal — confirme se é WhatsApp antes de usar</div>
+        {contact_note}
+        {wa_block}
+        {tel_block}
+        {email_row}
     </div>"""
 
     # Botões de ação
     maps_url = str(row.get("MAPS","#"))
+    rf_url   = str(row.get("RECEITA FEDERAL", "#")).strip()
     first_wa = next((str(num) for num in wa_list if num and str(num).strip()), "")
     first_email = email if email and not is_contador else ""
     wa_action = f'<a class="act-btn btn-wa-main" href="{wa_link(first_wa)}" target="_blank">◉ Iniciar contato</a>' if first_wa else \
                 '<span class="act-btn btn-wa-main" style="opacity:.4;cursor:default">◉ Sem WhatsApp</span>'
     email_action = f'<a class="act-btn btn-mail" href="mailto:{first_email}">✉ E-mail</a>' if first_email else \
                    '<span class="act-btn btn-mail" style="opacity:.4;cursor:default">✉ Sem e-mail</span>'
+    rf_action = f'<a class="act-btn btn-rf" href="{rf_url}" target="_blank">📋 Receita</a>' if rf_url and rf_url != "#" else ""
 
     # Expand — endereço e dados cadastrais
     endereco = str(row.get("ENDERECO MAPA","—"))
@@ -1413,6 +1653,7 @@ def build_card_html(row):
   <div class="action-buttons">
         {wa_action}
         {email_action}
+        {rf_action}
         <a class="act-btn btn-maps" href="{maps_url}" target="_blank">⌖ Maps</a>
   </div>
   <details class="card-expand">
@@ -1455,7 +1696,23 @@ def build_card_html(row):
 # 13. VIEW CARDS
 # ══════════════════════════════════════════════════════
 def show_cards(df):
-    rows_list = [df.iloc[i] for i in range(len(df))]
+    if len(df) == 0:
+        st.info("ℹ️ Nenhum lead encontrado com os filtros selecionados. Tente ajustar a busca na barra lateral.")
+        return
+
+    PAGE_SIZE = 20
+    total_pages = max(1, math.ceil(len(df) / PAGE_SIZE))
+    if total_pages > 1:
+        col_p1, col_p2 = st.columns([2, 3])
+        with col_p1:
+            page = st.number_input("Página (Cards)", min_value=1, max_value=total_pages, value=1, step=1, key="page_cards", label_visibility="collapsed")
+        with col_p2:
+            st.caption(f"Página **{page}** de **{total_pages}** · Mostrando {(page-1)*PAGE_SIZE + 1} - {min(page*PAGE_SIZE, len(df))} de {len(df):,} leads")
+    else:
+        page = 1
+
+    df_page = df.iloc[(page - 1) * PAGE_SIZE : page * PAGE_SIZE]
+    rows_list = [df_page.iloc[i] for i in range(len(df_page))]
     cols = st.columns(2)
     for i, row in enumerate(rows_list):
         with cols[i % 2]:
@@ -1466,11 +1723,28 @@ def show_cards(df):
 # 14. VIEW LISTA
 # ══════════════════════════════════════════════════════
 def show_list(df):
+    if len(df) == 0:
+        st.info("ℹ️ Nenhum lead encontrado com os filtros selecionados.")
+        return
+
+    PAGE_SIZE = 50
+    total_pages = max(1, math.ceil(len(df) / PAGE_SIZE))
+    if total_pages > 1:
+        col_p1, col_p2 = st.columns([2, 3])
+        with col_p1:
+            page = st.number_input("Página (Lista)", min_value=1, max_value=total_pages, value=1, step=1, key="page_list", label_visibility="collapsed")
+        with col_p2:
+            st.caption(f"Página **{page}** de **{total_pages}** · Mostrando {(page-1)*PAGE_SIZE + 1} - {min(page*PAGE_SIZE, len(df))} de {len(df):,} leads")
+    else:
+        page = 1
+
+    df_page = df.iloc[(page - 1) * PAGE_SIZE : page * PAGE_SIZE]
+
     column_groups = [
         ("Empresa", ["RAZÃO SOCIAL", "NOME FANTASIA", "MUNICIPIO", "ESTADO"]),
-        ("Classificação", ["SEGMENTO", "CNAE_MATCHED", "ORIGEM_CNAE", "COLUNA_MATCH", "KEYWORD_MATCH", "TODOS_MATCHES", "QTD_MATCHES"]),
-        ("Contatos", ["WHATSAPP_1", "WHATSAPP_2", "WHATSAPP_3", "TELEFONE_1", "TELEFONE_2", "TELEFONE_3", "E-MAIL", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE"]),
-        ("Localização", ["BAIRRO", "CEP", "ENDERECO MAPA", "MAPS"]),
+        ("Classificação", ["SEGMENTO", "CNAE_MATCHED", "ORIGEM_CNAE"]),
+        ("Contatos", ["WHATSAPP_1", "TELEFONE_1", "E-MAIL", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE"]),
+        ("Localização", ["BAIRRO", "CEP", "MUNICIPIO", "ENDERECO MAPA", "MAPS"]),
         ("Cadastro", ["CNPJ", "PORTE", "CAPITAL SOCIAL", "MEI", "SIMPLES", "MATRIZ FILIAL", "INICIO ATIVIDADE", "NATUREZA_JURIDICA"]),
         ("Atividade", ["CNAE_PRINCIPAL_CODIGO", "CNAE_PRINCIPAL_NOME", "CNAE_SECUNDARIO_CODIGO", "CNAE_SECUNDARIO_NOME"]),
         ("Origem", ["RECEITA FEDERAL", "SITE"]),
@@ -1478,8 +1752,7 @@ def show_list(df):
     columns = [column for _, group_columns in column_groups for column in group_columns]
     labels = {
         "RAZÃO SOCIAL": "Razão Social", "NOME FANTASIA": "Nome Fantasia", "CNAE_MATCHED": "CNAE Matched",
-        "ORIGEM_CNAE": "Origem CNAE", "COLUNA_MATCH": "Coluna Match", "KEYWORD_MATCH": "Keyword Match",
-        "TODOS_MATCHES": "Todos Matches", "QTD_MATCHES": "Qtd. Matches", "TEM_EMAIL": "Tem E-mail",
+        "ORIGEM_CNAE": "Origem CNAE", "TEM_EMAIL": "Tem E-mail",
         "TEM_TELEFONE": "Tem Telefone", "EMAIL_CONTABILIDADE": "E-mail Contabilidade", "ENDERECO MAPA": "Endereço",
         "MAPS": "Maps", "CAPITAL SOCIAL": "Capital Social", "MATRIZ FILIAL": "Matriz/Filial",
         "INICIO ATIVIDADE": "Início Atividade", "NATUREZA_JURIDICA": "Natureza Jurídica", "RECEITA FEDERAL": "Receita Federal",
@@ -1509,7 +1782,7 @@ def show_list(df):
         return safe_value
 
     table_rows = []
-    for _, row in df.iterrows():
+    for _, row in df_page.iterrows():
         cells = "".join(f"<td>{render_cell(row, column)}</td>" for column in columns)
         table_rows.append(f"<tr>{cells}</tr>")
 
@@ -1536,6 +1809,10 @@ def show_list(df):
 # 15. VIEW BAIRRO
 # ══════════════════════════════════════════════════════
 def show_bairro(df):
+    if len(df) == 0:
+        st.info("ℹ️ Nenhum lead encontrado com os filtros selecionados.")
+        return
+
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("##### Por município")
@@ -1555,7 +1832,7 @@ def show_bairro(df):
 
     with c2:
         municipios = sorted(df["MUNICIPIO"].dropna().unique().tolist())
-        sel_mun = st.selectbox("Detalhe por bairro:", municipios)
+        sel_mun = st.selectbox("Detalhe por bairro:", municipios, key="select_bairro_mun")
         if sel_mun:
             top_b = (df[df["MUNICIPIO"]==sel_mun]
                        .groupby("BAIRRO").size()
@@ -1586,6 +1863,12 @@ def show_bairro(df):
 # ══════════════════════════════════════════════════════
 # 16. DOWNLOAD
 # ══════════════════════════════════════════════════════
+def register_export(count):
+    if "user" in st.session_state and st.session_state.user:
+        st.session_state.user["exports_used"] = st.session_state.user.get("exports_used", 0) + count
+        st.toast(f"Export contabilizado! (+{count} leads)", icon="📊")
+
+
 def show_download(df, user):
     tier      = user.get("tier","explorador")
     exp_used  = user.get("exports_used", 0)
@@ -1602,19 +1885,22 @@ def show_download(df, user):
             st.caption(f"Plano {TIER_CFG[tier]['label']} · **{exp_used}** de **{exp_limit if exp_limit < 999999 else '∞'}** exports usados · restam **{remaining}**")
 
     if tier != "explorador":
-        # CSV
-        csv_buf = df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_csv(index=False, sep=";").encode("utf-8-sig")
-        with c2:
-            st.download_button("⬇️ CSV", csv_buf, f"achei_leads_{date.today()}.csv",
-                               "text/csv", width="stretch")
-        # Excel
-        xlsx_buf = BytesIO()
-        df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_excel(xlsx_buf, index=False, engine="openpyxl")
-        xlsx_buf.seek(0)
-        with c3:
-            st.download_button("⬇️ Excel", xlsx_buf.read(), f"achei_leads_{date.today()}.xlsx",
-                               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                               width="stretch")
+        if exp_limit < 999999 and exp_used >= exp_limit:
+            st.warning("⚠️ Limite mensal de exports atingido! Faça upgrade para continuar exportando.")
+        else:
+            csv_buf = df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_csv(index=False, sep=";").encode("utf-8-sig")
+            with c2:
+                st.download_button("⬇️ CSV", csv_buf, f"achei_leads_{date.today()}.csv",
+                                   "text/csv", width="stretch", key="btn_dl_csv",
+                                   on_click=register_export, args=(total,))
+            xlsx_buf = BytesIO()
+            df.drop(columns=["ANOS_ATIVIDADE"], errors="ignore").to_excel(xlsx_buf, index=False, engine="openpyxl")
+            xlsx_buf.seek(0)
+            with c3:
+                st.download_button("⬇️ Excel", xlsx_buf.read(), f"achei_leads_{date.today()}.xlsx",
+                                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                   width="stretch", key="btn_dl_xlsx",
+                                   on_click=register_export, args=(total,))
 
 
 # ══════════════════════════════════════════════════════
@@ -1632,9 +1918,14 @@ def main():
     df = apply_filters(df_full, filters)
 
     # Header
+    tier = st.session_state.user.get("tier", "operacional")
+    tier_label = TIER_CFG[tier]["label"]
+    badge_bg = "#16a34a" if tier=="nacional" else ("#1d4ed8" if tier=="regional" else "#7c3aed")
+    tier_badge = f'<span style="background:{badge_bg};color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;margin-left:8px;vertical-align:middle">Plano {tier_label}</span>'
+
     col_h1, col_h2 = st.columns([3,1])
     with col_h1:
-        st.markdown("## 🎯 AcheiMeuCliente")
+        st.markdown(f"## 🎯 AcheiMeuCliente {tier_badge}", unsafe_allow_html=True)
         st.caption(f"Plataforma de Inteligência de Mercado para Beleza  ·  Base: **{len(df_full):,}** empresas")
     with col_h2:
         st.markdown("<br>", unsafe_allow_html=True)
@@ -1648,12 +1939,32 @@ def main():
     show_kpis(df, st.session_state.user)
     show_charts(df)
 
+    # Active filter tags
+    active_tags = []
+    if filters.get("tem_email"): active_tags.append("✉️ E-mail")
+    if filters.get("sem_contador"): active_tags.append("🚫 Sem contador")
+    if filters.get("tem_whatsapp"): active_tags.append("📲 WhatsApp")
+    if filters.get("segmentos"): active_tags.extend(filters["segmentos"])
+    if filters.get("estados"): active_tags.extend([f"UF: {e}" for e in filters["estados"]])
+    if filters.get("municipios"): active_tags.extend([f"🏙️ {m}" for m in filters["municipios"]])
+    if filters.get("busca_texto"): active_tags.append(f"🔍 '{filters['busca_texto']}'")
+    if filters.get("portes"): active_tags.extend([f"🏢 {p}" for p in filters["portes"]])
+    if filters.get("mei") and filters["mei"] != "Todos": active_tags.append(f"MEI: {filters['mei']}")
+    if filters.get("simples") and filters["simples"] != "Todos": active_tags.append(f"Simples: {filters['simples']}")
+
+    tag_html = ""
+    if active_tags:
+        badges = "".join([f'<span style="background:#e0f2fe;color:#0369a1;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:500;margin-right:5px">{t}</span>' for t in active_tags])
+        tag_html = f'<div style="margin-top:6px;margin-bottom:8px">{badges}</div>'
+    else:
+        tag_html = '<div class="result-sub">Todos os leads da base</div>'
+
     # Contagem + view
     st.markdown(f"""
     <div class="section-title-bar">
         <div>
             <div class="result-count">{len(df):,} leads encontrados</div>
-            <div class="result-sub">Filtros ativos aplicados</div>
+            {tag_html}
         </div>
     </div>""", unsafe_allow_html=True)
 

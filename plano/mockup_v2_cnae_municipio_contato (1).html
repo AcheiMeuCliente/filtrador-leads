@@ -1,0 +1,384 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--text-primary);background:transparent}
+.seg-salao{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.seg-clinica{background:#FBEAF0;color:#4B1528;border-color:#ED93B1}
+.seg-dist{background:#E6F1FB;color:#042C53;border-color:#85B7EB}
+.seg-loja{background:#FAEEDA;color:#412402;border-color:#EF9F27}
+.seg-fabrica{background:#EEEDFE;color:#26215C;border-color:#AFA9EC}
+.seg-rep{background:#FAECE7;color:#4A1B0C;border-color:#F0997B}
+.view-toggle{display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap}
+.vtbtn{padding:5px 12px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:12px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);display:flex;align-items:center;gap:5px}
+.vtbtn.active{background:var(--fill-accent);border-color:var(--fill-accent);color:#fff}
+.panel{display:none}.panel.active{display:block}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.lead-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
+.card-top{padding:14px 14px 10px}
+.card-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.card-avatar{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.card-name{font-size:13px;font-weight:500;line-height:1.3}
+.card-fantasy{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.seg-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid;font-weight:500;margin-top:4px}
+.card-info{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--text-secondary)}
+.info-row{display:flex;align-items:flex-start;gap:6px}
+.cnae-strip{margin-top:8px;padding:8px 10px;border-radius:8px;border:0.5px solid}
+.cnae-strip.primary-beauty{background:#E1F5EE;border-color:#5DCAA5}
+.cnae-strip.secondary-beauty{background:#FAEEDA;border-color:#EF9F27}
+.cnae-strip.unknown{background:var(--surface-1);border-color:var(--border)}
+.cnae-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;margin-bottom:4px}
+.cnae-badge.primary{background:#1D9E75;color:#fff}
+.cnae-badge.secondary{background:#EF9F27;color:#412402}
+.cnae-badge.outside{background:#F7C1C1;color:#791F1F}
+.cnae-code{font-size:11px;color:var(--text-secondary);line-height:1.4}
+.cnae-expand{font-size:11px;color:var(--text-accent);cursor:pointer;display:flex;align-items:center;gap:3px;margin-top:4px}
+.cnae-all{display:none;margin-top:6px;padding-top:6px;border-top:0.5px solid var(--border)}
+.cnae-all.open{display:block}
+.cnae-all-row{font-size:11px;color:var(--text-secondary);padding:2px 0;display:flex;gap:6px;align-items:center}
+.cnae-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.card-actions{padding:10px 14px;border-top:0.5px solid var(--border);background:var(--surface-1)}
+.contact-note{font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:6px;line-height:1.4}
+.action-row{display:flex;gap:6px}
+.act-btn{flex:1;padding:7px 0;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:11px;cursor:pointer;background:transparent;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:4px}
+.act-btn.whats{border-color:#25D366;color:#185A34;background:#E8FAF0;font-weight:500}
+.act-btn.whats:hover{background:#D1F5E0}
+.act-btn.mail{border-color:var(--border-accent);color:var(--text-accent)}
+.act-btn.maps{border-color:var(--border)}
+.act-btn.disabled-contact{opacity:.4;cursor:default}
+.expand-row{padding:5px 14px;font-size:11px;color:var(--text-accent);cursor:pointer;display:flex;align-items:center;gap:4px;background:var(--surface-1);border-top:0.5px solid var(--border)}
+.expand-detail{padding:10px 14px;background:var(--surface-1);border-top:0.5px solid var(--border);display:none;grid-template-columns:1fr 1fr;gap:6px 14px}
+.expand-detail.open{display:grid}
+.det-row{font-size:11px}.det-label{color:var(--text-muted);display:block;margin-bottom:1px}.det-val{color:var(--text-secondary);font-weight:500}
+.list-table{width:100%;border-collapse:collapse}
+.list-table th{font-size:11px;font-weight:500;color:var(--text-muted);text-align:left;padding:7px 10px;border-bottom:0.5px solid var(--border);background:var(--surface-1);white-space:nowrap}
+.list-table td{font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text-secondary);vertical-align:middle}
+.list-table tr:hover td{background:var(--surface-1)}
+.exp-panel{background:var(--surface-1);border-bottom:0.5px solid var(--border);display:none;padding:10px 14px}
+.exp-panel.open{display:block}
+.exp-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 14px}
+.bairro-table{width:100%;border-collapse:collapse}
+.bairro-table th{font-size:11px;font-weight:500;color:var(--text-muted);text-align:left;padding:7px 12px;border-bottom:0.5px solid var(--border);background:var(--surface-1)}
+.bairro-table td{font-size:12px;padding:7px 12px;border-bottom:0.5px solid var(--border);color:var(--text-secondary);vertical-align:middle}
+.bairro-table tr:hover td{background:var(--surface-1)}
+.bairro-bar-wrap{width:80px;background:var(--surface-0);border-radius:3px;height:5px;display:inline-block;vertical-align:middle}
+.bairro-bar{height:5px;border-radius:3px;background:#378ADD}
+.badge-sm{font-size:10px;padding:2px 7px;border-radius:10px;border:0.5px solid;font-weight:500}
+.contact-link{color:var(--text-accent);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:3px}
+.section-title{font-size:11px;font-weight:500;color:var(--text-secondary);letter-spacing:.04em;margin-bottom:.5rem}
+.legend-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.75rem;align-items:center}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-secondary)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+</style>
+
+<h2 class="sr-only">Mockup v2 com view de município/bairro, semáforo CNAE e comunicação de contato revisada</h2>
+
+<div style="padding:1rem 0 2rem">
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px">
+  <div class="section-title" style="margin:0">2.979.312 EMPRESAS · FILTRO: MG · TODOS OS SEGMENTOS</div>
+  <div class="view-toggle" style="margin:0">
+    <button class="vtbtn active" id="btn-card" onclick="setView('card')"><i class="ti ti-layout-grid" style="font-size:13px" aria-hidden="true"></i> Cards</button>
+    <button class="vtbtn" id="btn-list" onclick="setView('list')"><i class="ti ti-list" style="font-size:13px" aria-hidden="true"></i> Lista</button>
+    <button class="vtbtn" id="btn-geo" onclick="setView('geo')"><i class="ti ti-map-pin" style="font-size:13px" aria-hidden="true"></i> Por bairro</button>
+  </div>
+</div>
+
+<div class="legend-row">
+  <span style="font-size:11px;font-weight:500;color:var(--text-muted)">CNAE principal:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>Beleza confirmada</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div>Beleza no secundário</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>CNAE principal fora da beleza</div>
+</div>
+
+<!-- CARDS VIEW -->
+<div class="panel active" id="view-card">
+<div class="cards-grid">
+
+  <!-- Card 1: CNAE principal É beleza -->
+  <div class="lead-card">
+    <div class="card-top">
+      <div class="card-head">
+        <div class="card-avatar seg-salao">SB</div>
+        <div style="flex:1;min-width:0">
+          <div class="card-name">Studio Bella Arte Cabeleireiros Ltda</div>
+          <div class="card-fantasy">Studio Bella Arte</div>
+          <span class="seg-pill seg-salao">💇 Salão e Barbearia</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> Centro, Belo Horizonte — MG</div>
+        <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> MEI · Abertura: mar/2018 · 6 anos</div>
+      </div>
+      <div class="cnae-strip primary-beauty">
+        <span class="cnae-badge primary"><i class="ti ti-circle-check" style="font-size:11px" aria-hidden="true"></i> Beleza — CNAE principal</span>
+        <div class="cnae-code">9602-5/01 · Cabeleireiros, manicure e pedicure</div>
+        <div class="cnae-expand" onclick="toggleCnae('cn1')"><i class="ti ti-chevron-down" id="cn1-ico" style="font-size:11px" aria-hidden="true"></i> Ver CNAE secundário</div>
+        <div class="cnae-all" id="cn1-det">
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Principal: 9602-5/01 Cabeleireiros, manicure e pedicure</span></div>
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#888780"></div><span>Secundário: 4772-5 Comércio varejista de cosméticos</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <div class="contact-note">Número de telefone cadastrado na Receita Federal — confirme se é WhatsApp antes de usar</div>
+      <div class="action-row">
+        <button class="act-btn whats"><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> Iniciar contato</button>
+        <button class="act-btn mail"><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> E-mail</button>
+        <button class="act-btn maps"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+      </div>
+    </div>
+    <div class="expand-row" onclick="toggleCard('c1')"><i class="ti ti-chevron-down" id="c1-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais dados do lead</div>
+    <div class="expand-detail" id="c1-det">
+      <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">12.345.678/0001-90</span></div>
+      <div class="det-row"><span class="det-label">Telefone 1</span><span class="det-val">(31) 9xxxx-1234</span></div>
+      <div class="det-row"><span class="det-label">Telefone 2</span><span class="det-val">(31) 3333-4444</span></div>
+      <div class="det-row"><span class="det-label">Porte</span><span class="det-val">MEI</span></div>
+      <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 5.000</span></div>
+      <div class="det-row"><span class="det-label">Simples Nacional</span><span class="det-val">Sim</span></div>
+      <div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">Empresário Individual</span></div>
+      <div class="det-row"><span class="det-label">Bairro / CEP</span><span class="det-val">Centro · 30120-000</span></div>
+      <div class="det-row"><span class="det-label">Matriz/Filial</span><span class="det-val">Matriz</span></div>
+      <div class="det-row"><span class="det-label">Site</span><span class="det-val">—</span></div>
+    </div>
+  </div>
+
+  <!-- Card 2: CNAE principal FORA da beleza, beleza está no secundário -->
+  <div class="lead-card">
+    <div class="card-top">
+      <div class="card-head">
+        <div class="card-avatar seg-loja">MR</div>
+        <div style="flex:1;min-width:0">
+          <div class="card-name">Mercado Rosa Cosméticos ME</div>
+          <div class="card-fantasy">Rosa Cosméticos</div>
+          <span class="seg-pill seg-loja">🏪 Loja e Ponto de Venda</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> Santa Efigênia, Belo Horizonte — MG</div>
+        <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> ME · Abertura: jun/2015 · 9 anos</div>
+      </div>
+      <div class="cnae-strip secondary-beauty">
+        <span class="cnae-badge outside"><i class="ti ti-alert-triangle" style="font-size:11px" aria-hidden="true"></i> Principal fora da beleza</span>
+        <div class="cnae-code" style="color:#854F0B">Principal: 4729-6 Comércio varejista de alimentos</div>
+        <span class="cnae-badge secondary" style="margin-top:6px"><i class="ti ti-circle-check" style="font-size:11px" aria-hidden="true"></i> Beleza no CNAE secundário</span>
+        <div class="cnae-expand" onclick="toggleCnae('cn2')"><i class="ti ti-chevron-down" id="cn2-ico" style="font-size:11px" aria-hidden="true"></i> Analisar todos os CNAEs</div>
+        <div class="cnae-all" id="cn2-det">
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#E24B4A"></div><span>Principal: 4729-6 Comércio varejista de alimentos em geral</span></div>
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Sec. 1: 4772-5 Comércio varejista de cosméticos e perfumaria</span></div>
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Sec. 2: 4646-0 Comércio atacadista de cosméticos e higiene</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <div class="contact-note">Número de telefone cadastrado na Receita Federal — confirme se é WhatsApp antes de usar</div>
+      <div class="action-row">
+        <button class="act-btn whats"><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> Iniciar contato</button>
+        <button class="act-btn mail"><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> E-mail</button>
+        <button class="act-btn maps"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+      </div>
+    </div>
+    <div class="expand-row" onclick="toggleCard('c2')"><i class="ti ti-chevron-down" id="c2-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais dados do lead</div>
+    <div class="expand-detail" id="c2-det">
+      <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">55.666.777/0001-88</span></div>
+      <div class="det-row"><span class="det-label">Telefone 1</span><span class="det-val">(31) 9xxxx-5678</span></div>
+      <div class="det-row"><span class="det-label">E-mail</span><span class="det-val">rosa@cosm.com.br</span></div>
+      <div class="det-row"><span class="det-label">Porte</span><span class="det-val">ME</span></div>
+      <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 25.000</span></div>
+      <div class="det-row"><span class="det-label">Simples Nacional</span><span class="det-val">Sim</span></div>
+      <div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">Ltda</span></div>
+      <div class="det-row"><span class="det-label">Bairro / CEP</span><span class="det-val">Sta. Efigênia · 30240-000</span></div>
+    </div>
+  </div>
+
+  <!-- Card 3: CNAE principal beleza, sem WhatsApp / sem e-mail -->
+  <div class="lead-card">
+    <div class="card-top">
+      <div class="card-head">
+        <div class="card-avatar seg-clinica">CE</div>
+        <div style="flex:1;min-width:0">
+          <div class="card-name">Clínica Estética Evolução Ltda</div>
+          <div class="card-fantasy">Evolução Estética</div>
+          <span class="seg-pill seg-clinica">✨ Clínica de Estética</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> Lourdes, Belo Horizonte — MG</div>
+        <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted);flex-shrink:0" aria-hidden="true"></i> ME · Abertura: jan/2023 · 1 ano — <span style="color:#1D9E75;font-weight:500">nova</span></div>
+      </div>
+      <div class="cnae-strip primary-beauty">
+        <span class="cnae-badge primary"><i class="ti ti-circle-check" style="font-size:11px" aria-hidden="true"></i> Beleza — CNAE principal</span>
+        <div class="cnae-code">9602-5/02 · Atividades de estética e cuidados com a beleza</div>
+        <div class="cnae-expand" onclick="toggleCnae('cn3')"><i class="ti ti-chevron-down" id="cn3-ico" style="font-size:11px" aria-hidden="true"></i> Ver CNAE secundário</div>
+        <div class="cnae-all" id="cn3-det">
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Principal: 9602-5/02 Estética e cuidados com beleza</span></div>
+          <div class="cnae-all-row"><div class="cnae-dot" style="background:#888780"></div><span>Secundário: não informado</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-actions">
+      <div class="contact-note">Apenas telefone fixo disponível neste cadastro — verifique se há contato atualizado</div>
+      <div class="action-row">
+        <button class="act-btn whats disabled-contact" disabled><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> Sem tel. celular</button>
+        <button class="act-btn mail disabled-contact" disabled><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> Sem e-mail</button>
+        <button class="act-btn maps"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Localizar</button>
+      </div>
+    </div>
+    <div class="expand-row" onclick="toggleCard('c3')"><i class="ti ti-chevron-down" id="c3-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais dados do lead</div>
+    <div class="expand-detail" id="c3-det">
+      <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">78.901.234/0001-56</span></div>
+      <div class="det-row"><span class="det-label">Telefone fixo</span><span class="det-val">(31) 3111-2222</span></div>
+      <div class="det-row"><span class="det-label">E-mail</span><span class="det-val">—</span></div>
+      <div class="det-row"><span class="det-label">Porte</span><span class="det-val">ME</span></div>
+      <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 10.000</span></div>
+      <div class="det-row"><span class="det-label">Simples Nacional</span><span class="det-val">Sim</span></div>
+      <div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">jan/2023 — nova</span></div>
+      <div class="det-row"><span class="det-label">Bairro / CEP</span><span class="det-val">Lourdes · 30180-000</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- LIST VIEW -->
+<div class="panel" id="view-list">
+  <div style="overflow-x:auto">
+  <table class="list-table">
+    <thead>
+      <tr>
+        <th style="width:22px"></th>
+        <th>Empresa</th>
+        <th>Segmento</th>
+        <th>CNAE — qualificação</th>
+        <th>Município — UF</th>
+        <th>Contato disponível</th>
+        <th>Porte · Anos</th>
+        <th style="width:50px"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="lr1" onclick="toggleList('l1','lr1')" style="cursor:pointer">
+        <td><i class="ti ti-chevron-right" id="l1-ico" style="font-size:12px;color:var(--text-muted)" aria-hidden="true"></i></td>
+        <td><div style="font-weight:500;font-size:12px">Studio Bella Arte Cabeleireiros</div><div style="font-size:11px;color:var(--text-muted)">Studio Bella Arte</div></td>
+        <td><span class="badge-sm seg-salao">💇 Salão</span></td>
+        <td>
+          <span class="cnae-badge primary" style="margin-bottom:3px;display:inline-flex"><i class="ti ti-circle-check" style="font-size:10px" aria-hidden="true"></i> Beleza principal</span>
+          <div style="font-size:10px;color:var(--text-muted)">9602-5/01 Cabeleireiros</div>
+        </td>
+        <td style="font-size:12px">Centro, BH — MG</td>
+        <td>
+          <div style="font-size:11px;color:#185A34;display:flex;align-items:center;gap:4px"><i class="ti ti-phone" style="font-size:12px" aria-hidden="true"></i>(31) 9xxxx-1234 <span style="color:var(--text-muted)">(a confirmar)</span></div>
+          <div style="font-size:11px;color:var(--text-accent);margin-top:2px">studio@bella.com</div>
+        </td>
+        <td><span style="font-size:11px">MEI · 6 anos</span></td>
+        <td><button class="act-btn maps" style="padding:4px 8px"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i></button></td>
+      </tr>
+      <tr><td colspan="8" style="padding:0"><div class="exp-panel" id="l1-det"><div class="exp-inner"><div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">12.345.678/0001-90</span></div><div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">4772-5 Comércio varejista</span></div><div class="det-row"><span class="det-label">CEP · Bairro</span><span class="det-val">30120-000 · Centro</span></div><div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 5.000</span></div><div class="det-row"><span class="det-label">Simples / MEI</span><span class="det-val">Sim · Sim</span></div><div class="det-row"><span class="det-label">Natureza Jur.</span><span class="det-val">Empresário Individual</span></div></div></div></td></tr>
+
+      <tr id="lr2" onclick="toggleList('l2','lr2')" style="cursor:pointer">
+        <td><i class="ti ti-chevron-right" id="l2-ico" style="font-size:12px;color:var(--text-muted)" aria-hidden="true"></i></td>
+        <td><div style="font-weight:500;font-size:12px">Mercado Rosa Cosméticos ME</div><div style="font-size:11px;color:var(--text-muted)">Rosa Cosméticos</div></td>
+        <td><span class="badge-sm seg-loja">🏪 Loja/PDV</span></td>
+        <td>
+          <span class="cnae-badge outside" style="margin-bottom:3px;display:inline-flex"><i class="ti ti-alert-triangle" style="font-size:10px" aria-hidden="true"></i> Beleza no secundário</span>
+          <div style="font-size:10px;color:var(--text-muted)">Principal: 4729-6 Alimentos</div>
+        </td>
+        <td style="font-size:12px">Sta. Efigênia, BH — MG</td>
+        <td>
+          <div style="font-size:11px;color:#185A34;display:flex;align-items:center;gap:4px"><i class="ti ti-phone" style="font-size:12px" aria-hidden="true"></i>(31) 9xxxx-5678 <span style="color:var(--text-muted)">(a confirmar)</span></div>
+          <div style="font-size:11px;color:var(--text-accent);margin-top:2px">rosa@cosm.com.br</div>
+        </td>
+        <td><span style="font-size:11px">ME · 9 anos</span></td>
+        <td><button class="act-btn maps" style="padding:4px 8px"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i></button></td>
+      </tr>
+      <tr><td colspan="8" style="padding:0"><div class="exp-panel" id="l2-det"><div class="exp-inner"><div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">55.666.777/0001-88</span></div><div class="det-row"><span class="det-label">CNAE Sec. 1</span><span class="det-val">4772-5 Comércio varejista cosméticos</span></div><div class="det-row"><span class="det-label">CNAE Sec. 2</span><span class="det-val">4646-0 Comércio atacadista cosméticos</span></div><div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 25.000</span></div><div class="det-row"><span class="det-label">Simples / MEI</span><span class="det-val">Sim · Não</span></div><div class="det-row"><span class="det-label">CEP · Bairro</span><span class="det-val">30240-000 · Sta. Efigênia</span></div></div></div></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- GEO VIEW (Município/Bairro) -->
+<div class="panel" id="view-geo">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div>
+      <div class="section-title">POR MUNICÍPIO</div>
+      <table class="bairro-table">
+        <thead><tr><th>Município</th><th>Empresas</th><th style="width:90px">Vol.</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">Belo Horizonte</td><td>1.015</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:100%"></div></div></td></tr>
+          <tr><td style="font-weight:500">Contagem</td><td>369</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:36%"></div></div></td></tr>
+          <tr><td>Uberlândia</td><td>207</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:20%"></div></div></td></tr>
+          <tr><td>Juiz de Fora</td><td>150</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:15%"></div></div></td></tr>
+          <tr><td>Extrema</td><td>117</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:12%"></div></div></td></tr>
+          <tr><td>Betim</td><td>113</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:11%"></div></div></td></tr>
+          <tr><td>Montes Claros</td><td>25</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:2%"></div></div></td></tr>
+          <tr style="font-weight:500;border-top:0.5px solid var(--border-strong)"><td>Total</td><td>5.173</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="section-title">BH — POR BAIRRO (top)</div>
+      <table class="bairro-table">
+        <thead><tr><th>Bairro</th><th>Empresas</th><th style="width:90px">Vol.</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:500">Centro</td><td>67</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:100%"></div></div></td></tr>
+          <tr><td>Savassi</td><td>60</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:90%"></div></div></td></tr>
+          <tr><td>Santa Efigênia</td><td>38</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:57%"></div></div></td></tr>
+          <tr style="background:var(--bg-accent)"><td style="font-weight:500;color:var(--text-accent)">Barro Preto</td><td style="color:var(--text-accent)">29</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="background:var(--fill-accent);width:43%"></div></div></td></tr>
+          <tr><td>Prado</td><td>29</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:43%"></div></div></td></tr>
+          <tr><td>Lourdes</td><td>24</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:36%"></div></div></td></tr>
+          <tr><td>Kennedy</td><td>24</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:36%"></div></div></td></tr>
+          <tr><td>Jardim Canadá</td><td>24</td><td><div class="bairro-bar-wrap"><div class="bairro-bar" style="width:36%"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:1rem;padding:10px 14px;background:var(--surface-1);border-radius:10px;border:0.5px solid var(--border)">
+    <div class="section-title">COMO USAR ESTA VIEW</div>
+    <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">Identifique os bairros com maior concentração de empresas para planejar <strong style="color:var(--text-primary)">rotas de visita</strong> otimizadas. Clique num município para ver o detalhamento por bairro. Use como ponto de partida para a <strong style="color:var(--text-primary)">prospecção territorial</strong> — qual bairro atacar primeiro com maior densidade de leads.</div>
+  </div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border);flex-wrap:wrap;gap:8px">
+  <span style="font-size:11px;color:var(--text-muted)">Plano Operacional · 253 de 300 exports usados este mês</span>
+  <button style="padding:7px 16px;background:var(--fill-accent);border:none;border-radius:var(--radius);color:#fff;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i> Baixar leads filtrados (CSV / Excel)</button>
+</div>
+
+</div>
+
+<script>
+function setView(v){
+  ['card','list','geo'].forEach(id=>{
+    document.getElementById('view-'+id).classList.toggle('active',id===v);
+  });
+  ['btn-card','btn-list','btn-geo'].forEach(id=>{
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('btn-'+v).classList.add('active');
+}
+function toggleCnae(id){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const open=det.classList.toggle('open');
+  ico.className='ti ti-chevron-'+(open?'up':'down');
+  const row=ico.closest('.cnae-expand');
+  row.innerHTML=(open?'<i class="ti ti-chevron-up" style="font-size:11px"></i> Ocultar CNAEs':'<i class="ti ti-chevron-down" style="font-size:11px"></i> '+(id==='cn2'?'Analisar todos os CNAEs':'Ver CNAE secundário'));
+  row.setAttribute('onclick','toggleCnae("'+id+'")');
+}
+function toggleCard(id){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const open=det.classList.toggle('open');
+  ico.className='ti ti-chevron-'+(open?'up':'down');
+  const row=ico.closest('.expand-row');
+  row.innerHTML='<i class="ti ti-chevron-'+(open?'up':'down')+'" style="font-size:12px"></i> '+(open?'Ocultar dados do lead':'Ver mais dados do lead');
+  row.setAttribute('onclick','toggleCard("'+id+'")');
+}
+function toggleList(id,rowId){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const row=document.getElementById(rowId);
+  const open=det.classList.toggle('open');
+  ico.className='ti ti-chevron-'+(open?'down':'right');
+  ico.style.color=open?'var(--text-accent)':'var(--text-muted)';
+}
+</script>

@@ -1,0 +1,443 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--text-primary);background:transparent}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:start}
+@media(max-width:600px){.layout{grid-template-columns:1fr}}
+.sidebar{background:var(--surface-1);border:0.5px solid var(--border);border-radius:12px;padding:12px;font-size:12px}
+.sidebar-section{margin-bottom:12px}
+.sidebar-label{font-size:10px;font-weight:500;letter-spacing:.06em;color:var(--text-muted);margin-bottom:5px}
+.filter-select{width:100%;padding:5px 8px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:11px;background:var(--surface-2);color:var(--text-primary);margin-bottom:4px;cursor:pointer}
+.filter-toggle{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.ftag{padding:3px 8px;border:0.5px solid var(--border);border-radius:20px;font-size:10px;cursor:pointer;background:var(--surface-2);color:var(--text-secondary)}
+.ftag.active{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent)}
+.range-row{display:flex;gap:4px;align-items:center;margin-bottom:4px}
+.range-input{flex:1;padding:4px 6px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:10px;background:var(--surface-2);color:var(--text-primary)}
+.range-label{font-size:10px;color:var(--text-muted)}
+.saved-views{background:var(--bg-accent);border:0.5px solid var(--border-accent);border-radius:8px;padding:8px;margin-bottom:10px}
+.saved-title{font-size:10px;font-weight:500;color:var(--text-accent);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.saved-item{display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:5px;cursor:pointer;margin-bottom:2px}
+.saved-item:hover{background:var(--surface-1)}
+.saved-item-name{font-size:11px;color:var(--text-primary);flex:1}
+.saved-item-count{font-size:10px;color:var(--text-muted)}
+.save-btn{width:100%;padding:5px 0;border:0.5px dashed var(--border-accent);border-radius:var(--radius);font-size:11px;cursor:pointer;background:transparent;color:var(--text-accent);display:flex;align-items:center;justify-content:center;gap:4px;margin-top:4px}
+.apply-btn{width:100%;padding:7px 0;background:var(--fill-accent);border:none;border-radius:var(--radius);font-size:12px;font-weight:500;color:#fff;cursor:pointer;margin-top:8px}
+.clear-btn{width:100%;padding:5px 0;border:0.5px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;background:transparent;color:var(--text-secondary);margin-top:4px}
+.main-area{min-width:0}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px}
+.result-count{font-size:12px;font-weight:500}
+.result-sub{font-size:11px;color:var(--text-muted)}
+.view-toggle{display:flex;gap:5px}
+.vtbtn{padding:5px 10px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:11px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);display:flex;align-items:center;gap:4px}
+.vtbtn.active{background:var(--fill-accent);border-color:var(--fill-accent);color:#fff}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.lead-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .15s}
+.lead-card:hover{border-color:var(--border-strong)}
+.card-header{padding:12px 12px 0}
+.cnae-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;margin-bottom:6px}
+.cnae-primary{background:#1D9E75;color:#fff}
+.cnae-secondary{background:#FAEEDA;color:#633806;border:0.5px solid #EF9F27}
+.cnae-outside{background:#FCEBEB;color:#791F1F;border:0.5px solid #F09595}
+.card-identity{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.av-salao{background:#E1F5EE;color:#085041}
+.av-clinica{background:#FBEAF0;color:#4B1528}
+.av-dist{background:#E6F1FB;color:#042C53}
+.name-block{flex:1;min-width:0}
+.company-main{font-size:13px;font-weight:500;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.company-sub{font-size:10px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.seg-pill{display:inline-flex;align-items:center;gap:3px;font-size:10px;padding:2px 7px;border-radius:10px;border:0.5px solid;font-weight:500;margin-top:3px}
+.seg-salao{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.seg-clinica{background:#FBEAF0;color:#4B1528;border-color:#ED93B1}
+.seg-dist{background:#E6F1FB;color:#042C53;border-color:#85B7EB}
+.card-location{font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;margin-bottom:4px;padding:0 12px}
+.contact-section{padding:8px 12px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:var(--surface-1)}
+.contact-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:0.5px solid var(--border)}
+.contact-row:last-child{border-bottom:none}
+.contact-type{font-size:10px;font-weight:500;width:32px;flex-shrink:0;color:var(--text-muted)}
+.contact-number{font-size:12px;font-weight:500;color:var(--text-primary);flex:1;font-family:var(--font-mono)}
+.contact-actions{display:flex;gap:4px;flex-shrink:0}
+.c-btn{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--border);background:var(--surface-2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:14px}
+.c-btn.whats{border-color:#25D366;color:#185A34;background:#EFFFEF}
+.c-btn.call{border-color:var(--border-accent);color:var(--text-accent);background:var(--bg-accent)}
+.c-btn.copy{border-color:var(--border)}
+.main-btns{display:flex;gap:6px;padding:10px 12px}
+.m-btn{flex:1;padding:7px 0;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:11px;cursor:pointer;background:transparent;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:4px;font-weight:500}
+.m-btn.rf{border-color:#1565C0;color:#0D47A1;background:#E3F2FD}
+.m-btn.maps-btn{border-color:#B71C1C;color:#B71C1C;background:#FFEBEE}
+.m-btn.site{border-color:var(--border)}
+.expand-row{padding:5px 12px;font-size:11px;color:var(--text-accent);cursor:pointer;display:flex;align-items:center;gap:4px;background:var(--surface-1)}
+.expand-detail{display:none;padding:10px 12px;border-top:0.5px solid var(--border);background:var(--surface-1)}
+.expand-detail.open{display:block}
+.detail-section{margin-bottom:8px}
+.detail-section-title{font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--text-muted);margin-bottom:4px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.det-row{font-size:11px}
+.det-label{color:var(--text-muted)}
+.det-val{color:var(--text-secondary);font-weight:500}
+.address-block{background:var(--surface-0);border-radius:6px;padding:8px;border:0.5px solid var(--border);font-size:11px;color:var(--text-secondary);line-height:1.7}
+.address-actions{display:flex;gap:6px;margin-top:6px}
+.addr-btn{padding:4px 10px;border:0.5px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;background:var(--surface-2);color:var(--text-secondary);display:flex;align-items:center;gap:4px}
+.addr-btn.maps-link{border-color:#B71C1C;color:#B71C1C}
+.cnae-all-section{background:var(--surface-0);border-radius:6px;padding:8px;border:0.5px solid var(--border)}
+.cnae-item-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-secondary);padding:3px 0}
+.cnae-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.modal-overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:99;border-radius:12px;align-items:center;justify-content:center;min-height:300px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface-2);border-radius:12px;border:0.5px solid var(--border);padding:20px;width:280px}
+.modal-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text-secondary);margin-bottom:12px}
+.modal-input{width:100%;padding:8px 10px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:13px;background:var(--surface-1);color:var(--text-primary);margin-bottom:10px}
+.modal-filters{background:var(--surface-1);border-radius:8px;padding:8px;font-size:11px;color:var(--text-secondary);margin-bottom:12px;line-height:1.7}
+.modal-btns{display:flex;gap:8px}
+.modal-btn{flex:1;padding:8px 0;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border)}
+.modal-btn.primary{background:var(--fill-accent);border-color:var(--fill-accent);color:#fff}
+.modal-btn.cancel{background:transparent;color:var(--text-secondary)}
+</style>
+
+<h2 class="sr-only">Mockup final completo com sidebar de filtros, saved views, contatos mobile-first e endereço completo</h2>
+
+<div style="padding:1rem 0 2rem;position:relative" id="main-container">
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+  <div class="saved-views">
+    <div class="saved-title"><i class="ti ti-bookmark" style="font-size:12px" aria-hidden="true"></i> Visualizações salvas</div>
+    <div class="saved-item" onclick="loadView('sp-saloes')">
+      <i class="ti ti-layout-grid" style="font-size:12px;color:var(--text-accent)" aria-hidden="true"></i>
+      <div class="saved-item-name">SP · Salões novos 2023</div>
+      <div class="saved-item-count">1.247</div>
+    </div>
+    <div class="saved-item" onclick="loadView('mg-dist')">
+      <i class="ti ti-layout-grid" style="font-size:12px;color:var(--text-accent)" aria-hidden="true"></i>
+      <div class="saved-item-name">MG · Distribuidores</div>
+      <div class="saved-item-count">369</div>
+    </div>
+    <div class="saved-item">
+      <i class="ti ti-layout-grid" style="font-size:12px;color:var(--text-accent)" aria-hidden="true"></i>
+      <div class="saved-item-name">RJ · Clínicas MEI</div>
+      <div class="saved-item-count">892</div>
+    </div>
+    <button class="save-btn" onclick="openSaveModal()"><i class="ti ti-plus" style="font-size:12px" aria-hidden="true"></i> Salvar filtro atual</button>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">CONTATO</div>
+    <div class="filter-toggle">
+      <div class="ftag active">Com e-mail</div>
+      <div class="ftag active">Com WhatsApp</div>
+      <div class="ftag active">Excluir contador</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">SEGMENTO</div>
+    <select class="filter-select"><option>Todos os segmentos</option><option>Salões e Barbearias</option><option>Clínicas de Estética</option><option>Distribuidores</option><option>Lojas e PDV</option><option>Fábricas e Marcas</option><option>Representantes</option></select>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">CNAE PRINCIPAL</div>
+    <select class="filter-select"><option>Todos</option><option>9602-5/01 Cabeleireiros</option><option>9602-5/02 Estética</option><option>4646-0 Atacado cosméticos</option><option>4772-5 Varejo cosméticos</option></select>
+    <div class="sidebar-label" style="margin-top:6px">ORIGEM CNAE</div>
+    <select class="filter-select"><option>Principal ou Secundário</option><option>Apenas CNAE principal</option><option>Apenas CNAE secundário</option></select>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">LOCALIZAÇÃO</div>
+    <select class="filter-select"><option>Estado: Todos</option><option selected>MG — Minas Gerais</option><option>SP — São Paulo</option><option>RJ — Rio de Janeiro</option></select>
+    <select class="filter-select"><option>Município: Todos</option><option selected>Belo Horizonte</option><option>Contagem</option><option>Uberlândia</option></select>
+    <select class="filter-select"><option>Bairro: Todos</option><option>Centro</option><option>Savassi</option><option>Lourdes</option></select>
+    <div class="range-row">
+      <input class="range-input" placeholder="CEP início">
+      <div class="range-label">até</div>
+      <input class="range-input" placeholder="CEP fim">
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">IDENTIFICAÇÃO</div>
+    <input class="filter-select" style="border:0.5px solid var(--border-strong)" placeholder="CNPJ">
+    <input class="filter-select" style="border:0.5px solid var(--border-strong);margin-top:3px" placeholder="Razão social / Nome fantasia">
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">CARACTERÍSTICAS</div>
+    <select class="filter-select"><option>Porte: Todos</option><option>MEI</option><option>ME</option><option>EPP</option></select>
+    <div class="filter-toggle" style="margin-top:4px">
+      <div class="ftag active">MEI</div>
+      <div class="ftag active">Simples Nacional</div>
+      <div class="ftag">Matriz</div>
+      <div class="ftag">Filial</div>
+    </div>
+    <select class="filter-select" style="margin-top:4px"><option>Natureza Jurídica: Todas</option><option>Empresário Individual</option><option>EIRELI</option><option>Ltda</option></select>
+    <div class="sidebar-label" style="margin-top:6px">CAPITAL SOCIAL</div>
+    <div class="range-row"><input class="range-input" placeholder="R$ mín"><div class="range-label">a</div><input class="range-input" placeholder="R$ máx"></div>
+    <div class="sidebar-label" style="margin-top:6px">ANOS DE ATIVIDADE</div>
+    <div class="range-row"><input class="range-input" placeholder="Mín"><div class="range-label">a</div><input class="range-input" placeholder="Máx"></div>
+  </div>
+
+  <button class="apply-btn">Aplicar filtros</button>
+  <button class="clear-btn">Limpar tudo</button>
+</div>
+
+<!-- MAIN -->
+<div class="main-area">
+  <div class="top-bar">
+    <div>
+      <div class="result-count">5.173 leads encontrados</div>
+      <div class="result-sub">Filtro: MG · BH · Beleza · Com WhatsApp</div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <div class="view-toggle">
+        <button class="vtbtn active" id="btn-card" onclick="setView('card')"><i class="ti ti-layout-grid" style="font-size:12px" aria-hidden="true"></i> Cards</button>
+        <button class="vtbtn" id="btn-list" onclick="setView('list')"><i class="ti ti-list" style="font-size:12px" aria-hidden="true"></i> Lista</button>
+        <button class="vtbtn" id="btn-geo" onclick="setView('geo')"><i class="ti ti-map-pin" style="font-size:12px" aria-hidden="true"></i> Bairro</button>
+      </div>
+      <button style="padding:6px 12px;background:var(--fill-accent);border:none;border-radius:var(--radius);color:#fff;font-size:11px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i> Baixar CSV</button>
+    </div>
+  </div>
+
+  <div id="view-card">
+  <div class="cards-grid">
+
+    <!-- Card 1: WhatsApp confirmado, CNAE beleza principal -->
+    <div class="lead-card">
+      <div class="card-header">
+        <span class="cnae-badge cnae-primary"><i class="ti ti-circle-check" style="font-size:10px" aria-hidden="true"></i> Beleza — CNAE principal</span>
+        <div class="card-identity">
+          <div class="avatar av-salao">SB</div>
+          <div class="name-block">
+            <div class="company-main">Studio Bella Arte</div>
+            <div class="company-sub">Studio Bella Arte Cabeleireiros Ltda</div>
+            <span class="seg-pill seg-salao">💇 Salão e Barbearia</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-location"><i class="ti ti-map-pin" style="font-size:11px;color:var(--text-muted)" aria-hidden="true"></i> Centro · Belo Horizonte — MG · MEI · 6 anos</div>
+
+      <div class="contact-section">
+        <div style="font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--text-muted);margin-bottom:4px">WHATSAPP CONFIRMADO</div>
+        <div class="contact-row">
+          <div class="contact-type">WA 1</div>
+          <div class="contact-number">(31) 9xxxx-1234</div>
+          <div class="contact-actions">
+            <button class="c-btn whats" title="Enviar mensagem no WhatsApp" aria-label="Enviar mensagem no WhatsApp"><i class="ti ti-brand-whatsapp" style="font-size:15px" aria-hidden="true"></i></button>
+            <button class="c-btn copy" title="Copiar número" aria-label="Copiar número" onclick="copyNum('(31) 99999-1234',this)"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div style="font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--text-muted);margin:6px 0 4px">E-MAIL</div>
+        <div class="contact-row">
+          <div class="contact-type">E-mail</div>
+          <div class="contact-number" style="font-size:11px;font-family:var(--font-sans)">studio@bella.com</div>
+          <div class="contact-actions">
+            <button class="c-btn call" title="Abrir e-mail" aria-label="Enviar e-mail"><i class="ti ti-mail" style="font-size:14px" aria-hidden="true"></i></button>
+            <button class="c-btn copy" title="Copiar e-mail" aria-label="Copiar e-mail" onclick="copyNum('studio@bella.com',this)"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-btns">
+        <button class="m-btn rf" title="Ver na Receita Federal" aria-label="Ver na Receita Federal"><i class="ti ti-building-government" style="font-size:13px" aria-hidden="true"></i> RF</button>
+        <button class="m-btn maps-btn" title="Ver no Google Maps" aria-label="Ver no Google Maps"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+        <button class="m-btn site" title="Ver site" aria-label="Ver site"><i class="ti ti-world" style="font-size:13px" aria-hidden="true"></i> Site</button>
+      </div>
+
+      <div class="expand-row" onclick="toggleCard('c1')"><i class="ti ti-chevron-down" id="c1-ico" style="font-size:11px" aria-hidden="true"></i> Ver endereço completo e mais dados</div>
+      <div class="expand-detail" id="c1-det">
+        <div class="detail-section">
+          <div class="detail-section-title">ENDEREÇO COMPLETO</div>
+          <div class="address-block">
+            Rua das Flores, 142, Sala 03<br>
+            Centro — Belo Horizonte / MG<br>
+            CEP: 30120-000
+            <div class="address-actions">
+              <button class="addr-btn maps-link"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i> Abrir no Maps</button>
+              <button class="addr-btn" onclick="copyNum('Rua das Flores, 142, Sala 03, Centro, BH/MG, 30120-000',this)"><i class="ti ti-copy" style="font-size:12px" aria-hidden="true"></i> Copiar</button>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">TODOS OS CNAEs</div>
+          <div class="cnae-all-section">
+            <div class="cnae-item-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Principal: 9602-5/01 Cabeleireiros, manicure e pedicure</span></div>
+            <div class="cnae-item-row"><div class="cnae-dot" style="background:#888780"></div><span>Sec.: 4772-5 Comércio varejista cosméticos</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">DADOS CADASTRAIS</div>
+          <div class="detail-grid">
+            <div class="det-row"><span class="det-label">CNPJ</span><br><span class="det-val">12.345.678/0001-90</span></div>
+            <div class="det-row"><span class="det-label">Porte</span><br><span class="det-val">MEI</span></div>
+            <div class="det-row"><span class="det-label">Capital Social</span><br><span class="det-val">R$ 5.000</span></div>
+            <div class="det-row"><span class="det-label">Natureza Jur.</span><br><span class="det-val">Empr. Individual</span></div>
+            <div class="det-row"><span class="det-label">Simples</span><br><span class="det-val">Sim</span></div>
+            <div class="det-row"><span class="det-label">Início atividade</span><br><span class="det-val">mar/2018 (6 anos)</span></div>
+            <div class="det-row"><span class="det-label">Matriz/Filial</span><br><span class="det-val">Matriz</span></div>
+            <div class="det-row"><span class="det-label">Tel. fixo</span><br><span class="det-val">(31) 3333-4444</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: CNAE fora da beleza, beleza no secundário, múltiplos WhatsApps -->
+    <div class="lead-card">
+      <div class="card-header">
+        <span class="cnae-badge cnae-outside"><i class="ti ti-alert-triangle" style="font-size:10px" aria-hidden="true"></i> Beleza no secundário — analisar</span>
+        <div class="card-identity">
+          <div class="avatar av-dist">DC</div>
+          <div class="name-block">
+            <div class="company-main">Costa Distribuidora</div>
+            <div class="company-sub">Distribuidora Costa Cosméticos Ltda</div>
+            <span class="seg-pill seg-dist">🚛 Distribuidor</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-location"><i class="ti ti-map-pin" style="font-size:11px;color:var(--text-muted)" aria-hidden="true"></i> Industrial · Contagem — MG · ME · 8 anos</div>
+
+      <div class="contact-section">
+        <div style="font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--text-muted);margin-bottom:4px">WHATSAPP CONFIRMADO</div>
+        <div class="contact-row">
+          <div class="contact-type">WA 1</div>
+          <div class="contact-number">(31) 9xxxx-7777</div>
+          <div class="contact-actions">
+            <button class="c-btn whats" aria-label="Enviar WhatsApp"><i class="ti ti-brand-whatsapp" style="font-size:15px" aria-hidden="true"></i></button>
+            <button class="c-btn copy" aria-label="Copiar número" onclick="copyNum('(31) 98888-7777',this)"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-type">WA 2</div>
+          <div class="contact-number">(31) 9xxxx-6666</div>
+          <div class="contact-actions">
+            <button class="c-btn whats" aria-label="Enviar WhatsApp"><i class="ti ti-brand-whatsapp" style="font-size:15px" aria-hidden="true"></i></button>
+            <button class="c-btn copy" aria-label="Copiar número" onclick="copyNum('(31) 97777-6666',this)"><i class="ti ti-copy" style="font-size:14px" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);padding-top:4px;font-style:italic">E-mail de contador — não usar para prospecção</div>
+      </div>
+
+      <div class="main-btns">
+        <button class="m-btn rf"><i class="ti ti-building-government" style="font-size:13px" aria-hidden="true"></i> RF</button>
+        <button class="m-btn maps-btn"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+        <button class="m-btn site" style="opacity:.4;cursor:default"><i class="ti ti-world" style="font-size:13px" aria-hidden="true"></i> Sem site</button>
+      </div>
+
+      <div class="expand-row" onclick="toggleCard('c2')"><i class="ti ti-chevron-down" id="c2-ico" style="font-size:11px" aria-hidden="true"></i> Ver endereço e analisar CNAEs</div>
+      <div class="expand-detail" id="c2-det">
+        <div class="detail-section">
+          <div class="detail-section-title">ENDEREÇO COMPLETO</div>
+          <div class="address-block">
+            Av. Industrial, 1500, Galpão B<br>
+            Cidade Industrial · Contagem / MG<br>
+            CEP: 32040-000
+            <div class="address-actions">
+              <button class="addr-btn maps-link"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i> Abrir no Maps</button>
+              <button class="addr-btn" onclick="copyNum('Av. Industrial, 1500, Galpão B, Contagem/MG',this)"><i class="ti ti-copy" style="font-size:12px" aria-hidden="true"></i> Copiar</button>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">TODOS OS CNAEs — analisar se qualifica</div>
+          <div class="cnae-all-section">
+            <div class="cnae-item-row"><div class="cnae-dot" style="background:#E24B4A"></div><span>Principal: 4729-6 Comércio varejista de alimentos (fora da beleza)</span></div>
+            <div class="cnae-item-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Sec. 1: 4772-5 Comércio varejista de cosméticos — beleza</span></div>
+            <div class="cnae-item-row"><div class="cnae-dot" style="background:#1D9E75"></div><span>Sec. 2: 4646-0 Comércio atacadista de cosméticos — beleza</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-section-title">DADOS CADASTRAIS</div>
+          <div class="detail-grid">
+            <div class="det-row"><span class="det-label">CNPJ</span><br><span class="det-val">11.222.333/0001-44</span></div>
+            <div class="det-row"><span class="det-label">Porte</span><br><span class="det-val">ME</span></div>
+            <div class="det-row"><span class="det-label">Capital Social</span><br><span class="det-val">R$ 80.000</span></div>
+            <div class="det-row"><span class="det-label">Simples</span><br><span class="det-val">Sim</span></div>
+            <div class="det-row"><span class="det-label">Início atividade</span><br><span class="det-val">jul/2016 (8 anos)</span></div>
+            <div class="det-row"><span class="det-label">Matriz/Filial</span><br><span class="det-val">Matriz</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div id="view-list" style="display:none;font-size:12px;color:var(--text-secondary);padding:20px;text-align:center;border:0.5px solid var(--border);border-radius:10px">
+    <i class="ti ti-list" style="font-size:24px;color:var(--text-muted)" aria-hidden="true"></i>
+    <div style="margin-top:8px">View de lista — mesmo padrão de dados, layout compacto com linha expansível</div>
+  </div>
+
+  <div id="view-geo" style="display:none;font-size:12px;color:var(--text-secondary);padding:20px;text-align:center;border:0.5px solid var(--border);border-radius:10px">
+    <i class="ti ti-map-pin" style="font-size:24px;color:var(--text-muted)" aria-hidden="true"></i>
+    <div style="margin-top:8px">View por bairro — tabela município × bairro com barras de volume</div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:.75rem;border-top:0.5px solid var(--border);flex-wrap:wrap;gap:6px">
+    <span style="font-size:11px;color:var(--text-muted)">Plano Operacional · <span style="color:#E24B4A;font-weight:500">253/300 exports</span> usados este mês</span>
+    <div style="display:flex;gap:6px">
+      <button style="padding:6px 12px;background:transparent;border:0.5px solid var(--border);border-radius:var(--radius);font-size:11px;cursor:pointer;color:var(--text-secondary);display:flex;align-items:center;gap:4px"><i class="ti ti-file-spreadsheet" style="font-size:12px" aria-hidden="true"></i> Excel</button>
+      <button style="padding:6px 12px;background:var(--fill-accent);border:none;border-radius:var(--radius);color:#fff;font-size:11px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:4px"><i class="ti ti-download" style="font-size:12px" aria-hidden="true"></i> CSV</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- MODAL SALVAR VISUALIZAÇÃO -->
+<div class="modal-overlay" id="save-modal">
+  <div class="modal">
+    <div class="modal-title">Salvar esta visualização</div>
+    <div class="modal-sub">Dê um nome para lembrar o que este filtro representa</div>
+    <input class="modal-input" id="view-name-input" placeholder="Ex: SP · Salões novos 2024">
+    <div class="modal-filters">
+      <strong>Filtros ativos:</strong><br>
+      Estado: MG · Município: Belo Horizonte<br>
+      Segmento: Salões e Barbearias<br>
+      Com WhatsApp: Sim · MEI: Sim<br>
+      Início atividade: 2022–2024
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeSaveModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="saveView()"><i class="ti ti-check" style="font-size:13px" aria-hidden="true"></i> Salvar</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function setView(v){
+  ['card','list','geo'].forEach(id=>{document.getElementById('view-'+id).style.display=id===v?'block':'none'});
+  ['btn-card','btn-list','btn-geo'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('btn-'+v).classList.add('active');
+}
+function toggleCard(id){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const open=det.classList.toggle('open');
+  ico.className='ti ti-chevron-'+(open?'up':'down');
+  const row=ico.closest('.expand-row');
+  const orig=id==='c2'?'Ver endereço e analisar CNAEs':'Ver endereço completo e mais dados';
+  row.innerHTML='<i class="ti ti-chevron-'+(open?'up':'down')+'" style="font-size:11px"></i> '+(open?'Ocultar detalhes':orig);
+  row.setAttribute('onclick','toggleCard("'+id+'")');
+}
+function copyNum(text,btn){
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const origColor=btn.style.color;
+  btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i>';
+  btn.style.background='#EAF3DE';btn.style.borderColor='#1D9E75';btn.style.color='#1D9E75';
+  setTimeout(()=>{btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i>';btn.style.background='';btn.style.borderColor='';btn.style.color='';},1200);
+}
+function openSaveModal(){document.getElementById('save-modal').classList.add('open')}
+function closeSaveModal(){document.getElementById('save-modal').classList.remove('open')}
+function saveView(){
+  const name=document.getElementById('view-name-input').value||'Nova visualização';
+  alert('Visualização "'+name+'" salva! Disponível na barra lateral na próxima vez que você acessar.');
+  closeSaveModal();
+}
+function loadView(id){
+  const names={'sp-saloes':'SP · Salões novos 2023','mg-dist':'MG · Distribuidores'};
+  alert('Carregando visualização: '+names[id]+'\nFiltros aplicados automaticamente.');
+}
+</script>

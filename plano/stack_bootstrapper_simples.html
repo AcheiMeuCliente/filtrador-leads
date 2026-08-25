@@ -1,0 +1,333 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:transparent}
+.page{padding:1rem 0 2rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:6px 16px;border:0.5px solid var(--color-border-secondary);border-radius:20px;font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.tab.active{background:#1D9E75;border-color:#1D9E75;color:#fff;font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.hero{border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem;border-left:4px solid}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+@media(max-width:540px){.grid2{grid-template-columns:1fr}}
+.tool-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px}
+.tool-head{display:flex;align-items:center;gap:10px;margin-bottom:.75rem}
+.tool-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tool-name{font-size:13px;font-weight:500}
+.tool-cost{font-size:11px;margin-top:2px}
+.row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.ico{width:18px;font-size:13px;text-align:center;flex-shrink:0;margin-top:1px}
+.txt{font-size:12px;color:var(--color-text-secondary);line-height:1.45;flex:1}
+.txt strong{color:var(--color-text-primary)}
+.warn{border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;line-height:1.6;border:0.5px solid;margin-top:.75rem}
+.cost-total{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-top:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.cost-n{font-size:22px;font-weight:500;color:#1D9E75}
+.cost-l{font-size:12px;color:var(--color-text-secondary)}
+.step{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:10px}
+.step-head{padding:10px 16px;display:flex;align-items:center;gap:10px}
+.step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;color:#fff}
+.step-title{font-size:13px;font-weight:500}
+.step-time{font-size:11px;color:var(--color-text-tertiary);margin-left:auto}
+.step-body{padding:8px 16px 12px;background:var(--color-background-primary)}
+.compare-row{display:flex;gap:6px;margin-bottom:6px;align-items:flex-start}
+.comp-label{width:110px;font-size:11px;font-weight:500;color:var(--color-text-tertiary);flex-shrink:0;padding-top:2px}
+.comp-bad{flex:1;font-size:12px;color:#A32D2D;text-decoration:line-through;opacity:.6}
+.comp-good{flex:1;font-size:12px;color:#27500A;font-weight:500}
+</style>
+
+<div class="page">
+<div class="tabs">
+  <div class="tab active" onclick="sw('t1',this)">💡 A verdade simples</div>
+  <div class="tab" onclick="sw('t2',this)">🛠️ Stack completa</div>
+  <div class="tab" onclick="sw('t3',this)">👤 Gestão de usuários</div>
+  <div class="tab" onclick="sw('t4',this)">🔒 Segurança &amp; LGPD</div>
+  <div class="tab" onclick="sw('t5',this)">✅ Plano de ação</div>
+</div>
+
+<!-- T1: Verdade simples -->
+<div class="panel active" id="t1">
+  <div class="hero" style="background:#EAF3DE;border-color:#1D9E75">
+    <div class="hero-title" style="color:#27500A">Você não precisa construir um CRM</div>
+    <div class="hero-sub" style="color:#0F6E56">CRM é o problema do seu cliente, não seu. Seu produto entrega inteligência + lista filtrada para download. O cliente usa WhatsApp, Google Sheets ou o CRM que já tem. Simples assim.</div>
+  </div>
+
+  <div style="font-size:11px;font-weight:600;color:var(--color-text-tertiary);letter-spacing:.05em;margin-bottom:.75rem">O QUE VOCÊ PRECISA VS O QUE VOCÊ PENSOU QUE PRECISAVA</div>
+
+  <div class="tool-card" style="margin-bottom:1rem">
+    <div class="compare-row"><div class="comp-label">CRM</div><div class="comp-bad">Construir CRM integrado no app</div><div class="comp-good">Cliente baixa leads → usa o próprio WhatsApp</div></div>
+    <div class="compare-row"><div class="comp-label">Usuários</div><div class="comp-bad">Sistema de auth complexo do zero</div><div class="comp-good">20 linhas de Python com SQLite</div></div>
+    <div class="compare-row"><div class="comp-label">Pagamento</div><div class="comp-bad">Gateway próprio + integração bancária</div><div class="comp-good">Hotmart — você já tem</div></div>
+    <div class="compare-row"><div class="comp-label">E-mail auto</div><div class="comp-bad">Servidor de e-mail + SMTP configurado</div><div class="comp-good">Brevo grátis — 300 e-mails/dia</div></div>
+    <div class="compare-row"><div class="comp-label">Servidor</div><div class="comp-bad">AWS, VPC, load balancer, DevOps</div><div class="comp-good">Railway — 1 clique, R$35/mês</div></div>
+    <div class="compare-row"><div class="comp-label">Segurança</div><div class="comp-bad">Pentesting, criptografia customizada</div><div class="comp-good">Railway tem SSL. Dados são públicos (CNPJ)</div></div>
+    <div class="compare-row"><div class="comp-label">LGPD</div><div class="comp-bad">DPO, contratos, consentimento</div><div class="comp-good">CNPJ é dado público. Sem CPF = sem problema</div></div>
+  </div>
+
+  <div class="warn" style="background:#EAF3DE;border-color:#9FE1CB;color:#0F6E56">
+    <strong>O produto completo que você precisa, em ordem de complexidade:</strong><br>
+    1. Streamlit + DuckDB (já estamos construindo) — o core<br>
+    2. 20 linhas de Python para login/senha/tier — simples<br>
+    3. Hotmart webhook — cria o login quando alguém compra<br>
+    4. Brevo grátis — manda e-mail de "novidades" toda semana<br><br>
+    <strong>Total de programação nova:</strong> ~100 linhas além do que já fizemos. Isso é uma tarde de trabalho junto.
+  </div>
+</div>
+
+<!-- T2: Stack completa -->
+<div class="panel" id="t2">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#534AB7">
+    <div class="hero-title">Stack completa — custo total: R$35–60/mês</div>
+    <div class="hero-sub">Cada ferramenta faz uma coisa só e faz bem. Nenhuma delas requer programação para configurar.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#EEEDFE">🐍</div>
+        <div><div class="tool-name">Streamlit</div><div class="tool-cost" style="color:#1D9E75">Grátis (código)</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Dashboard com filtros, KPIs, mapa</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Botão de download CSV/Excel filtrado</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Tela de login com e-mail e senha</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Controle de tier — esconde/mostra download</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#EAF3DE">🦆</div>
+        <div><div class="tool-name">DuckDB</div><div class="tool-cost" style="color:#1D9E75">Grátis (biblioteca Python)</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Consulta 2,97M linhas em &lt;1 segundo</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Arquivo .duckdb no disco do Railway</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">pip install duckdb — zero configuração</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Atualiza mensal: substituir o arquivo</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#E6F1FB">🚂</div>
+        <div><div class="tool-name">Railway</div><div class="tool-cost" style="color:#378ADD">~R$35–60/mês</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Servidor sempre ligado, SSL automático</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Deploy: empurra código para GitHub → pronto</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Armazena o arquivo .duckdb no disco</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">URL própria: seudominio.com</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#FAEEDA">🛒</div>
+        <div><div class="tool-name">Hotmart</div><div class="tool-cost" style="color:#EF9F27">Já tem — % da venda</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Recebe o pagamento do cliente</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Webhook automático: comprou → cria login</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Gerencia cancelamento e renovação</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Checkout, parcelamento, PIX — tudo pronto</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#FBEAF0">📬</div>
+        <div><div class="tool-name">Brevo (ex-Sendinblue)</div><div class="tool-cost" style="color:#1D9E75">Grátis até 300/dia</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">E-mail de boas-vindas quando login é criado</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">"Novidades da semana" — automático toda segunda</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Alerta "você usou 80% dos exports"</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Zero configuração — API simples</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head">
+        <div class="tool-icon" style="background:#F1EFE8">🗃️</div>
+        <div><div class="tool-name">SQLite</div><div class="tool-cost" style="color:#1D9E75">Grátis (já vem no Python)</div></div>
+      </div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Guarda: e-mail, senha (criptografada), tier, exports usados</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Arquivo .db de 1MB — ultra leve</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Já vem instalado com Python — zero setup</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">~20 linhas de código para gerenciar usuários</div></div>
+    </div>
+  </div>
+
+  <div class="cost-total">
+    <div><div class="cost-n">R$ 35–60</div><div class="cost-l">custo mensal total de infraestrutura</div></div>
+    <div style="font-size:12px;color:var(--color-text-secondary);flex:1">Railway (~R$35) é o único custo novo. Todo o resto é grátis ou você já paga. Com o primeiro cliente no Operacional (R$197/mês), o custo já está pago com sobra.</div>
+  </div>
+</div>
+
+<!-- T3: Gestão de usuários -->
+<div class="panel" id="t3">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#378ADD">
+    <div class="hero-title">Gestão de usuários — sem complicação</div>
+    <div class="hero-sub">O fluxo completo de "alguém compra → ganha acesso → usa o app → cancela" funciona com ferramentas que já existem. Você não precisa escrever um sistema de autenticação do zero.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#EAF3DE">
+      <div class="step-num" style="background:#1D9E75">1</div>
+      <div class="step-title" style="color:#27500A">Cliente compra no Hotmart</div>
+      <div class="step-time">Automático</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">→</div><div class="txt">Hotmart dispara um <strong>webhook</strong> para o seu app. Webhook é um aviso automático: "fulano@email.com comprou o plano Regional."</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">Seu app recebe esse aviso, cria o usuário no SQLite com e-mail + senha temporária + tier "regional".</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">Brevo dispara e-mail: "Seu acesso foi criado. Login: fulano@email.com / Senha: XXXX. Acesse aqui: seuapp.com"</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#E6F1FB">
+      <div class="step-num" style="background:#378ADD">2</div>
+      <div class="step-title" style="color:#185FA5">Cliente entra no app e usa</div>
+      <div class="step-time">Automático</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">→</div><div class="txt">Tela de login: digita e-mail e senha. App verifica no SQLite. Se ok, entra.</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">App lê o tier do usuário. <strong>Tier "operacional"</strong> → vê filtros e pode baixar até 300 leads/mês. Botão de download some quando atinge o limite.</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">Tier "explorador" → vê tudo mas o botão de download mostra: "Faça upgrade para baixar."</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#FAEEDA">
+      <div class="step-num" style="background:#EF9F27">3</div>
+      <div class="step-title" style="color:#633806">Notificações automáticas que retêm</div>
+      <div class="step-time">Automático via Brevo</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📬</div><div class="txt"><strong>Segunda-feira, 08h:</strong> "Esta semana, 127 novas empresas de beleza abriram no seu estado. Acesse para ver quais."</div></div>
+      <div class="row"><div class="ico">📬</div><div class="txt"><strong>Quando usa 80% dos exports:</strong> "Você já usou 240 dos seus 300 exports este mês. Quer mais? Upgrade para Regional."</div></div>
+      <div class="row"><div class="ico">📬</div><div class="txt"><strong>5 dias antes de expirar:</strong> "Seu plano vence em 5 dias. Renove agora e continue acessando X novas empresas por semana."</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#FCEBEB">
+      <div class="step-num" style="background:#E24B4A">4</div>
+      <div class="step-title" style="color:#791F1F">Cancelamento / expiração</div>
+      <div class="step-time">Automático</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">→</div><div class="txt">Hotmart webhook avisa: "fulano cancelou." App muda o tier para "expirado". Login ainda funciona mas download bloqueado.</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">Brevo dispara e-mail de winback: "Sentimos sua falta. Esta semana X novos salões abriram no seu estado. Reative com 20% OFF."</div></div>
+    </div>
+  </div>
+
+  <div class="warn" style="background:#EAF3DE;border-color:#9FE1CB;color:#0F6E56">
+    <strong>Você gerencia como?</strong> Você tem um Google Sheets simples (ou Notion) onde você vê: usuários ativos, tier de cada um, data de expiração. Isso é o seu "painel de controle" como solo founder. Não precisa de dashboard sofisticado — uma planilha resolve.
+  </div>
+</div>
+
+<!-- T4: Segurança LGPD -->
+<div class="panel" id="t4">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#1D9E75">
+    <div class="hero-title">Segurança e LGPD — menos assustador do que parece</div>
+    <div class="hero-sub">A grande maioria das preocupações de segurança não se aplica ao seu produto. Entenda por quê, e o que você precisa fazer de verdade.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="tool-card">
+      <div class="tool-head"><div class="tool-icon" style="background:#EAF3DE">🛡️</div><div><div class="tool-name">O que Railway faz por você</div></div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>HTTPS/SSL automático</strong> — toda comunicação criptografada. Nada trafega em texto aberto.</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>Firewall e isolamento</strong> — cada app roda isolado. Ninguém acessa seu servidor.</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>Backups automáticos</strong> — Railway faz snapshot do volume de dados.</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Infraestrutura na AWS — mesma base que grandes empresas usam.</div></div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-head"><div class="tool-icon" style="background:#E6F1FB">🔐</div><div><div class="tool-name">O que você precisa fazer no código</div></div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>Senhas criptografadas</strong> com bcrypt — biblioteca Python, 3 linhas de código. Nunca armazena senha em texto.</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>Session token</strong> — usuário logado recebe um token. Se fechar o navegador, precisa logar de novo.</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Nada mais. É um app de consulta de dados públicos, não um banco.</div></div>
+    </div>
+  </div>
+
+  <div class="tool-card" style="margin-bottom:1rem">
+    <div class="tool-head"><div class="tool-icon" style="background:#FAEEDA">⚖️</div><div><div class="tool-name" style="color:#633806">LGPD — por que é simples no seu caso</div></div></div>
+    <div class="row"><div class="ico">✅</div><div class="txt"><strong>Dados de CNPJ são dados PÚBLICOS</strong> da Receita Federal. A LGPD protege dados pessoais (CPF, nome, endereço residencial). CNPJ empresarial não é dado pessoal — é registro público.</div></div>
+    <div class="row"><div class="ico">✅</div><div class="txt"><strong>Você não armazena CPF de ninguém.</strong> Você armazena CNPJ, razão social, telefone empresarial — todos dados da Receita Federal, públicos por lei.</div></div>
+    <div class="row"><div class="ico">✅</div><div class="txt"><strong>Dados dos seus clientes (usuários do app):</strong> e-mail + senha. Esses você protege com criptografia (bcrypt) e não compartilha com ninguém. Isso é suficiente.</div></div>
+    <div class="row"><div class="ico">⚠️</div><div class="txt"><strong>O que você precisa ter:</strong> Política de Privacidade na landing page (pode ser gerada com gerador gratuito online) e Termos de Uso. Uma tarde de trabalho.</div></div>
+  </div>
+
+  <div class="warn" style="background:#EAF3DE;border-color:#9FE1CB;color:#0F6E56">
+    <strong>Resumo de segurança para um solo founder:</strong> Railway cuida do servidor. bcrypt cuida das senhas. Hotmart cuida do pagamento. Brevo cuida do e-mail. Você não toca em cartão de crédito, não armazena CPF, não processa dado sensível. O risco é mínimo e proporcional ao tamanho do negócio. Não precisa de DPO nem de consultor jurídico agora.
+  </div>
+</div>
+
+<!-- T5: Plano de ação -->
+<div class="panel" id="t5">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#D4537E">
+    <div class="hero-title">Plano de ação — o que fazer e em que ordem</div>
+    <div class="hero-sub">Do zero ao produto no ar, com usuários pagando, em menos de 2 semanas. Sem programar sozinho — fazemos juntos aqui.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#EAF3DE">
+      <div class="step-num" style="background:#1D9E75">1</div>
+      <div class="step-title" style="color:#27500A">Converter base para DuckDB</div>
+      <div class="step-time">1–2 horas · você executa</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📋</div><div class="txt">Eu escrevo o script Python. Você roda na sua máquina. Ele lê todos os CSVs das pastas 9602501 e 9602502 e gera um arquivo empresas.duckdb. Rodar uma vez. Depois só atualiza mensalmente.</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#E6F1FB">
+      <div class="step-num" style="background:#378ADD">2</div>
+      <div class="step-title" style="color:#185FA5">App Streamlit com login + tiers + download</div>
+      <div class="step-time">Eu escrevo · você testa</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📋</div><div class="txt">Eu escrevo o app.py completo: tela de login, dashboard com todos os filtros da sua base, botão de download que aparece/some por tier, contador de exports usados no mês.</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#FAEEDA">
+      <div class="step-num" style="background:#EF9F27">3</div>
+      <div class="step-title" style="color:#633806">Deploy no Railway + domínio</div>
+      <div class="step-time">30 min · você faz com meu guia</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📋</div><div class="txt">Você sobe o código no GitHub (como já fez). Conecta no Railway. Faz upload do empresas.duckdb. Em 5 minutos o app está no ar com URL própria.</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#EEEDFE">
+      <div class="step-num" style="background:#534AB7">4</div>
+      <div class="step-title" style="color:#3C3489">Webhook Hotmart → cria login automático</div>
+      <div class="step-time">Eu escrevo · você configura no Hotmart</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📋</div><div class="txt">Eu escrevo o endpoint que recebe o webhook do Hotmart. Você copia a URL e cola no painel do Hotmart em "Notificações". Comprou → login criado → e-mail enviado. Automático.</div></div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head" style="background:#FBEAF0">
+      <div class="step-num" style="background:#D4537E">5</div>
+      <div class="step-title" style="color:#72243E">E-mail "Novidades da Semana" no Brevo</div>
+      <div class="step-time">1h · você configura no Brevo</div>
+    </div>
+    <div class="step-body">
+      <div class="row"><div class="ico">📋</div><div class="txt">Você cria conta grátis no Brevo. Eu escrevo o template de e-mail e o script que roda toda segunda e manda para sua lista. Retenção automática sem custo.</div></div>
+    </div>
+  </div>
+
+  <div class="warn" style="background:#EAF3DE;border-color:#9FE1CB;color:#0F6E56">
+    <strong>O que você faz sozinho (sem programar):</strong> criar conta Railway, criar conta Brevo, configurar webhook no Hotmart, comprar domínio (opcional, R$40/ano), criar Política de Privacidade (gerador grátis online).<br><br>
+    <strong>O que fazemos juntos aqui:</strong> todo o código — DuckDB, app Streamlit completo, sistema de login, webhook, e-mail automático. Você copia, cola, roda.
+  </div>
+</div>
+</div>
+
+<script>
+function sw(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>

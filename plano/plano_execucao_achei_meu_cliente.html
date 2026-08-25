@@ -1,0 +1,265 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--color-text-primary);background:transparent}
+.page{padding:1rem 0 2rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:6px 16px;border:0.5px solid var(--color-border-secondary);border-radius:20px;font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary)}
+.tab.active{color:#fff;font-weight:500}
+.panel{display:none}.panel.active{display:block}
+.phase-block{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:12px}
+.phase-head{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:#fff}
+.phase-title{font-size:14px;font-weight:500}
+.phase-sub{font-size:11px;margin-top:2px}
+.phase-tag{margin-left:auto;font-size:10px;padding:3px 10px;border-radius:10px;font-weight:600;white-space:nowrap}
+.phase-body{padding:10px 16px 14px;background:var(--color-background-primary)}
+.row{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
+.ico{width:20px;font-size:13px;text-align:center;flex-shrink:0;margin-top:1px}
+.txt{font-size:12px;color:var(--color-text-secondary);line-height:1.45;flex:1}
+.txt strong{color:var(--color-text-primary)}
+.hero{border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem;border-left:4px solid}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+@media(max-width:540px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px}
+.card-title{font-size:11px;font-weight:600;letter-spacing:.05em;color:var(--color-text-tertiary);margin-bottom:.75rem}
+.col-row{display:flex;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);align-items:center}
+.col-row:last-child{border-bottom:none}
+.col-name{font-size:12px;font-weight:500;width:160px;flex-shrink:0;font-family:var(--font-mono)}
+.col-type{font-size:11px;padding:1px 8px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.col-desc{font-size:11px;color:var(--color-text-secondary);flex:1}
+.warn{border-radius:var(--border-radius-md);padding:10px 14px;font-size:12px;line-height:1.6;border:0.5px solid;margin-top:.75rem}
+.decision{border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem}
+.dec-head{padding:10px 16px;font-size:13px;font-weight:500}
+.dec-body{padding:10px 16px;background:var(--color-background-primary)}
+.dec-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+.mock-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:.5rem}
+.mock-table th{background:var(--color-background-secondary);padding:5px 8px;text-align:left;font-weight:500;border:0.5px solid var(--color-border-tertiary);font-size:10px;letter-spacing:.03em}
+.mock-table td{padding:5px 8px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+</style>
+
+<div class="page">
+<div class="tabs">
+  <div class="tab active" onclick="sw('t1',this,'#534AB7')">📋 O plano geral</div>
+  <div class="tab" onclick="sw('t2',this,'#1D9E75')">🗄️ Estrutura do banco</div>
+  <div class="tab" onclick="sw('t3',this,'#378ADD')">🎨 Front end primeiro</div>
+  <div class="tab" onclick="sw('t4',this,'#EF9F27')">⚖️ Por que essa ordem</div>
+</div>
+
+<!-- T1: Plano geral -->
+<div class="panel active" id="t1">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#534AB7">
+    <div class="hero-title">Visão geral — 3 fases, ordem certa</div>
+    <div class="hero-sub">27 estados × 6 CNAEs = 162 arquivos CSV · 2.979.312 empresas · 34 colunas por registro. A estratégia: validar o produto visualmente antes de processar dados pesados.</div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EAF3DE">
+      <div class="phase-num" style="background:#1D9E75">1</div>
+      <div><div class="phase-title" style="color:#27500A">Front end com dados fictícios (mock)</div><div class="phase-sub" style="color:#0F6E56">Testa o produto visual antes de processar 162 arquivos</div></div>
+      <div class="phase-tag" style="background:#1D9E75;color:#fff">AGORA · hoje</div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>App Streamlit completo</strong> com todas as telas: login, dashboard, filtros, KPIs, tabela, download</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>50–100 linhas de dados fake</strong> — suficiente para testar toda a UX sem precisar do banco</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt"><strong>Testável em amcrafadias.streamlit.app</strong> — você valida ao vivo hoje mesmo</div></div>
+      <div class="row"><div class="ico">✅</div><div class="txt">Você aprova o layout → seguimos para o banco. Sem surpresa depois.</div></div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#E6F1FB">
+      <div class="phase-num" style="background:#378ADD">2</div>
+      <div><div class="phase-title" style="color:#185FA5">Banco de dados — converter 162 CSVs → 1 DuckDB</div><div class="phase-sub" style="color:#185FA5">Script Python que você roda uma vez na sua máquina</div></div>
+      <div class="phase-tag" style="background:#378ADD;color:#fff">FASE 2 · próxima sessão</div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Script de conversão:</strong> lê as pastas, normaliza colunas, adiciona coluna SEGMENTO, grava empresas.duckdb</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>1 arquivo DuckDB único</strong> com todas as 2,97M empresas — ~1–2 GB no disco</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Índices automáticos</strong> em ESTADO, MUNICIPIO, SEGMENTO, TEM_EMAIL para filtro rápido</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Validação:</strong> script conta registros por segmento para confirmar que todos os 2,97M entraram</div></div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EEEDFE">
+      <div class="phase-num" style="background:#534AB7">3</div>
+      <div><div class="phase-title" style="color:#3C3489">Conectar front + banco + login + Hotmart</div><div class="phase-sub" style="color:#534AB7">Swap dos dados fake pelos dados reais + autenticação</div></div>
+      <div class="phase-tag" style="background:#534AB7;color:#fff">FASE 3 · Railway</div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Trocar mock data por DuckDB</strong> — 1 linha de código muda a fonte de dados</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Login + tiers + controle de exports</strong> via SQLite (20 linhas)</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Webhook Hotmart</strong> — comprou → cria login → manda e-mail</div></div>
+      <div class="row"><div class="ico">🔨</div><div class="txt"><strong>Deploy Railway</strong> — upload do empresas.duckdb + código → app no ar</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- T2: Estrutura do banco -->
+<div class="panel" id="t2">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#1D9E75">
+    <div class="hero-title">Estrutura do banco DuckDB — tabela única</div>
+    <div class="hero-sub">Uma tabela chamada <code>empresas</code> com todas as 34 colunas originais + 2 colunas que adicionamos. Total: 36 colunas, 2,97M linhas.</div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-title">COLUNAS ORIGINAIS (das suas 34) + 2 QUE ADICIONAMOS</div>
+    <div class="col-row"><div class="col-name">CNPJ</div><div class="col-type" style="background:#FCEBEB;color:#791F1F">PK · TEXT</div><div class="col-desc">Chave primária. Deduplicação por aqui.</div></div>
+    <div class="col-row"><div class="col-name">SEGMENTO</div><div class="col-type" style="background:#EAF3DE;color:#27500A">NOVO · TEXT</div><div class="col-desc">Salões, Distribuidores, Lojas, Fábricas, Clínicas, Representantes</div></div>
+    <div class="col-row"><div class="col-name">ESTADO</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · TEXT</div><div class="col-desc">SP, RJ, MG… — filtro principal do usuário</div></div>
+    <div class="col-row"><div class="col-name">MUNICIPIO</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · TEXT</div><div class="col-desc">Cidade — segundo filtro mais usado</div></div>
+    <div class="col-row"><div class="col-name">BAIRRO</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">TEXT</div><div class="col-desc">Nível mais granular de localização</div></div>
+    <div class="col-row"><div class="col-name">RAZÃO SOCIAL</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">TEXT</div><div class="col-desc">Nome jurídico — usado no filtro de keyword</div></div>
+    <div class="col-row"><div class="col-name">NOME FANTASIA</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">TEXT</div><div class="col-desc">Nome comercial — também no filtro de keyword</div></div>
+    <div class="col-row"><div class="col-name">WHATSAPP_1</div><div class="col-type" style="background:#EAF3DE;color:#27500A">INDEX · TEXT</div><div class="col-desc">Contato principal. Filtro TEM_WHATSAPP.</div></div>
+    <div class="col-row"><div class="col-name">E-MAIL</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">TEXT</div><div class="col-desc">Contato secundário</div></div>
+    <div class="col-row"><div class="col-name">TEM_EMAIL</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · BOOL</div><div class="col-desc">Filtro rápido "só com e-mail"</div></div>
+    <div class="col-row"><div class="col-name">TEM_TELEFONE</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · BOOL</div><div class="col-desc">Filtro rápido "só com telefone"</div></div>
+    <div class="col-row"><div class="col-name">EMAIL_CONTABILIDADE</div><div class="col-type" style="background:#FCEBEB;color:#791F1F">BOOL · excluir</div><div class="col-desc">Filtro negativo — remove contador</div></div>
+    <div class="col-row"><div class="col-name">PORTE</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · TEXT</div><div class="col-desc">MEI, ME, EPP, Médio, Grande</div></div>
+    <div class="col-row"><div class="col-name">MEI</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">BOOL</div><div class="col-desc">Filtro rápido "só MEI" ou "excluir MEI"</div></div>
+    <div class="col-row"><div class="col-name">INICIO ATIVIDADE</div><div class="col-type" style="background:#E6F1FB;color:#185FA5">DATE</div><div class="col-desc">Filtro "abertas nos últimos 30/60/90 dias" → novidades</div></div>
+    <div class="col-row"><div class="col-name">CNAE_PRINCIPAL_CODIGO</div><div class="col-type" style="background:#EEEDFE;color:#3C3489">INDEX · TEXT</div><div class="col-desc">Filtro avançado por CNAE exato</div></div>
+    <div class="col-row"><div class="col-name">MAPS</div><div class="col-type" style="background:#F1EFE8;color:#444441">TEXT</div><div class="col-desc">Link direto para Google Maps — clicável na tabela</div></div>
+    <div class="col-row"><div class="col-name">ARQUIVO_ORIGEM</div><div class="col-type" style="background:#EAF3DE;color:#27500A">NOVO · TEXT</div><div class="col-desc">Nome do CSV de origem — rastreabilidade</div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">TAMANHO ESTIMADO DO BANCO</div>
+      <div class="row"><div class="ico">📦</div><div class="txt"><strong>2,97M linhas × 36 colunas</strong></div></div>
+      <div class="row"><div class="ico">💾</div><div class="txt"><strong>Arquivo .duckdb: ~800MB–1,5GB</strong> no disco (DuckDB comprime automaticamente)</div></div>
+      <div class="row"><div class="ico">⚡</div><div class="txt"><strong>Filtro em milissegundos</strong> mesmo com 2,97M linhas — DuckDB é otimizado para isso</div></div>
+      <div class="row"><div class="ico">🔄</div><div class="txt"><strong>Update mensal:</strong> roda o script de conversão de novo, substitui o arquivo</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">SEGMENTOS NO BANCO</div>
+      <div class="row"><div class="ico">🏭</div><div class="txt"><strong>Fábricas e Marcas</strong> — 9.615 empresas</div></div>
+      <div class="row"><div class="ico">🚛</div><div class="txt"><strong>Distribuidores</strong> — 64.783 empresas</div></div>
+      <div class="row"><div class="ico">🏪</div><div class="txt"><strong>Lojas e PDV</strong> — 1.243.076 empresas</div></div>
+      <div class="row"><div class="ico">🤝</div><div class="txt"><strong>Representantes</strong> — 44.408 empresas</div></div>
+      <div class="row"><div class="ico">💇</div><div class="txt"><strong>Salões e Barbearias</strong> — 987.509 empresas</div></div>
+      <div class="row"><div class="ico">✨</div><div class="txt"><strong>Clínicas de Estética</strong> — 629.921 empresas</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- T3: Frontend primeiro -->
+<div class="panel" id="t3">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#378ADD">
+    <div class="hero-title">O que o front end vai ter — tela a tela</div>
+    <div class="hero-sub">Tudo testável hoje em amcrafadias.streamlit.app com dados fictícios. Aprovação visual antes de tocar nos 162 arquivos.</div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EAF3DE">
+      <div class="phase-num" style="background:#1D9E75">A</div>
+      <div><div class="phase-title" style="color:#27500A">Tela de Login</div></div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">→</div><div class="txt">Campo e-mail + senha + botão Entrar. Logo do AcheiMeuCliente. Mensagem de erro se credencial errada. Forgot password (link). Visual limpo, profissional.</div></div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EAF3DE">
+      <div class="phase-num" style="background:#1D9E75">B</div>
+      <div><div class="phase-title" style="color:#27500A">Barra lateral — Filtros</div></div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Segmento:</strong> multiselect — Salões, Clínicas, Distribuidores, Lojas, Fábricas, Representantes</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Estado:</strong> dropdown dos 27 estados (restrito pelo plano — tier estadual vê só 1)</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Município / Bairro:</strong> carrega dinâmico após selecionar estado</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Porte:</strong> multiselect — MEI, ME, EPP, outros</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Contato:</strong> toggles — Só com WhatsApp / Só com E-mail / Excluir contador</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Palavra-chave:</strong> campo texto — busca em Razão Social e Nome Fantasia</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Abertura:</strong> slider de anos (ex: abertos nos últimos 2 anos)</div></div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EAF3DE">
+      <div class="phase-num" style="background:#1D9E75">C</div>
+      <div><div class="phase-title" style="color:#27500A">Área principal — KPIs + Gráficos + Mapa</div></div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>4 KPIs no topo:</strong> Total filtrado · Com WhatsApp · Com E-mail · Abertas este mês</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Gráfico de barras:</strong> distribuição por segmento (Plotly interativo)</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Gráfico de pizza:</strong> distribuição por porte</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Mapa do Brasil:</strong> choropleth com intensidade por estado (Plotly)</div></div>
+    </div>
+  </div>
+
+  <div class="phase-block">
+    <div class="phase-head" style="background:#EAF3DE">
+      <div class="phase-num" style="background:#1D9E75">D</div>
+      <div><div class="phase-title" style="color:#27500A">Tabela de resultados + Download</div></div>
+    </div>
+    <div class="phase-body">
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Tabela paginada</strong> com: Razão Social, Município, Segmento, WhatsApp, E-mail, Link Maps (clicável)</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Botão Download CSV</strong> — aparece só para Tier 2+, conta exports usados no mês</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Botão Download Excel</strong> — mesmo comportamento</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt"><strong>Contador de exports:</strong> "Você usou 47 de 300 exports este mês"</div></div>
+      <div class="row"><div class="ico">→</div><div class="txt">Tier gratuito vê tabela mas o botão mostra: "Faça upgrade para baixar"</div></div>
+    </div>
+  </div>
+
+  <table class="mock-table">
+    <tr><th>RAZÃO SOCIAL</th><th>MUNICÍPIO</th><th>SEGMENTO</th><th>WHATSAPP</th><th>E-MAIL</th><th>MAPS</th></tr>
+    <tr><td>Salão Bella Arte Ltda</td><td>São Paulo</td><td>💇 Salão</td><td>(11) 9xxxx-xxxx</td><td>contato@bella.com</td><td>🗺️ Ver</td></tr>
+    <tr><td>Distribuidora Costa ME</td><td>Campinas</td><td>🚛 Distribuidor</td><td>(19) 9xxxx-xxxx</td><td>—</td><td>🗺️ Ver</td></tr>
+    <tr><td>Clínica Estética Luz</td><td>Guarulhos</td><td>✨ Clínica</td><td>(11) 9xxxx-xxxx</td><td>luz@estetica.br</td><td>🗺️ Ver</td></tr>
+  </table>
+</div>
+
+<!-- T4: Por que essa ordem -->
+<div class="panel" id="t4">
+  <div class="hero" style="background:var(--color-background-secondary);border-color:#EF9F27">
+    <div class="hero-title">Por que Front end primeiro é a decisão certa</div>
+    <div class="hero-sub">Experiência de produto e engenharia de dados — perspectivas que convergem para a mesma resposta.</div>
+  </div>
+
+  <div class="decision" style="border:0.5px solid var(--color-border-tertiary)">
+    <div class="dec-head" style="background:#FCEBEB;color:#791F1F">❌ Se fizéssemos Banco primeiro</div>
+    <div class="dec-body">
+      <div class="dec-row"><div class="ico">⏳</div><div class="txt">Processar 162 CSVs leva horas. Você fica esperando sem ver nada.</div></div>
+      <div class="dec-row"><div class="ico">😬</div><div class="txt">Banco pronto, aí você vê o front end e quer mudar filtros → banco pode precisar de reindexação.</div></div>
+      <div class="dec-row"><div class="ico">💸</div><div class="txt">Você investiu tempo pesado em infraestrutura sem validar se o produto visual faz sentido.</div></div>
+    </div>
+  </div>
+
+  <div class="decision" style="border:0.5px solid var(--color-border-tertiary)">
+    <div class="dec-head" style="background:#EAF3DE;color:#27500A">✅ Front end primeiro — o que ganhamos</div>
+    <div class="dec-body">
+      <div class="dec-row"><div class="ico">🚀</div><div class="txt"><strong>Você vê o produto funcionando hoje.</strong> Pode mostrar para clientes potenciais ainda esta semana.</div></div>
+      <div class="dec-row"><div class="ico">🎯</div><div class="txt"><strong>Validação de UX antes do esforço pesado.</strong> "Esse filtro faz sentido?" — você responde olhando, não imaginando.</div></div>
+      <div class="dec-row"><div class="ico">🔄</div><div class="txt"><strong>Trocar mock por dados reais é 1 linha de código.</strong> A arquitetura é idêntica — só muda a fonte.</div></div>
+      <div class="dec-row"><div class="ico">📣</div><div class="txt"><strong>Você pode vender o acesso antes mesmo do banco estar pronto</strong> — mostra o app ao vivo, coleta pagamentos, faz o banco enquanto os primeiros clientes aguardam acesso.</div></div>
+    </div>
+  </div>
+
+  <div class="warn" style="background:#FAEEDA;border-color:#FAC775;color:#633806">
+    <strong>A pergunta que define tudo:</strong> Você aprova o front end com dados fictícios hoje? Se sim → eu escrevo o código agora, você sobe em amcrafadias.streamlit.app, testa, aprova. Aí construímos o banco com calma, sabendo exatamente o que o front end precisa.
+  </div>
+
+  <div class="warn" style="background:#EAF3DE;border-color:#9FE1CB;color:#0F6E56;margin-top:.5rem">
+    <strong>Resumo do que preciso de você antes de escrever o código:</strong><br>
+    1. Confirmar quais colunas mostrar na tabela principal (já sugeri acima — ok?)<br>
+    2. Confirmar os 4 KPIs que quer no topo<br>
+    3. Confirmar se quer mapa do Brasil ou pode deixar para Fase 3<br>
+    4. Me dizer o nome do seu produto no app (AcheiMeuCliente? Outro?)<br>
+    5. Cores/logo — tem arquivo de logo para incluir ou usamos texto mesmo agora?
+  </div>
+</div>
+</div>
+
+<script>
+function sw(id,el,color){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  el.style.background=color;el.style.borderColor=color;el.style.color='#fff';
+}
+</script>

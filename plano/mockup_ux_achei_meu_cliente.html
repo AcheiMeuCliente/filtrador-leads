@@ -1,0 +1,361 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);color:var(--text-primary);background:transparent}
+
+.seg-salao{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.seg-clinica{background:#FBEAF0;color:#4B1528;border-color:#ED93B1}
+.seg-dist{background:#E6F1FB;color:#042C53;border-color:#85B7EB}
+.seg-loja{background:#FAEEDA;color:#412402;border-color:#EF9F27}
+.seg-fabrica{background:#EEEDFE;color:#26215C;border-color:#AFA9EC}
+.seg-rep{background:#FAECE7;color:#4A1B0C;border-color:#F0997B}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:1rem}
+.kpi-card{background:var(--surface-1);border-radius:10px;padding:12px 14px;border:0.5px solid var(--border)}
+.kpi-label{font-size:11px;color:var(--text-secondary);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-value{font-size:20px;font-weight:500;color:var(--text-primary)}
+.kpi-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+.view-toggle{display:flex;gap:6px;align-items:center;margin-bottom:.75rem}
+.vtbtn{padding:5px 12px;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:12px;cursor:pointer;background:var(--surface-1);color:var(--text-secondary);display:flex;align-items:center;gap:5px}
+.vtbtn.active{background:var(--fill-accent);border-color:var(--fill-accent);color:#fff}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
+.lead-card{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;overflow:hidden}
+.card-top{padding:14px 14px 10px}
+.card-avatar{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0}
+.card-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.card-name{font-size:13px;font-weight:500;line-height:1.3;color:var(--text-primary)}
+.card-fantasy{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.seg-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;border:0.5px solid;font-weight:500;margin-top:4px;white-space:nowrap}
+.card-info{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--text-secondary)}
+.info-row{display:flex;align-items:center;gap:6px}
+.card-actions{display:flex;gap:6px;padding:10px 14px;border-top:0.5px solid var(--border);background:var(--surface-1)}
+.act-btn{flex:1;padding:6px 0;border:0.5px solid var(--border-strong);border-radius:var(--radius);font-size:11px;cursor:pointer;background:transparent;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;gap:4px;text-align:center}
+.act-btn:hover{background:var(--surface-0)}
+.act-btn.whatsapp{border-color:#25D366;color:#25D366}
+.act-btn.email{border-color:var(--border-accent);color:var(--text-accent)}
+.expand-row{padding:4px 14px;font-size:11px;color:var(--text-accent);cursor:pointer;display:flex;align-items:center;gap:4px;background:var(--surface-1);border-top:0.5px solid var(--border)}
+.expand-detail{padding:10px 14px;background:var(--surface-1);border-top:0.5px solid var(--border);display:none;grid-template-columns:1fr 1fr;gap:6px 12px}
+.expand-detail.open{display:grid}
+.det-row{font-size:11px}
+.det-label{color:var(--text-muted);display:block;margin-bottom:1px}
+.det-val{color:var(--text-secondary);font-weight:500}
+
+.list-table{width:100%;border-collapse:collapse}
+.list-table th{font-size:11px;font-weight:500;color:var(--text-muted);text-align:left;padding:7px 10px;border-bottom:0.5px solid var(--border);white-space:nowrap;background:var(--surface-1)}
+.list-table td{font-size:12px;padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text-secondary);vertical-align:middle}
+.list-table tr:hover td{background:var(--surface-1)}
+.list-table tr.expanded td{background:var(--bg-accent)}
+.badge-sm{font-size:10px;padding:2px 7px;border-radius:10px;border:0.5px solid;font-weight:500;white-space:nowrap}
+.exp-panel{background:var(--surface-1);border-bottom:0.5px solid var(--border);display:none;padding:10px 14px}
+.exp-panel.open{display:block}
+.exp-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 16px}
+.contact-link{color:var(--text-accent);font-size:11px;text-decoration:none;display:flex;align-items:center;gap:3px}
+
+.cnae-section{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.cnae-card{background:var(--surface-1);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px}
+.cnae-title{font-size:11px;font-weight:500;color:var(--text-secondary);margin-bottom:10px;letter-spacing:.03em}
+.cnae-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.cnae-label{font-size:11px;color:var(--text-secondary);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cnae-bar-wrap{width:100px;background:var(--surface-0);border-radius:3px;height:6px;flex-shrink:0}
+.cnae-bar{height:6px;border-radius:3px;background:#1D9E75}
+.cnae-bar.sec{background:#7F77DD}
+.cnae-count{font-size:11px;font-weight:500;color:var(--text-primary);width:36px;text-align:right;flex-shrink:0}
+.muni-row{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.muni-label{font-size:11px;color:var(--text-secondary);flex:1}
+.muni-bar-wrap{width:80px;background:var(--surface-0);border-radius:3px;height:6px;flex-shrink:0}
+.muni-bar{height:6px;border-radius:3px;background:#378ADD}
+.muni-count{font-size:11px;font-weight:500;color:var(--text-primary);width:36px;text-align:right;flex-shrink:0}
+.section-title{font-size:11px;font-weight:500;color:var(--text-secondary);letter-spacing:.04em;margin-bottom:.5rem}
+</style>
+
+<h2 class="sr-only">Mockup do app AcheiMeuCliente com visão em cards, lista e KPIs detalhados</h2>
+
+<div style="padding:1rem 0 2rem">
+
+<div class="section-title">KPIs PRINCIPAIS</div>
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Total de leads</div>
+    <div class="kpi-value">5.173</div>
+    <div class="kpi-sub">filtro atual</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Com WhatsApp</div>
+    <div class="kpi-value" style="color:#25D366">5.089</div>
+    <div class="kpi-sub">98,38% do total</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Com e-mail</div>
+    <div class="kpi-value" style="color:var(--text-accent)">5.016</div>
+    <div class="kpi-sub">96,97% do total</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Idade média</div>
+    <div class="kpi-value">10 anos</div>
+    <div class="kpi-sub">abertura de atividade</div>
+  </div>
+</div>
+
+<div class="kpi-grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+  <div class="kpi-card">
+    <div class="kpi-label">Novas este mês</div>
+    <div class="kpi-value" style="color:#7F77DD">127</div>
+    <div class="kpi-sub">abertas nos últimos 30 dias</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Sem e-mail contador</div>
+    <div class="kpi-value">4.940</div>
+    <div class="kpi-sub">contato direto com o dono</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Exports disponíveis</div>
+    <div class="kpi-value" style="color:#E24B4A">253 / 300</div>
+    <div class="kpi-sub">plano Operacional — este mês</div>
+  </div>
+</div>
+
+<div class="cnae-section">
+  <div class="cnae-card">
+    <div class="cnae-title">CNAE PRINCIPAL — top 5</div>
+    <div class="cnae-row"><div class="cnae-label">4646-0 Comércio Atac...</div><div class="cnae-bar-wrap"><div class="cnae-bar" style="width:100%"></div></div><div class="cnae-count">801</div></div>
+    <div class="cnae-row"><div class="cnae-label">4772-5 Comércio Var...</div><div class="cnae-bar-wrap"><div class="cnae-bar" style="width:67%"></div></div><div class="cnae-count">540</div></div>
+    <div class="cnae-row"><div class="cnae-label">4644-3 Comércio Atac...</div><div class="cnae-bar-wrap"><div class="cnae-bar" style="width:37%"></div></div><div class="cnae-count">295</div></div>
+    <div class="cnae-row"><div class="cnae-label">4639-7 Comércio Atac...</div><div class="cnae-bar-wrap"><div class="cnae-bar" style="width:29%"></div></div><div class="cnae-count">236</div></div>
+    <div class="cnae-row"><div class="cnae-label">2063-1 Fabricação Co...</div><div class="cnae-bar-wrap"><div class="cnae-bar" style="width:24%"></div></div><div class="cnae-count">193</div></div>
+  </div>
+  <div class="cnae-card">
+    <div class="cnae-title">CNAE SECUNDÁRIO — top 5</div>
+    <div class="cnae-row"><div class="cnae-label">4646-0 Comércio Atac...</div><div class="cnae-bar-wrap"><div class="cnae-bar sec" style="width:100%"></div></div><div class="cnae-count">163</div></div>
+    <div class="cnae-row"><div class="cnae-label">4772-5 Comércio Var...</div><div class="cnae-bar-wrap"><div class="cnae-bar sec" style="width:86%"></div></div><div class="cnae-count">141</div></div>
+    <div class="cnae-row"><div class="cnae-label">Nenhum</div><div class="cnae-bar-wrap"><div class="cnae-bar sec" style="width:68%"></div></div><div class="cnae-count">111</div></div>
+    <div class="cnae-row"><div class="cnae-label">4646-0 + 4772-5</div><div class="cnae-bar-wrap"><div class="cnae-bar sec" style="width:37%"></div></div><div class="cnae-count">61</div></div>
+    <div class="cnae-row"><div class="cnae-label">4646-2 Comércio Atac...</div><div class="cnae-bar-wrap"><div class="cnae-bar sec" style="width:28%"></div></div><div class="cnae-count">45</div></div>
+  </div>
+</div>
+
+<div class="cnae-card" style="margin-bottom:1rem">
+  <div class="cnae-title">EMPRESAS POR MUNICÍPIO — top 6</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px 20px">
+    <div class="muni-row"><div class="muni-label">Belo Horizonte</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:100%"></div></div><div class="muni-count">1.015</div></div>
+    <div class="muni-row"><div class="muni-label">Contagem</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:36%"></div></div><div class="muni-count">369</div></div>
+    <div class="muni-row"><div class="muni-label">Uberlândia</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:20%"></div></div><div class="muni-count">207</div></div>
+    <div class="muni-row"><div class="muni-label">Juiz de Fora</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:15%"></div></div><div class="muni-count">150</div></div>
+    <div class="muni-row"><div class="muni-label">Extrema</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:12%"></div></div><div class="muni-count">117</div></div>
+    <div class="muni-row"><div class="muni-label">Betim</div><div class="muni-bar-wrap"><div class="muni-bar" style="width:11%"></div></div><div class="muni-count">113</div></div>
+  </div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+  <div class="section-title" style="margin-bottom:0">5.173 LEADS ENCONTRADOS</div>
+  <div class="view-toggle">
+    <button class="vtbtn active" id="btn-card" onclick="setView('card')"><i class="ti ti-layout-grid" style="font-size:14px" aria-hidden="true"></i> Cards</button>
+    <button class="vtbtn" id="btn-list" onclick="setView('list')"><i class="ti ti-list" style="font-size:14px" aria-hidden="true"></i> Lista</button>
+  </div>
+</div>
+
+<div id="view-cards">
+  <div class="cards-grid">
+
+    <div class="lead-card">
+      <div class="card-top">
+        <div class="card-head">
+          <div class="card-avatar seg-salao">SB</div>
+          <div style="flex:1;min-width:0">
+            <div class="card-name">Studio Bella Arte Cabeleireiros Ltda</div>
+            <div class="card-fantasy">Studio Bella Arte</div>
+            <span class="seg-pill seg-salao">💇 Salão e Barbearia</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> Centro, Belo Horizonte — MG</div>
+          <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> MEI · 6 anos de atividade</div>
+          <div class="info-row"><i class="ti ti-id-badge" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> 4646-0 Comércio Atacadista</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="act-btn whatsapp"><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> WhatsApp</button>
+        <button class="act-btn email"><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> E-mail</button>
+        <button class="act-btn"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+      </div>
+      <div class="expand-row" onclick="toggleCard('c1')"><i class="ti ti-chevron-down" id="c1-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais 18 dados</div>
+      <div class="expand-detail" id="c1-det">
+        <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">12.345.678/0001-90</span></div>
+        <div class="det-row"><span class="det-label">Telefone 1</span><span class="det-val">(31) 3333-4444</span></div>
+        <div class="det-row"><span class="det-label">Telefone 2</span><span class="det-val">(31) 99999-8888</span></div>
+        <div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">4772-5 Comércio Varejo</span></div>
+        <div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">MEI</span></div>
+        <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 5.000</span></div>
+        <div class="det-row"><span class="det-label">Simples Nacional</span><span class="det-val">Sim</span></div>
+        <div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">03/2018</span></div>
+        <div class="det-row"><span class="det-label">Bairro</span><span class="det-val">Centro</span></div>
+        <div class="det-row"><span class="det-label">CEP</span><span class="det-val">30120-000</span></div>
+      </div>
+    </div>
+
+    <div class="lead-card">
+      <div class="card-top">
+        <div class="card-head">
+          <div class="card-avatar seg-clinica">CL</div>
+          <div style="flex:1;min-width:0">
+            <div class="card-name">Clínica Estética Luz e Beleza ME</div>
+            <div class="card-fantasy">Luz Estética</div>
+            <span class="seg-pill seg-clinica">✨ Clínica de Estética</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> Savassi, Belo Horizonte — MG</div>
+          <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> ME · 12 anos de atividade</div>
+          <div class="info-row"><i class="ti ti-id-badge" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> 9602-5 Atividades de Estética</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="act-btn whatsapp"><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> WhatsApp</button>
+        <button class="act-btn email"><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> E-mail</button>
+        <button class="act-btn"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+      </div>
+      <div class="expand-row" onclick="toggleCard('c2')"><i class="ti ti-chevron-down" id="c2-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais 18 dados</div>
+      <div class="expand-detail" id="c2-det">
+        <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">98.765.432/0001-10</span></div>
+        <div class="det-row"><span class="det-label">Telefone 1</span><span class="det-val">(31) 3222-5555</span></div>
+        <div class="det-row"><span class="det-label">E-mail</span><span class="det-val">luz@estetica.com</span></div>
+        <div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">—</span></div>
+        <div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">EIRELI</span></div>
+        <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 15.000</span></div>
+        <div class="det-row"><span class="det-label">Simples Nacional</span><span class="det-val">Sim</span></div>
+        <div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">05/2012</span></div>
+      </div>
+    </div>
+
+    <div class="lead-card">
+      <div class="card-top">
+        <div class="card-head">
+          <div class="card-avatar seg-dist">DC</div>
+          <div style="flex:1;min-width:0">
+            <div class="card-name">Distribuidora Costa Cosméticos Ltda</div>
+            <div class="card-fantasy">Costa Distribuidora</div>
+            <span class="seg-pill seg-dist">🚛 Distribuidor Atacadista</span>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="info-row"><i class="ti ti-map-pin" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> Centro Industrial, Contagem — MG</div>
+          <div class="info-row"><i class="ti ti-building" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> ME · 8 anos de atividade</div>
+          <div class="info-row"><i class="ti ti-id-badge" style="font-size:13px;color:var(--text-muted)" aria-hidden="true"></i> 4646-0 Comércio Atacadista</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="act-btn whatsapp"><i class="ti ti-brand-whatsapp" style="font-size:13px" aria-hidden="true"></i> WhatsApp</button>
+        <button class="act-btn" style="opacity:.4;cursor:default"><i class="ti ti-mail" style="font-size:13px" aria-hidden="true"></i> Sem e-mail</button>
+        <button class="act-btn"><i class="ti ti-map" style="font-size:13px" aria-hidden="true"></i> Maps</button>
+      </div>
+      <div class="expand-row" onclick="toggleCard('c3')"><i class="ti ti-chevron-down" id="c3-ico" style="font-size:12px" aria-hidden="true"></i> Ver mais 18 dados</div>
+      <div class="expand-detail" id="c3-det">
+        <div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">11.222.333/0001-44</span></div>
+        <div class="det-row"><span class="det-label">WhatsApp</span><span class="det-val">(31) 98888-7777</span></div>
+        <div class="det-row"><span class="det-label">E-mail contador</span><span class="det-val">Sim — filtrado</span></div>
+        <div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">4772-5 Comércio Varejo</span></div>
+        <div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">Ltda</span></div>
+        <div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 80.000</span></div>
+        <div class="det-row"><span class="det-label">Matriz Filial</span><span class="det-val">Matriz</span></div>
+        <div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">07/2016</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="view-list" style="display:none">
+  <div style="overflow-x:auto">
+  <table class="list-table">
+    <thead>
+      <tr>
+        <th style="width:26px"></th>
+        <th>Razão social / fantasia</th>
+        <th>Segmento</th>
+        <th>Município — UF</th>
+        <th>WhatsApp</th>
+        <th>E-mail</th>
+        <th>Porte</th>
+        <th>Anos</th>
+        <th style="width:60px"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="lr1" onclick="toggleList('l1','lr1')">
+        <td><i class="ti ti-chevron-right" id="l1-ico" style="font-size:12px;color:var(--text-muted)" aria-hidden="true"></i></td>
+        <td><div style="font-weight:500;font-size:12px;color:var(--text-primary)">Studio Bella Arte Cabeleireiros</div><div style="font-size:11px;color:var(--text-muted)">Studio Bella Arte</div></td>
+        <td><span class="badge-sm seg-salao">💇 Salão</span></td>
+        <td style="font-size:12px">Centro, BH — MG</td>
+        <td><span style="color:#25D366;font-size:12px">(31) 9xxxx-1234</span></td>
+        <td style="font-size:12px;color:var(--text-accent)">studio@bella.com</td>
+        <td><span style="font-size:11px;color:var(--text-muted)">MEI</span></td>
+        <td style="font-size:12px">6</td>
+        <td style="text-align:right"><a href="#" onclick="return false" class="contact-link"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i></a></td>
+      </tr>
+      <tr><td colspan="9" style="padding:0"><div class="exp-panel" id="l1-det"><div class="exp-inner"><div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">12.345.678/0001-90</span></div><div class="det-row"><span class="det-label">CNAE Principal</span><span class="det-val">4646-0 Comércio Atac.</span></div><div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">4772-5 Comércio Var.</span></div><div class="det-row"><span class="det-label">CEP</span><span class="det-val">30120-000</span></div><div class="det-row"><span class="det-label">Bairro</span><span class="det-val">Centro</span></div><div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 5.000</span></div><div class="det-row"><span class="det-label">Simples</span><span class="det-val">Sim</span></div><div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">03/2018</span></div></div></div></td></tr>
+
+      <tr id="lr2" onclick="toggleList('l2','lr2')">
+        <td><i class="ti ti-chevron-right" id="l2-ico" style="font-size:12px;color:var(--text-muted)" aria-hidden="true"></i></td>
+        <td><div style="font-weight:500;font-size:12px;color:var(--text-primary)">Clínica Estética Luz e Beleza ME</div><div style="font-size:11px;color:var(--text-muted)">Luz Estética</div></td>
+        <td><span class="badge-sm seg-clinica">✨ Clínica</span></td>
+        <td style="font-size:12px">Savassi, BH — MG</td>
+        <td><span style="color:#25D366;font-size:12px">(31) 9xxxx-5678</span></td>
+        <td style="font-size:12px;color:var(--text-accent)">luz@estetica.com</td>
+        <td><span style="font-size:11px;color:var(--text-muted)">ME</span></td>
+        <td style="font-size:12px">12</td>
+        <td style="text-align:right"><a href="#" onclick="return false" class="contact-link"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i></a></td>
+      </tr>
+      <tr><td colspan="9" style="padding:0"><div class="exp-panel" id="l2-det"><div class="exp-inner"><div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">98.765.432/0001-10</span></div><div class="det-row"><span class="det-label">CNAE Principal</span><span class="det-val">9602-5 Estética</span></div><div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">—</span></div><div class="det-row"><span class="det-label">CEP</span><span class="det-val">30140-000</span></div><div class="det-row"><span class="det-label">Bairro</span><span class="det-val">Savassi</span></div><div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 15.000</span></div><div class="det-row"><span class="det-label">Natureza Jurídica</span><span class="det-val">EIRELI</span></div><div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">05/2012</span></div></div></div></td></tr>
+
+      <tr id="lr3" onclick="toggleList('l3','lr3')">
+        <td><i class="ti ti-chevron-right" id="l3-ico" style="font-size:12px;color:var(--text-muted)" aria-hidden="true"></i></td>
+        <td><div style="font-weight:500;font-size:12px;color:var(--text-primary)">Distribuidora Costa Cosméticos Ltda</div><div style="font-size:11px;color:var(--text-muted)">Costa Distribuidora</div></td>
+        <td><span class="badge-sm seg-dist">🚛 Distribuidor</span></td>
+        <td style="font-size:12px">Industrial, Contagem — MG</td>
+        <td><span style="color:#25D366;font-size:12px">(31) 9xxxx-7777</span></td>
+        <td><span style="font-size:12px;color:var(--text-muted);font-style:italic">e-mail contador</span></td>
+        <td><span style="font-size:11px;color:var(--text-muted)">ME</span></td>
+        <td style="font-size:12px">8</td>
+        <td style="text-align:right"><a href="#" onclick="return false" class="contact-link"><i class="ti ti-map" style="font-size:12px" aria-hidden="true"></i></a></td>
+      </tr>
+      <tr><td colspan="9" style="padding:0"><div class="exp-panel" id="l3-det"><div class="exp-inner"><div class="det-row"><span class="det-label">CNPJ</span><span class="det-val">11.222.333/0001-44</span></div><div class="det-row"><span class="det-label">CNAE Principal</span><span class="det-val">4646-0 Comércio Atac.</span></div><div class="det-row"><span class="det-label">CNAE Secundário</span><span class="det-val">4772-5 Comércio Var.</span></div><div class="det-row"><span class="det-label">CEP</span><span class="det-val">32040-000</span></div><div class="det-row"><span class="det-label">Capital Social</span><span class="det-val">R$ 80.000</span></div><div class="det-row"><span class="det-label">Matriz Filial</span><span class="det-val">Matriz</span></div><div class="det-row"><span class="det-label">Simples</span><span class="det-val">Sim</span></div><div class="det-row"><span class="det-label">Início Atividade</span><span class="det-val">07/2016</span></div></div></div></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:0.5px solid var(--border)">
+  <span style="font-size:12px;color:var(--text-muted)">Mostrando 3 de 5.173 leads · <span style="color:var(--text-accent)">Plano Operacional — 253/300 exports usados este mês</span></span>
+  <button style="padding:7px 16px;background:var(--fill-accent);border:none;border-radius:var(--radius);color:#fff;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px"><i class="ti ti-download" style="font-size:14px" aria-hidden="true"></i> Baixar 5.173 leads (CSV/Excel)</button>
+</div>
+
+</div>
+
+<script>
+function setView(v){
+  document.getElementById('view-cards').style.display=v==='card'?'block':'none';
+  document.getElementById('view-list').style.display=v==='list'?'block':'none';
+  document.getElementById('btn-card').classList.toggle('active',v==='card');
+  document.getElementById('btn-list').classList.toggle('active',v==='list');
+}
+function toggleCard(id){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const open=det.classList.toggle('open');
+  ico.style.transform=open?'rotate(180deg)':'';
+  ico.parentElement.querySelector('span')||true;
+  const row=ico.closest('.expand-row');
+  row.innerHTML=(open?'<i class="ti ti-chevron-up" style="font-size:12px" aria-hidden="true"></i> Ocultar dados':'<i class="ti ti-chevron-down" style="font-size:12px" aria-hidden="true"></i> Ver mais 18 dados');
+  row.setAttribute('onclick','toggleCard("'+id+'")');
+}
+function toggleList(id,rowId){
+  const det=document.getElementById(id+'-det');
+  const ico=document.getElementById(id+'-ico');
+  const row=document.getElementById(rowId);
+  const open=det.classList.toggle('open');
+  ico.className='ti ti-chevron-'+(open?'down':'right');
+  ico.style.color=open?'var(--text-accent)':'var(--text-muted)';
+  row.classList.toggle('expanded',open);
+}
+</script>
