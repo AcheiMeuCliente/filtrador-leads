@@ -1016,6 +1016,8 @@ SVG_MAPS = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" 
 
 SVG_MAIL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
 
+SVG_PHONE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+
 SVG_RECEITA = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
 
 SVG_PIN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
@@ -1025,6 +1027,46 @@ SVG_BUILDING = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stro
 SVG_CHECK = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><polyline points="20 6 9 17 4 12"/></svg>'
 
 SVG_ALERT = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+
+KNOWN_CNAES = {
+    "9602501": "Cabeleireiros, manicure e pedicure",
+    "9602502": "Atividades de estética e outros serviços de cuidados com a beleza",
+    "4772500": "Comércio varejista de cosméticos, produtos de perfumaria e de higiene pessoal",
+    "4646001": "Comércio atacadista de cosméticos e produtos de perfumaria",
+    "4618401": "Representantes comerciais de cosméticos e perfumaria",
+    "2063100": "Fabricação de cosméticos, produtos de perfumaria e higiene pessoal",
+    "4781400": "Comércio varejista de artigos do vestuário e acessórios",
+    "4789002": "Comércio varejista de plantas e flores naturais",
+    "4789001": "Comércio varejista de suvenires, bijuterias e artesanatos",
+    "4789005": "Comércio varejista de produtos saneantes domissanitários",
+    "4782201": "Comércio varejista de calçados",
+    "4639701": "Comércio atacadista de produtos alimentícios em geral",
+    "4642701": "Comércio atacadista de artigos do vestuário e acessórios",
+    "4649408": "Comércio atacadista de produtos de higiene, limpeza e conservação",
+    "8593700": "Ensino de idiomas",
+    "9511800": "Reparação e manutenção de computadores",
+    "1412601": "Confecção de peças de vestuário",
+    "4729699": "Comércio varejista de produtos alimentícios em geral"
+}
+
+
+def get_secondary_cnaes(row):
+    raw_cods = str(row.get("CNAE_SECUNDARIO_CODIGO",""))
+    raw_noms = str(row.get("CNAE_SECUNDARIO_NOME",""))
+    if not raw_cods or raw_cods.strip() in ("nan", "None", ""):
+        return []
+    
+    cods = [c.strip() for c in raw_cods.split(",") if c.strip()]
+    noms = [n.strip() for n in raw_noms.split("|") if n.strip()]
+    
+    items = []
+    for i, cod in enumerate(cods):
+        name = KNOWN_CNAES.get(cod)
+        if not name:
+            name = noms[i] if i < len(noms) else "Outra atividade cadastrada"
+        is_beauty = cod in BEAUTY_CNAES
+        items.append({"code": cod, "name": name, "is_beauty": is_beauty})
+    return items
 
 
 def format_phone_display(phone_str):
@@ -1463,22 +1505,24 @@ def build_card_html(row):
     av_cls   = seg_info["av"]
     pill_cls = seg_info["pill"]
 
-    # CNAE status
+    # CNAE status e parsing dos secundários
     cnae_status, cnae_cod, cnae_nom = get_cnae_status(row)
     cod_p = escape(str(row.get("CNAE_PRINCIPAL_CODIGO","")))
     nom_p = escape(str(row.get("CNAE_PRINCIPAL_NOME","")))
-    cod_s = escape(str(row.get("CNAE_SECUNDARIO_CODIGO","")))
-    nom_s = escape(str(row.get("CNAE_SECUNDARIO_NOME","")))
+
+    sec_cnaes = get_secondary_cnaes(row)
+    beauty_sec_count = sum(1 for c in sec_cnaes if c['is_beauty'])
 
     if cnae_status == "primary":
         badge_html = f'<span class="cnae-badge cnae-primary">{SVG_CHECK} Beleza — CNAE principal</span>'
         strip_class = "cnae-strip cnae-strip-primary"
-        strip_html  = f'{badge_html}<div class="cnae-strip-code">{cod_p} · {nom_p}</div>'
+        sec_info_txt = f" · +{len(sec_cnaes)} CNAE(s) secundário(s)" if sec_cnaes else ""
+        strip_html  = f'{badge_html}<div class="cnae-strip-code">{cod_p} · {nom_p}{sec_info_txt}</div>'
     else:
         badge_html  = f'<span class="cnae-badge cnae-outside">{SVG_ALERT} CNAE Principal fora da beleza</span>'
         strip_class = "cnae-strip cnae-strip-outside"
-        strip_html  = f'{badge_html}<div class="cnae-strip-code">Principal: {cod_p} · {nom_p}</div>' \
-                      f'<span class="cnae-badge cnae-secondary" style="margin-top:4px">{SVG_CHECK} Beleza no CNAE secundário</span>'
+        sec_badge = f'<span class="cnae-badge cnae-secondary" style="margin-top:4px">{SVG_CHECK} Beleza no CNAE secundário ({beauty_sec_count})</span>' if beauty_sec_count > 0 else f'<span class="cnae-badge cnae-outside" style="margin-top:4px;background:#94a3b8">{len(sec_cnaes)} CNAEs secundários</span>'
+        strip_html  = f'{badge_html}<div class="cnae-strip-code">Principal: {cod_p} · {nom_p}</div>{sec_badge}'
 
     # Nova badge
     nova_badge = ""
@@ -1521,7 +1565,7 @@ def build_card_html(row):
                 c_rows += f"""
                 <div class="c-row">
                     <div class="c-left">
-                        <span class="c-icon-badge c-tel">{SVG_MAIL}</span>
+                        <span class="c-icon-badge c-tel">{SVG_PHONE}</span>
                         <span class="c-val">{fmt_num}</span>
                     </div>
                     <a class="c-link c-tel-link" href="tel:{clean_phone(str(num))}">Ligar</a>
@@ -1552,17 +1596,12 @@ def build_card_html(row):
         {c_rows}
     </div>"""
 
-    # Botões de ação inferiores (Com ícones SVG oficiais)
+    # Botões de ação inferiores (Sem duplicação, direto para o ponto)
     maps_url = str(row.get("MAPS","#"))
     rf_url   = str(row.get("RECEITA FEDERAL", "#")).strip()
-    first_wa = next((str(num) for num in wa_list if num and str(num).strip() and str(num).strip() != "nan"), "")
-    first_email = email if email and email != "nan" and not is_contador else ""
 
-    wa_action = f'<a class="act-btn btn-wa-main" href="{wa_link(first_wa)}" target="_blank">{SVG_WHATSAPP} WhatsApp</a>' if first_wa else \
-                f'<span class="act-btn btn-wa-main" style="opacity:.4;cursor:default">{SVG_WHATSAPP} Sem WhatsApp</span>'
-    email_action = f'<a class="act-btn btn-mail" href="mailto:{first_email}">{SVG_MAIL} E-mail</a>' if first_email else \
-                   f'<span class="act-btn btn-mail" style="opacity:.4;cursor:default">{SVG_MAIL} Sem e-mail</span>'
-    rf_action = f'<a class="act-btn btn-rf" href="{rf_url}" target="_blank">{SVG_RECEITA} Receita</a>' if rf_url and rf_url != "#" else ""
+    rf_btn = f'<a class="act-btn btn-rf" href="{rf_url}" target="_blank">{SVG_RECEITA} Cartão Receita Federal</a>' if rf_url and rf_url != "#" else f'<span class="act-btn btn-rf" style="opacity:.4">{SVG_RECEITA} Sem Receita</span>'
+    maps_btn = f'<a class="act-btn btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Localização no Google Maps</a>' if maps_url and maps_url != "#" else f'<span class="act-btn btn-maps" style="opacity:.4">{SVG_MAPS} Sem Maps</span>'
 
     # Expand — endereço e dados cadastrais
     endereco = escape(str(row.get("ENDERECO MAPA","—")))
@@ -1576,18 +1615,24 @@ def build_card_html(row):
     inicio   = pd.to_datetime(row.get("INICIO ATIVIDADE","")).strftime("%d/%m/%Y") if pd.notna(row.get("INICIO ATIVIDADE")) else "—"
     porte    = escape(str(row.get('PORTE','—')))
 
-    all_cnaes = []
-    if cod_p:
-        is_b_p = cod_p.replace("-","").replace("/","") in BEAUTY_CNAES
-        dot_c  = "#10b981" if is_b_p else "#f43f5e"
-        all_cnaes.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_c}"></div>Principal: {cod_p} · {nom_p}</div>')
-    if cod_s:
-        is_b_s = cod_s.replace("-","").replace("/","") in BEAUTY_CNAES
-        dot_c  = "#10b981" if is_b_s else "#94a3b8"
-        all_cnaes.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_c}"></div>Secundário: {cod_s} · {nom_s}</div>')
+    # Construção completa da lista de CNAEs (Principal + Todos os Secundários)
+    all_cnaes_html = []
+    is_b_p = cod_p.replace("-","").replace("/","").replace(".","") in BEAUTY_CNAES
+    dot_p  = "#10b981" if is_b_p else "#f43f5e"
+    beauty_lbl_p = ' <span style="color:#10b981;font-weight:600">(Beleza)</span>' if is_b_p else ''
+    all_cnaes_html.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_p}"></div><b>Principal:</b> {cod_p} · {nom_p}{beauty_lbl_p}</div>')
+
+    if sec_cnaes:
+        for sc in sec_cnaes:
+            c_code = escape(sc['code'])
+            c_name = escape(sc['name'])
+            dot_s  = "#10b981" if sc['is_beauty'] else "#94a3b8"
+            b_tag  = ' <span style="color:#10b981;font-weight:600">(Beleza)</span>' if sc['is_beauty'] else ''
+            all_cnaes_html.append(f'<div class="cnae-item"><div class="cnae-dot" style="background:{dot_s}"></div><b>Secundário:</b> {c_code} · {c_name}{b_tag}</div>')
     else:
-        all_cnaes.append('<div class="cnae-item"><div class="cnae-dot" style="background:#cbd5e1"></div>Sem CNAE secundário</div>')
-    cnaes_html = "".join(all_cnaes)
+        all_cnaes_html.append('<div class="cnae-item"><div class="cnae-dot" style="background:#cbd5e1"></div>Sem CNAEs secundários cadastrados</div>')
+
+    cnaes_html = "".join(all_cnaes_html)
 
     mei_txt    = "Sim" if row.get("MEI") else "Não"
     simples_txt= "Sim" if row.get("SIMPLES") else "Não"
@@ -1611,10 +1656,8 @@ def build_card_html(row):
   </div>
   {contact_html}
   <div class="action-buttons">
-        {wa_action}
-        {email_action}
-        {rf_action}
-        <a class="act-btn btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Maps</a>
+        {rf_btn}
+        {maps_btn}
   </div>
   <details class="card-expand">
     <summary>Ver dados cadastrais completos</summary>
@@ -1624,13 +1667,10 @@ def build_card_html(row):
         <div class="address-box">
           {endereco}<br>
           {bairro} · {municipio}/{estado} · CEP {cep}
-          <div class="address-actions">
-            <a class="addr-btn addr-btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Abrir no Maps</a>
-          </div>
         </div>
       </div>
       <div class="exp-section">
-        <div class="exp-section-title">TODOS OS CNAEs</div>
+        <div class="exp-section-title">CNAE PRINCIPAL E SECUNDÁRIOS ({1 + len(sec_cnaes)})</div>
         <div class="cnae-list">{cnaes_html}</div>
       </div>
       <div class="exp-section">
