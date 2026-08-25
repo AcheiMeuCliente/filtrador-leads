@@ -734,6 +734,30 @@ def get_secondary_cnaes(row):
     return items
 
 
+def format_phone_display(phone_str):
+    if not phone_str or pd.isna(phone_str):
+        return ""
+    s = str(phone_str).strip()
+    if not s or s.lower() in ("nan", "none", "#", "null"):
+        return ""
+    digits = "".join(c for c in s if c.isdigit())
+    if not digits or digits.count("0") == len(digits):
+        return ""
+    if digits.startswith("55") and len(digits) in (12, 13):
+        digits = digits[2:]
+    if len(digits) == 11:
+        return f"({digits[:2]}) {digits[2:7]}-{digits[7:]}"
+    if len(digits) == 10:
+        return f"({digits[:2]}) {digits[2:6]}-{digits[6:]}"
+    return ""
+
+
+def get_display_name(row):
+    nf = escape(str(row.get("NOME FANTASIA", "")).strip())
+    rs = escape(str(row.get("RAZÃO SOCIAL", "")).strip())
+    return (nf, rs) if nf else (rs, "")
+
+
 def get_cnae_status(row):
     cod_p = clean_cnae_code(row.get("CNAE_PRINCIPAL_CODIGO", ""))
     nom_p = str(row.get("CNAE_PRINCIPAL_NOME", ""))
