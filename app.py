@@ -258,22 +258,30 @@ details.card-expand[open] summary::before { content: "▼"; }
 .btn-maps { border-color: #d1d5db; color: #111827; background: #fff; }
 
 /* ── Lista compacta conforme mockup ── */
-.list-table-wrap { width: 100%; overflow-x: auto; }
-.list-table { width: 100%; min-width: 680px; border-collapse: collapse; background: #fff; }
+.list-table-wrap { width: 100%; overflow: auto; max-height: 68vh; border: 1px solid #d1d5db; }
+.list-table { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; }
 .list-table th {
     background: #f3f4f6; color: #111827; font-size: 10px; font-weight: 600;
-    text-align: left; padding: 7px 9px; border: 1px solid #d1d5db;
-    white-space: nowrap; text-transform: uppercase;
+    text-align: left; padding: 7px 9px; border-right: 1px solid #d1d5db;
+    border-bottom: 1px solid #d1d5db; white-space: nowrap; text-transform: uppercase;
+    position: sticky; top: 0; z-index: 2;
 }
 .list-table td {
-    color: #374151; font-size: 11px; padding: 6px 9px;
-    border: 1px solid #d1d5db; white-space: nowrap; vertical-align: middle;
+    color: #374151; font-size: 10px; padding: 6px 9px;
+    border-right: 1px solid #d1d5db; border-bottom: 1px solid #d1d5db;
+    white-space: nowrap; vertical-align: middle; max-width: 280px; overflow: hidden; text-overflow: ellipsis;
 }
 .list-table tbody tr:hover td { background: #f9fafb; }
+.list-table .list-group th { background: #e5e7eb; text-align: center; color: #4b5563; }
+.list-table th:first-child, .list-table td:first-child { position: sticky; left: 0; z-index: 1; background: #fff; }
+.list-table th:first-child { z-index: 3; background: #f3f4f6; }
+.list-table tbody tr:hover td:first-child { background: #f9fafb; }
 .list-segment { display: inline-flex; align-items: center; gap: 4px; }
 .list-contact-empty { color: #6b7280; }
 .list-map-link { color: #111827; text-decoration: none; }
 .list-map-link:hover { text-decoration: underline; }
+.list-link { color: #2563eb; text-decoration: none; }
+.list-link:hover { text-decoration: underline; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1458,42 +1466,70 @@ def show_cards(df):
 # 14. VIEW LISTA
 # ══════════════════════════════════════════════════════
 def show_list(df):
-        table_rows = []
-        for _, row in df.iterrows():
-                razao = escape(str(row.get("RAZÃO SOCIAL", "—")))
-                municipio = escape(str(row.get("MUNICIPIO", "—")))
-                segmento = str(row.get("SEGMENTO", ""))
-                seg_info = SEG_CFG.get(segmento, SEG_CFG["Salões e Barbearias"])
-                whatsapp = escape(str(row.get("WHATSAPP_1", "")).strip() or "—")
-                email = escape(str(row.get("E-MAIL", "")).strip() or "—")
-                maps_url = escape(str(row.get("MAPS", "#")), quote=True)
-                table_rows.append(f"""
-                <tr>
-                    <td>{razao}</td>
-                    <td>{municipio}</td>
-                    <td><span class="list-segment">{seg_info['e']} {escape(segmento)}</span></td>
-                    <td class="{'list-contact-empty' if whatsapp == '—' else ''}">{whatsapp}</td>
-                    <td class="{'list-contact-empty' if email == '—' else ''}">{email}</td>
-                    <td><a class="list-map-link" href="{maps_url}" target="_blank">🗺️ Ver</a></td>
-                </tr>""")
+    column_groups = [
+        ("Empresa", ["RAZÃO SOCIAL", "NOME FANTASIA", "MUNICIPIO", "ESTADO"]),
+        ("Classificação", ["SEGMENTO", "CNAE_MATCHED", "ORIGEM_CNAE", "COLUNA_MATCH", "KEYWORD_MATCH", "TODOS_MATCHES", "QTD_MATCHES"]),
+        ("Contatos", ["WHATSAPP_1", "WHATSAPP_2", "WHATSAPP_3", "TELEFONE_1", "TELEFONE_2", "TELEFONE_3", "E-MAIL", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE"]),
+        ("Localização", ["BAIRRO", "CEP", "ENDERECO MAPA", "MAPS"]),
+        ("Cadastro", ["CNPJ", "PORTE", "CAPITAL SOCIAL", "MEI", "SIMPLES", "MATRIZ FILIAL", "INICIO ATIVIDADE", "NATUREZA_JURIDICA"]),
+        ("Atividade", ["CNAE_PRINCIPAL_CODIGO", "CNAE_PRINCIPAL_NOME", "CNAE_SECUNDARIO_CODIGO", "CNAE_SECUNDARIO_NOME"]),
+        ("Origem", ["RECEITA FEDERAL", "SITE"]),
+    ]
+    columns = [column for _, group_columns in column_groups for column in group_columns]
+    labels = {
+        "RAZÃO SOCIAL": "Razão Social", "NOME FANTASIA": "Nome Fantasia", "CNAE_MATCHED": "CNAE Matched",
+        "ORIGEM_CNAE": "Origem CNAE", "COLUNA_MATCH": "Coluna Match", "KEYWORD_MATCH": "Keyword Match",
+        "TODOS_MATCHES": "Todos Matches", "QTD_MATCHES": "Qtd. Matches", "TEM_EMAIL": "Tem E-mail",
+        "TEM_TELEFONE": "Tem Telefone", "EMAIL_CONTABILIDADE": "E-mail Contabilidade", "ENDERECO MAPA": "Endereço",
+        "MAPS": "Maps", "CAPITAL SOCIAL": "Capital Social", "MATRIZ FILIAL": "Matriz/Filial",
+        "INICIO ATIVIDADE": "Início Atividade", "NATUREZA_JURIDICA": "Natureza Jurídica", "RECEITA FEDERAL": "Receita Federal",
+        "CNAE_PRINCIPAL_CODIGO": "CNAE Principal", "CNAE_PRINCIPAL_NOME": "Nome CNAE Principal",
+        "CNAE_SECUNDARIO_CODIGO": "CNAE Secundário", "CNAE_SECUNDARIO_NOME": "Nome CNAE Secundário",
+    }
 
-        table_html = f"""
-        <div class="list-table-wrap">
+    def cell_value(row, column):
+        value = row.get(column, "")
+        if pd.isna(value) if not isinstance(value, (list, tuple, dict)) else False:
+            return "—"
+        if column in {"MEI", "SIMPLES", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE"}:
+            return "Sim" if bool(value) else "Não"
+        if column == "CAPITAL SOCIAL":
+            return format_capital(value)
+        if column == "INICIO ATIVIDADE":
+            return pd.to_datetime(value).strftime("%d/%m/%Y") if value else "—"
+        return str(value).strip() or "—"
+
+    def render_cell(row, column):
+        value = cell_value(row, column)
+        safe_value = escape(value)
+        if column in {"MAPS", "RECEITA FEDERAL", "SITE"} and value != "—":
+            href = escape(value if column != "SITE" else f"http://{value}", quote=True)
+            label = "🗺️ Ver" if column == "MAPS" else ("Abrir" if column == "RECEITA FEDERAL" else "Visitar")
+            return f'<a class="list-link" href="{href}" target="_blank">{label}</a>'
+        return safe_value
+
+    table_rows = []
+    for _, row in df.iterrows():
+        cells = "".join(f"<td>{render_cell(row, column)}</td>" for column in columns)
+        table_rows.append(f"<tr>{cells}</tr>")
+
+    group_headers = "".join(
+        f'<th colspan="{len(group_columns)}">{group_name}</th>'
+        for group_name, group_columns in column_groups
+    )
+    column_headers = "".join(f"<th>{labels.get(column, column.title())}</th>" for column in columns)
+
+    table_html = f"""
+        <div class="list-table-wrap" title="Deslize horizontalmente para consultar todos os campos">
             <table class="list-table">
                 <thead>
-                    <tr>
-                        <th>Razão Social</th>
-                        <th>Município</th>
-                        <th>Segmento</th>
-                        <th>WhatsApp</th>
-                        <th>E-mail</th>
-                        <th>Maps</th>
-                    </tr>
+                    <tr class="list-group">{group_headers}</tr>
+                    <tr>{column_headers}</tr>
                 </thead>
                 <tbody>{''.join(table_rows)}</tbody>
             </table>
         </div>"""
-        st.markdown(minify(table_html), unsafe_allow_html=True)
+    st.markdown(minify(table_html), unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════
