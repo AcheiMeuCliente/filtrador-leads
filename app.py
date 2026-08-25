@@ -1281,65 +1281,98 @@ def show_list(df):
     if len(df) == 0:
         empty_state()
         return
+
     df_page = paginate(df, 50, "page_list")
 
-    column_groups = [
-        ("Empresa", ["RAZÃO SOCIAL", "NOME FANTASIA", "MUNICIPIO", "ESTADO"]),
-        ("Classificação", ["SEGMENTO", "CNAE_MATCHED", "ORIGEM_CNAE"]),
-        ("Contatos", ["WHATSAPP_1", "TELEFONE_1", "E-MAIL", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE"]),
-        ("Localização", ["BAIRRO", "CEP", "ENDERECO MAPA", "MAPS"]),
-        ("Cadastro", ["CNPJ", "PORTE", "CAPITAL SOCIAL", "MEI", "SIMPLES", "MATRIZ FILIAL", "INICIO ATIVIDADE", "NATUREZA_JURIDICA"]),
-        ("Atividade", ["CNAE_PRINCIPAL_CODIGO", "CNAE_PRINCIPAL_NOME", "CNAE_SECUNDARIO_CODIGO", "CNAE_SECUNDARIO_NOME"]),
-        ("Origem", ["RECEITA FEDERAL", "SITE"]),
-    ]
-    columns = [c for _, group in column_groups for c in group]
-    labels = {
-        "RAZÃO SOCIAL": "Razão Social", "NOME FANTASIA": "Nome Fantasia", "CNAE_MATCHED": "CNAE Matched",
-        "ORIGEM_CNAE": "Origem CNAE", "TEM_EMAIL": "Tem E-mail", "TEM_TELEFONE": "Tem Telefone",
-        "EMAIL_CONTABILIDADE": "E-mail Contabilidade", "ENDERECO MAPA": "Endereço", "MAPS": "Maps",
-        "CAPITAL SOCIAL": "Capital Social", "MATRIZ FILIAL": "Matriz/Filial", "INICIO ATIVIDADE": "Início Atividade",
-        "NATUREZA_JURIDICA": "Natureza Jurídica", "RECEITA FEDERAL": "Receita Federal",
-        "CNAE_PRINCIPAL_CODIGO": "CNAE Principal", "CNAE_PRINCIPAL_NOME": "Nome CNAE Principal",
-        "CNAE_SECUNDARIO_CODIGO": "CNAE Secundário", "CNAE_SECUNDARIO_NOME": "Nome CNAE Secundário",
-    }
+    display_rows = []
+    for _, row in df_page.iterrows():
+        main_name, sub_name = get_display_name(row)
+        cnae_p_code = str(row.get("CNAE_PRINCIPAL_CODIGO", "")).strip()
+        cnae_p_name = str(row.get("CNAE_PRINCIPAL_NOME", "")).strip()
+        cnae_principal_str = f"{cnae_p_code} · {cnae_p_name}" if cnae_p_code else "—"
 
-    def cell_value(row, column):
-        value = row.get(column, "")
-        if not isinstance(value, (list, tuple, dict)) and pd.isna(value):
-            return "—"
-        if column in {"MEI", "SIMPLES", "TEM_EMAIL", "TEM_TELEFONE", "EMAIL_CONTABILIDADE", "CNAE_MATCHED"}:
-            return "Sim" if bool(value) else "Não"
-        if column == "CAPITAL SOCIAL":
-            return format_capital(value)
-        if column == "INICIO ATIVIDADE":
-            return pd.to_datetime(value).strftime("%d/%m/%Y") if value else "—"
-        return str(value).strip() or "—"
+        wa_val = next(
+            (
+                str(row.get(f"WHATSAPP_{i}", ""))
+                for i in range(1, 4)
+                if str(row.get(f"WHATSAPP_{i}", "")).strip() and str(row.get(f"WHATSAPP_{i}", "")).strip() != "nan"
+            ),
+            "",
+        )
+        tel_val = next(
+            (
+                str(row.get(f"TELEFONE_{i}", ""))
+                for i in range(1, 4)
+                if str(row.get(f"TELEFONE_{i}", "")).strip() and str(row.get(f"TELEFONE_{i}", "")).strip() != "nan"
+            ),
+            "",
+        )
 
-    def render_cell(row, column):
-        value = cell_value(row, column)
-        if column in {"MAPS", "RECEITA FEDERAL", "SITE"} and value != "—":
-            href = escape(value if column != "SITE" else f"http://{value}", quote=True)
-            label = "Mapa" if column == "MAPS" else ("Abrir" if column == "RECEITA FEDERAL" else "Visitar")
-            return f'<a class="list-link" href="{href}" target="_blank">{label}</a>'
-        return escape(value)
+        email = str(row.get("E-MAIL", "")).strip()
+        if row.get("EMAIL_CONTABILIDADE"):
+            email = "⚠️ Contador"
+        elif not email or email == "nan":
+            email = "—"
 
-    body = "".join(
-        "<tr>" + "".join(f"<td>{render_cell(row, c)}</td>" for c in columns) + "</tr>"
-        for _, row in df_page.iterrows()
+        maps_url = str(row.get("MAPS", "")).strip()
+        rf_url = str(row.get("RECEITA FEDERAL", "")).strip()
+
+        abertura = (
+            pd.to_datetime(row.get("INICIO ATIVIDADE", "")).strftime("%d/%m/%Y")
+            if pd.notna(row.get("INICIO ATIVIDADE"))
+            else "—"
+        )
+        capital = format_capital(row.get("CAPITAL SOCIAL", 0))
+
+        display_rows.append(
+            {
+                "CNPJ": str(row.get("CNPJ", "—")),
+                "Razão Social": main_name,
+                "Nome Fantasia": sub_name if sub_name else "—",
+                "Segmento": str(row.get("SEGMENTO", "—")),
+                "CNAE Principal": cnae_principal_str,
+                "Cidade/UF": f"{row.get('MUNICIPIO','')} / {row.get('ESTADO','')}",
+                "Bairro": str(row.get("BAIRRO", "—")),
+                "WhatsApp": format_phone_display(wa_val) if wa_val else "—",
+                "Telefone": format_phone_display(tel_val) if tel_val else "—",
+                "E-mail": email,
+                "Porte": str(row.get("PORTE", "—")),
+                "Capital Social": capital,
+                "MEI": "Sim" if row.get("MEI") else "Não",
+                "Simples": "Sim" if row.get("SIMPLES") else "Não",
+                "Abertura": abertura,
+                "Receita Federal": rf_url if rf_url and rf_url != "#" else None,
+                "Google Maps": maps_url if maps_url and maps_url != "#" else None,
+            }
+        )
+
+    df_disp = pd.DataFrame(display_rows)
+
+    st.dataframe(
+        df_disp,
+        column_config={
+            "CNPJ": st.column_config.TextColumn("CNPJ", width="medium"),
+            "Razão Social": st.column_config.TextColumn("Razão Social", width="large"),
+            "Nome Fantasia": st.column_config.TextColumn("Nome Fantasia", width="medium"),
+            "Segmento": st.column_config.TextColumn("Segmento", width="medium"),
+            "CNAE Principal": st.column_config.TextColumn("CNAE Principal", width="large"),
+            "Cidade/UF": st.column_config.TextColumn("Cidade / UF", width="medium"),
+            "Bairro": st.column_config.TextColumn("Bairro", width="medium"),
+            "WhatsApp": st.column_config.TextColumn("WhatsApp", width="small"),
+            "Telefone": st.column_config.TextColumn("Telefone", width="small"),
+            "E-mail": st.column_config.TextColumn("E-mail", width="medium"),
+            "Porte": st.column_config.TextColumn("Porte", width="small"),
+            "Capital Social": st.column_config.TextColumn("Capital Social", width="small"),
+            "MEI": st.column_config.TextColumn("MEI", width="small"),
+            "Simples": st.column_config.TextColumn("Simples", width="small"),
+            "Abertura": st.column_config.TextColumn("Abertura", width="small"),
+            "Receita Federal": st.column_config.LinkColumn("Receita Federal", display_text="Abrir 📄", width="small"),
+            "Google Maps": st.column_config.LinkColumn("Google Maps", display_text="Ver 📍", width="small"),
+        },
+        use_container_width=True,
+        hide_index=True,
+        height=620,
     )
-    group_headers = "".join(f'<th colspan="{len(g)}">{name}</th>' for name, g in column_groups)
-    column_headers = "".join(f"<th>{labels.get(c, c.title())}</th>" for c in columns)
-
-    st.markdown(
-        minify(f"""<div class="list-table-wrap">
-          <table class="list-table">
-            <thead><tr class="list-group">{group_headers}</tr><tr>{column_headers}</tr></thead>
-            <tbody>{body}</tbody>
-          </table>
-        </div>"""),
-        unsafe_allow_html=True,
-    )
-    st.caption("Deslize a tabela horizontalmente para ver todos os campos.")
 
 
 def show_bairro(df):
