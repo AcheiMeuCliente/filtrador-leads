@@ -800,8 +800,8 @@ def get_data() -> pd.DataFrame:
 # ══════════════════════════════════════════════════════
 def init_state():
     defaults = {
-        "logged_in": False,
-        "user_email": "",
+        "logged_in": True,
+        "user_email": "admin@achei.com",
         "user": {},
         "view_mode": "cards",
         "saved_views": [
