@@ -220,7 +220,21 @@ div[role="radiogroup"] label:has(input:checked){ background:var(--surface); box-
 }
 .lead-card:hover{ border-color:var(--border-strong); box-shadow:var(--shadow-lg); transform:translateY(-2px); }
 .card-top{ padding:15px 17px 12px; }
-.card-identity{ display:flex; gap:12px; align-items:flex-start; margin-bottom:11px; }
+.card-header-flex{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:11px; }
+.card-identity{ display:flex; gap:12px; align-items:flex-start; flex:1; min-width:0; }
+.card-meta-panel{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:7px 10px; font-size:11px; line-height:1.45; min-width:210px; flex-shrink:0; text-align:right;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);
+}
+.meta-cnpj{ font-family:var(--mono); font-weight:700; color:var(--navy); font-size:11.5px; }
+.meta-capital{ font-weight:700; color:var(--green); margin-top:1px; }
+.meta-pills{ display:flex; gap:3px; justify-content:flex-end; margin:3px 0 2px; flex-wrap:wrap; }
+.meta-pill{ font-size:9.5px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--surface-sunk); border:1px solid var(--border); color:var(--text-2); }
+.meta-pill-mei{ background:#fef3c7; border-color:#fde047; color:#92400e; }
+.meta-pill-simples{ background:#dcfce7; border-color:#86efac; color:#166534; }
+.meta-pill-porte{ background:#e0f2fe; border-color:#7dd3fc; color:#075985; }
+.meta-sub{ font-size:10.5px; color:var(--text-2); margin-top:2px; }
 .card-avatar{
   width:38px; height:38px; border-radius:9px; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
@@ -1244,6 +1258,35 @@ def build_card_html(row):
     uf_str = escape(str(row.get("ESTADO", "")))
     loc_text = f"{bairro_str} · {mun_str} — {uf_str}" if bairro_str else f"{mun_str} — {uf_str}"
 
+    # ── Painel de Ficha Cadastral Rápida (Canto Direito Superior) ──
+    cnpj = escape(str(row.get("CNPJ", "—")))
+    porte = escape(str(row.get("PORTE", "—")))
+    capital = format_capital(row.get("CAPITAL SOCIAL", 0))
+    nat_jur = escape(str(row.get("NATUREZA_JURIDICA", "—")))
+    dt = row.get("INICIO ATIVIDADE")
+    inicio_full = pd.to_datetime(dt).strftime("%d/%m/%Y") if pd.notna(dt) else "—"
+    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} anos" if pd.notna(dt) else "—"
+    matriz_filial = escape(str(row.get("MATRIZ FILIAL", "Matriz")))
+
+    pills_html = f'<span class="meta-pill meta-pill-porte">{porte}</span>'
+    if row.get("SIMPLES"):
+        pills_html += '<span class="meta-pill meta-pill-simples">SIMPLES</span>'
+    if row.get("MEI"):
+        pills_html += '<span class="meta-pill meta-pill-mei">MEI</span>'
+    pills_html += f'<span class="meta-pill">{matriz_filial}</span>'
+
+    nat_jur_short = nat_jur[:28] + "..." if len(nat_jur) > 30 else nat_jur
+
+    meta_panel_html = f"""
+    <div class="card-meta-panel">
+      <div class="meta-cnpj">CNPJ {cnpj}</div>
+      <div class="meta-capital">Capital {capital}</div>
+      <div class="meta-pills">{pills_html}</div>
+      <div class="meta-sub">Abertura: <b>{inicio_full}</b> ({anos_str})</div>
+      <div class="meta-sub" title="{nat_jur}">{nat_jur_short}</div>
+    </div>
+    """
+
     # ── Contatos ──
     added, c_rows = set(), ""
     for i in range(1, 4):
@@ -1303,11 +1346,6 @@ def build_card_html(row):
 
     endereco = escape(str(row.get("ENDERECO MAPA", "—")))
     cep = escape(str(row.get("CEP", "")))
-    porte = escape(str(row.get("PORTE", "—")))
-    anos_str = f"{row.get('ANOS_ATIVIDADE', 0):.1f} anos"
-    dt = row.get("INICIO ATIVIDADE")
-    abertura = pd.to_datetime(dt).strftime("%m/%Y") if pd.notna(dt) else "—"
-    inicio = pd.to_datetime(dt).strftime("%d/%m/%Y") if pd.notna(dt) else "—"
 
     cnae_items = []
     is_b_p = cod_p.replace("-", "").replace("/", "").replace(".", "") in BEAUTY_CNAES
@@ -1327,45 +1365,34 @@ def build_card_html(row):
     return f"""
 <div class="lead-card">
   <div class="card-top">
-    <div class="card-identity">
-      <div class="card-avatar">{initials}</div>
-      <div class="name-block">
-        <div class="company-main">{main_name}</div>
-        {"<div class='company-sub'>" + sub_name + "</div>" if sub_name else ""}
-        <div>{tags}</div>
+    <div class="card-header-flex">
+      <div class="card-identity">
+        <div class="card-avatar">{initials}</div>
+        <div class="name-block">
+          <div class="company-main">{main_name}</div>
+          {"<div class='company-sub'>" + sub_name + "</div>" if sub_name else ""}
+          <div>{tags}</div>
+        </div>
       </div>
+      {meta_panel_html}
     </div>
     <div class="card-info">
       <div class="info-row">{SVG_PIN} {loc_text}</div>
-      <div class="info-row">{SVG_BUILDING} {porte} · abertura {abertura} · {anos_str}</div>
     </div>
     <div class="{strip_cls}">{strip_html}</div>
   </div>
   <div class="contact-section">{c_rows}</div>
   <div class="action-buttons">{rf_btn}{maps_btn}{ig_btn}{web_btn}</div>
   <details class="card-expand">
-    <summary>Ficha cadastral completa (CNPJ, Capital, CNAEs, Endereço)</summary>
+    <summary>Endereço completo e CNAEs secundários</summary>
     <div class="expand-body">
       <div class="exp-section">
-        <div class="exp-title">Endereço & CEP</div>
+        <div class="exp-title">Endereço Completo & CEP</div>
         <div class="box">{endereco}<br>{bairro_str} · {mun_str}/{uf_str} · CEP {cep}</div>
       </div>
       <div class="exp-section">
-        <div class="exp-title">Atividades Econômicas ({1 + len(sec_cnaes)})</div>
+        <div class="exp-title">Todas as Atividades Econômicas ({1 + len(sec_cnaes)})</div>
         <div class="box">{"".join(cnae_items)}</div>
-      </div>
-      <div class="exp-section">
-        <div class="exp-title">Dados Financeiros & Regime</div>
-        <div class="data-grid">
-          <div class="data-item"><span class="data-label">CNPJ</span><span class="data-value">{escape(str(row.get('CNPJ','—')))}</span></div>
-          <div class="data-item"><span class="data-label">Porte</span><span class="data-value">{porte}</span></div>
-          <div class="data-item"><span class="data-label">Capital social</span><span class="data-value">{format_capital(row.get('CAPITAL SOCIAL', 0))}</span></div>
-          <div class="data-item"><span class="data-label">Natureza jurídica</span><span class="data-value">{escape(str(row.get('NATUREZA_JURIDICA','—')))}</span></div>
-          <div class="data-item"><span class="data-label">MEI</span><span class="data-value">{"Sim" if row.get("MEI") else "Não"}</span></div>
-          <div class="data-item"><span class="data-label">Simples Nacional</span><span class="data-value">{"Sim" if row.get("SIMPLES") else "Não"}</span></div>
-          <div class="data-item"><span class="data-label">Início de atividade</span><span class="data-value">{inicio}</span></div>
-          <div class="data-item"><span class="data-label">Matriz / filial</span><span class="data-value">{escape(str(row.get('MATRIZ FILIAL','—')))}</span></div>
-        </div>
       </div>
     </div>
   </details>
