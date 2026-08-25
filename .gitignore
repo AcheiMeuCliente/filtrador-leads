@@ -15,3 +15,6 @@ ENV/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Estado local de triagem (gerado em runtime, específico da máquina)
+.triagem.json
