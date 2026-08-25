@@ -367,45 +367,46 @@ p, span, div, label{ letter-spacing:-0.005em; }
 }
 .cnae-code{ font-family:var(--mono); font-size:11px; color:var(--text); line-height:1.45; }
 
-/* ── Contatos Pílulas ── */
-.contact-pill-box{ display:flex; flex-direction:column; gap:7px; padding:10px 17px; background:var(--surface-2); border-top:1px solid var(--border); }
-.contact-pill-wa{
-  display:flex; align-items:center; justify-content:space-between;
-  background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;
-  padding:6px 10px; font-size:12px;
+/* ── Contatos Benchmark (Match Exato da Imagem) ── */
+.contact-pill-box{ display:flex; flex-direction:column; gap:8px; padding:12px 18px; background:#fafaf9; border-top:1px solid #f1f5f9; }
+.c-row-new{ display:flex; align-items:center; justify-content:space-between; padding:2px 0; }
+.c-left-new{ display:flex; align-items:center; gap:12px; }
+.c-ico-box{ width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.c-ico-box-wa{ background:#dcfce7; border:1px solid #bbf7d0; color:#166534; }
+.c-ico-box-tel{ background:#eff6ff; border:1px solid #dbeafe; color:#4f46e5; }
+.c-ico-box-mail{ background:#fff7ed; border:1px solid #ffedd5; color:#ea580c; }
+.c-num-bold{ font-family:var(--font); font-weight:700; font-size:13px; color:#0f172a; }
+.c-email-text{ font-family:var(--mono); font-size:12px; color:#334155; }
+.c-right-group{ display:flex; align-items:center; gap:7px; }
+.c-icon-square-btn{
+  width:30px; height:30px; border-radius:8px; border:1px solid #e2e8f0; background:#ffffff;
+  color:#64748b; display:inline-flex; align-items:center; justify-content:center;
+  text-decoration:none; cursor:pointer; transition:all .12s ease;
 }
-.contact-pill-mail{
-  display:flex; align-items:center; justify-content:space-between;
-  background:#fff7ed; border:1px solid #fed7aa; border-radius:8px;
-  padding:6px 10px; font-size:12px;
+.c-icon-square-btn:hover{ background:#f8fafc; border-color:#cbd5e1; color:#0f172a; }
+.c-btn-ext-link{ background:#dcfce7; border:1px solid #86efac; color:#15803d; }
+.c-btn-ext-link:hover{ background:#bbf7d0; color:#166534; }
+.c-btn-abordar{
+  height:30px; padding:0 14px; border-radius:8px; background:#6366f1; color:#ffffff !important;
+  font-weight:700; font-size:12px; text-decoration:none; display:inline-flex; align-items:center;
+  gap:6px; box-shadow:0 2px 6px rgba(99,102,241,.3); transition:all .12s ease;
 }
-.btn-abordar{
-  background:#4f46e5; color:#fff !important; border-radius:7px;
-  padding:4px 12px; font-size:11.5px; font-weight:700; text-decoration:none;
-  display:inline-flex; align-items:center; gap:5px; box-shadow:0 1px 3px rgba(79,70,229,.3);
-  transition:background .12s ease;
+.c-btn-abordar:hover{ background:#4f46e5; box-shadow:0 3px 8px rgba(79,70,229,.4); }
+.c-btn-action-light{
+  height:30px; padding:0 16px; border-radius:8px; background:#ffffff; border:1px solid #e2e8f0;
+  color:#334155 !important; font-weight:600; font-size:12px; text-decoration:none;
+  display:inline-flex; align-items:center; justify-content:center; transition:all .12s ease;
 }
-.btn-abordar:hover{ background:#4338ca; }
-.btn-email{
-  background:#fff; border:1px solid #e2e8f0; color:#475569 !important; border-radius:7px;
-  padding:4px 12px; font-size:11.5px; font-weight:600; text-decoration:none;
-}
-.btn-email:hover{ background:#f8fafc; }
+.c-btn-action-light:hover{ background:#f8fafc; border-color:#cbd5e1; color:#0f172a !important; }
 
-/* ── Ações no Card ── */
-.action-buttons{ display:flex; gap:7px; padding:9px 17px; background:var(--surface); border-top:1px solid var(--border); }
-.act-btn{
-  flex:1; padding:6px 8px; border-radius:7px; border:1px solid var(--border);
-  font-size:11.5px; font-weight:600; text-align:center; text-decoration:none;
-  display:inline-flex; align-items:center; justify-content:center; gap:6px;
-  background:var(--surface); color:var(--navy); transition:all .12s ease;
+/* ── Ações no Card (Grid 4 Colunas) ── */
+.action-buttons-new{ display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; padding:12px 18px; background:#ffffff; border-top:1px solid #f1f5f9; }
+.act-btn-new{
+  padding:7px 8px; border-radius:8px; border:1px solid #e2e8f0; background:#ffffff;
+  color:#334155; font-size:12px; font-weight:600; text-decoration:none;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all .12s ease;
 }
-.act-btn:hover{ background:var(--purple-soft); border-color:var(--border-strong); color:var(--purple-dark); }
-.act-btn-rf{ color:#475569; background:#f8fafc; border-color:#e2e8f0; }
-.act-btn-maps{ color:#b91c1c; background:#fef2f2; border-color:#fecaca; }
-.act-btn-ig{ color:#c13584; background:#fdf2f8; border-color:#f9a8d4; }
-.act-btn-web{ color:#2563eb; background:#eff6ff; border-color:#bfdbfe; }
-.act-btn-off{ opacity:.4; }
+.act-btn-new:hover{ background:#f8fafc; border-color:#cbd5e1; color:#0f172a; }
 
 details.card-expand{ border-top:1px solid var(--border); }
 details.card-expand summary{
@@ -506,6 +507,16 @@ KNOWN_CNAES = {
 }
 
 SVG_WHATSAPP = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.764.459 3.487 1.334 5.006l-1.417 5.176 5.297-1.389c1.464.798 3.116 1.218 4.774 1.219h.004c5.507 0 9.991-4.479 9.991-9.986 0-2.668-1.038-5.177-2.924-7.062a9.924 9.924 0 0 0-7.063-2.948zm5.952 14.183c-.252.71-1.464 1.348-2.016 1.408-.504.055-1.156.079-3.704-.972-3.08-1.272-5.074-4.423-5.228-4.63-.151-.205-1.246-1.657-1.246-3.161 0-1.503.785-2.241 1.063-2.548.277-.307.605-.383.807-.383.202 0 .404.001.58.01.187.008.439-.071.687.525.252.605.856 2.091.932 2.244.076.153.126.332.025.535-.1.205-.151.332-.302.508-.151.176-.317.393-.453.528-.151.151-.31.316-.134.619.176.303.78 1.288 1.674 2.085 1.15 1.025 2.119 1.343 2.422 1.494.303.151.48.126.657-.076.176-.202.756-.883.958-1.186.202-.303.404-.252.681-.151.277.101 1.764.832 2.067.983.303.151.504.227.58.353.076.126.076.73-.176 1.44z"/></svg>'
+SVG_CHAT_BUBBLE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+SVG_PAPER_PLANE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
+SVG_COPY = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+SVG_EXT_LINK = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+SVG_PHONE_HANDSET = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>'
+SVG_ENVELOPE = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
+SVG_RECEITA_DOC = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
+SVG_MAPS_PIN = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+SVG_INSTAGRAM_CAM = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d946ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'
+SVG_GOOGLE_GLOBE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
 SVG_MAPS = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
 SVG_MAIL = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>'
 SVG_RECEITA = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
@@ -1152,38 +1163,61 @@ def build_card_html(row):
     </div>
     """
 
-    # Contatos
+    # Contatos - Match Exato da Imagem Benchmark
     added, c_rows = set(), ""
     for i in range(1, 4):
         num = row.get(f"WHATSAPP_{i}", "")
         fmt = format_phone_display(num)
         if fmt and fmt not in added:
             added.add(fmt)
+            c_num = clean_phone(str(num))
             c_rows += (
-                f'<div class="contact-pill-wa">'
-                f'<div style="display:flex;align-items:center;gap:8px;">'
-                f'<span style="color:#059669">{SVG_WHATSAPP}</span><b style="font-family:var(--mono)">{fmt}</b>'
+                f'<div class="c-row-new">'
+                f'<div class="c-left-new">'
+                f'<div class="c-ico-box c-ico-box-wa">{SVG_CHAT_BUBBLE}</div>'
+                f'<span class="c-num-bold">{fmt}</span>'
                 f'</div>'
-                f'<a class="btn-abordar" href="{wa_link(str(num), main_name)}" target="_blank">🚀 Abordar WhatsApp ↗</a>'
+                f'<div class="c-right-group">'
+                f'<a class="c-icon-square-btn" href="javascript:void(0)" onclick="navigator.clipboard.writeText(\'{c_num}\')" title="Copiar número">{SVG_COPY}</a>'
+                f'<a class="c-btn-abordar" href="{wa_link(str(num), main_name)}" target="_blank">{SVG_PAPER_PLANE} Abordar</a>'
+                f'<a class="c-icon-square-btn c-btn-ext-link" href="{wa_link(str(num), main_name)}" target="_blank" title="Abrir link direto">{SVG_EXT_LINK}</a>'
+                f'</div></div>'
+            )
+    for i in range(1, 4):
+        num = row.get(f"TELEFONE_{i}", "")
+        fmt = format_phone_display(num)
+        if fmt and fmt not in added:
+            added.add(fmt)
+            c_num = clean_phone(str(num))
+            c_rows += (
+                f'<div class="c-row-new">'
+                f'<div class="c-left-new">'
+                f'<div class="c-ico-box c-ico-box-tel">{SVG_PHONE_HANDSET}</div>'
+                f'<span class="c-num-bold">{fmt}</span>'
                 f'</div>'
+                f'<div class="c-right-group">'
+                f'<a class="c-btn-action-light" href="tel:{c_num}">Ligar</a>'
+                f'</div></div>'
             )
 
     email = escape(str(row.get("E-MAIL", "")).strip())
     is_contador = bool(row.get("EMAIL_CONTABILIDADE", False))
     if email and email != "nan" and not is_contador:
         c_rows += (
-            f'<div class="contact-pill-mail">'
-            f'<div style="display:flex;align-items:center;gap:8px;color:#c2410c;">'
-            f'<span>{SVG_MAIL}</span><span>{email}</span>'
+            f'<div class="c-row-new">'
+            f'<div class="c-left-new">'
+            f'<div class="c-ico-box c-ico-box-mail">{SVG_ENVELOPE}</div>'
+            f'<span class="c-email-text">{email}</span>'
             f'</div>'
-            f'<a class="btn-email" href="mailto:{email}">E-mail</a>'
-            f'</div>'
+            f'<div class="c-right-group">'
+            f'<a class="c-btn-action-light" href="mailto:{email}">E-mail</a>'
+            f'</div></div>'
         )
     elif email and email != "nan" and is_contador:
-        c_rows += f'<div style="font-size:11px;color:#b45309;padding:4px 0;">{SVG_ALERT} E-mail contábil identificado</div>'
+        c_rows += f'<div style="font-size:11px;color:#b45309;padding:6px 0;">{SVG_ALERT} E-mail contábil identificado</div>'
 
     if not c_rows:
-        c_rows = '<div style="font-size:11.5px;color:#94a3b8;padding:4px 0;">Nenhum contato direto identificado neste cadastro</div>'
+        c_rows = '<div style="font-size:11.5px;color:#94a3b8;padding:6px 0;">Nenhum contato direto identificado neste cadastro</div>'
 
     maps_url = escape(str(row.get("MAPS", "#")), quote=True)
     rf_url = escape(str(row.get("RECEITA FEDERAL", "#")).strip(), quote=True)
@@ -1191,10 +1225,10 @@ def build_card_html(row):
     ig_url = f"https://www.google.com/search?q={query_base}+instagram"
     web_url = f"https://www.google.com/search?q={query_base}"
 
-    rf_btn = f'<a class="act-btn act-btn-rf" href="{rf_url}" target="_blank">{SVG_RECEITA} Receita</a>' if rf_url and rf_url != "#" else ""
-    maps_btn = f'<a class="act-btn act-btn-maps" href="{maps_url}" target="_blank">{SVG_MAPS} Maps</a>' if maps_url and maps_url != "#" else ""
-    ig_btn = f'<a class="act-btn act-btn-ig" href="{ig_url}" target="_blank">{SVG_INSTAGRAM} Instagram</a>'
-    web_btn = f'<a class="act-btn act-btn-web" href="{web_url}" target="_blank">{SVG_SEARCH} Google</a>'
+    rf_btn = f'<a class="act-btn-new" href="{rf_url}" target="_blank">{SVG_RECEITA_DOC} Receita</a>' if rf_url and rf_url != "#" else f'<span class="act-btn-new" style="opacity:.4">{SVG_RECEITA_DOC} Sem RF</span>'
+    maps_btn = f'<a class="act-btn-new" href="{maps_url}" target="_blank">{SVG_MAPS_PIN} Maps</a>' if maps_url and maps_url != "#" else f'<span class="act-btn-new" style="opacity:.4">{SVG_MAPS_PIN} Sem Maps</span>'
+    ig_btn = f'<a class="act-btn-new" href="{ig_url}" target="_blank">{SVG_INSTAGRAM_CAM} Instagram</a>'
+    web_btn = f'<a class="act-btn-new" href="{web_url}" target="_blank">{SVG_GOOGLE_GLOBE} Google</a>'
 
     endereco = escape(str(row.get("ENDERECO MAPA", "—")))
 
@@ -1232,7 +1266,7 @@ def build_card_html(row):
     {strip_html}
   </div>
   <div class="contact-pill-box">{c_rows}</div>
-  <div class="action-buttons">{rf_btn}{maps_btn}{ig_btn}{web_btn}</div>
+  <div class="action-buttons-new">{rf_btn}{maps_btn}{ig_btn}{web_btn}</div>
   <details class="card-expand">
     <summary>Endereço completo e CNAEs secundários ({len(sec_cnaes)})</summary>
     <div class="expand-body">
