@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, date, timedelta
 from io import BytesIO
+import re
 
 # ══════════════════════════════════════════════════════
 # 1. CONFIGURAÇÃO DA PÁGINA
@@ -818,6 +819,11 @@ def init_state():
             st.session_state[k] = v
 
 
+def minify(html: str) -> str:
+    """Colapsa HTML multi-linha em linha única para o parser de Markdown."""
+    return re.sub(r"\n[ \t]+", " ", html).strip()
+
+
 # ══════════════════════════════════════════════════════
 # 6. HELPER FUNCTIONS
 # ══════════════════════════════════════════════════════
@@ -856,7 +862,7 @@ def clean_phone(phone):
 def wa_link(phone):
     cp = clean_phone(phone)
     if len(cp) >= 10:
-        return f"https://wa.me/55{cp}?text=Ol%C3%A1%2C+gostaria+de+mais+informa%C3%A7%C3%B5es%21"
+        return f"https://wa.me/55{cp}"
     return "#"
 
 
@@ -1399,7 +1405,7 @@ def show_cards(df):
     cols = st.columns(3)
     for i, row in enumerate(rows_list):
         with cols[i % 3]:
-            st.markdown(build_card_html(row), unsafe_allow_html=True)
+            st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════
@@ -1417,7 +1423,7 @@ def show_list(df):
         nova  = "🆕" if is_new(row.get("INICIO ATIVIDADE")) else ""
 
         with st.expander(f"{cnae_icon} **{main_name}** {nova}  —  {seg_info['e']} {seg}  ·  {row.get('MUNICIPIO','')} / {row.get('ESTADO','')}"):
-            st.markdown(build_card_html(row), unsafe_allow_html=True)
+            st.markdown(minify(build_card_html(row)), unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════
