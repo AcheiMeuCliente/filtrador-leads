@@ -89,61 +89,68 @@ h1,h2,h3,h4,h5{ font-family:var(--font) !important; color:var(--text) !important
 hr{ border-color:var(--border) !important; margin:1.1rem 0 !important; }
 p, span, div, label{ letter-spacing:-0.005em; }
 
-/* ══════════════════════ SIDEBAR (Slate/Navy Alto Contraste - Match React) ══════════════════════ */
+/* ══════════════════════ SIDEBAR (White/Light Benchmark Theme) ══════════════════════ */
 [data-testid="stSidebar"]{
-  background:linear-gradient(185deg, #1e1b4b 0%, #0f172a 100%) !important;
-  border-right:1px solid #1e293b !important;
+  background:#ffffff !important;
+  border-right:1px solid #e2e8f0 !important;
 }
 [data-testid="stSidebar"] .block-container{ padding-top:1.2rem; padding-left:1rem; padding-right:1rem; }
-[data-testid="stSidebar"] *{ color:#e2e8f0; }
-[data-testid="stSidebar"] .sec-label{ color:#94a3b8 !important; font-size:11px !important; font-weight:700 !important; letter-spacing:.06em !important; text-transform:uppercase; margin:10px 0 6px !important; display:flex; align-items:center; gap:6px; }
+[data-testid="stSidebar"] *{ color:#1e293b; }
+[data-testid="stSidebar"] .sec-label{
+  color:#6366f1 !important; font-size:11px !important; font-weight:700 !important;
+  letter-spacing:.06em !important; text-transform:uppercase; margin:14px 0 8px !important;
+  display:flex; align-items:center; gap:6px;
+}
 
 /* Sidebar Expanders */
 [data-testid="stSidebar"] [data-testid="stExpander"]{
-  border:1px solid rgba(255,255,255,.1) !important;
-  border-radius:10px !important;
-  background:rgba(255,255,255,.04) !important;
-  margin-bottom:8px !important;
-  box-shadow:none !important;
+  border:1px solid #e2e8f0 !important;
+  border-radius:12px !important;
+  background:#ffffff !important;
+  margin-bottom:10px !important;
+  box-shadow:0 1px 3px rgba(0,0,0,0.02) !important;
+  overflow:hidden !important;
 }
 [data-testid="stSidebar"] [data-testid="stExpander"] summary{
-  padding:8px 12px !important;
+  padding:10px 14px !important;
+  background:#f8fafc !important;
+  border-bottom:1px solid #e2e8f0 !important;
 }
 [data-testid="stSidebar"] [data-testid="stExpander"] summary:hover{
-  background:rgba(255,255,255,.06) !important;
+  background:#f1f5f9 !important;
 }
 [data-testid="stSidebar"] summary p{
-  font-size:12.5px !important;
+  font-size:13px !important;
   font-weight:700 !important;
-  color:#f8fafc !important;
+  color:#0f172a !important;
 }
 [data-testid="stSidebar"] label p{
-  font-size:12px !important;
-  color:#cbd5e1 !important;
+  font-size:12.5px !important;
+  color:#334155 !important;
 }
 
-/* Sidebar Inputs & Selects - High Contrast Fix */
+/* Sidebar Inputs & Selects */
 [data-testid="stSidebar"] [data-baseweb="select"] > div{
-  background:#1e293b !important;
-  border:1px solid #334155 !important;
-  color:#f8fafc !important;
+  background:#f8fafc !important;
+  border:1px solid #e2e8f0 !important;
+  color:#0f172a !important;
   border-radius:8px !important;
 }
 [data-testid="stSidebar"] [data-baseweb="select"] span,
 [data-testid="stSidebar"] [data-baseweb="select"] div{
-  color:#f8fafc !important;
+  color:#0f172a !important;
 }
 [data-testid="stSidebar"] [data-baseweb="input"]{
-  background:#1e293b !important;
-  border:1px solid #334155 !important;
+  background:#f8fafc !important;
+  border:1px solid #e2e8f0 !important;
   border-radius:8px !important;
 }
 [data-testid="stSidebar"] [data-baseweb="input"] input{
-  color:#f8fafc !important;
+  color:#0f172a !important;
   background:transparent !important;
 }
 [data-testid="stSidebar"] [data-baseweb="input"] input::placeholder{
-  color:#64748b !important;
+  color:#94a3b8 !important;
 }
 [data-testid="stSidebar"] [data-baseweb="tag"]{
   background:#4f46e5 !important;
@@ -151,10 +158,10 @@ p, span, div, label{ letter-spacing:-0.005em; }
   border-radius:6px !important;
 }
 
-/* Sidebar File Uploader Fix */
+/* Sidebar File Uploader */
 [data-testid="stSidebar"] [data-testid="stFileUploader"]{
-  background:rgba(255,255,255,.03);
-  border:1px dashed #334155;
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
   border-radius:10px;
   padding:8px;
 }
@@ -164,70 +171,72 @@ p, span, div, label{ letter-spacing:-0.005em; }
 }
 [data-testid="stSidebar"] [data-testid="stFileUploader"] span,
 [data-testid="stSidebar"] [data-testid="stFileUploader"] small{
-  color:#94a3b8 !important;
+  color:#64748b !important;
 }
 
 /* Sidebar Buttons & Reset */
 [data-testid="stSidebar"] .stButton > button{
-  background:rgba(255,255,255,.06) !important;
-  border:1px solid rgba(255,255,255,.14) !important;
-  color:#e2e8f0 !important;
+  background:#f8fafc !important;
+  border:1px solid #e2e8f0 !important;
+  color:#334155 !important;
   border-radius:8px !important;
-  white-space:nowrap !important;
   font-size:12px !important;
   font-weight:600 !important;
   padding:6px 12px !important;
+  transition:all .12s ease !important;
 }
 [data-testid="stSidebar"] .stButton > button:hover{
-  background:#4f46e5 !important;
-  border-color:#4f46e5 !important;
-  color:#ffffff !important;
+  background:#eef2ff !important;
+  border-color:#c7d2fe !important;
+  color:#4338ca !important;
 }
-[data-testid="stSidebar"] hr{ border-color:rgba(255,255,255,.1) !important; margin:12px 0 !important; }
+[data-testid="stSidebar"] hr{ border-color:#e2e8f0 !important; margin:12px 0 !important; }
 
-/* Preset Box Styling */
-.preset-btn-box{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:8px;
-  padding:8px 10px;
-  margin-bottom:6px;
+/* Preset Card Styling */
+.preset-card-item{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
+  padding:9px 12px;
+  margin-bottom:7px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   transition:all .12s ease;
 }
-.preset-btn-box:hover{
-  background:rgba(79,70,229,.15);
-  border-color:rgba(79,70,229,.4);
+.preset-card-item:hover{
+  background:#f1f5f9;
+  border-color:#cbd5e1;
 }
-.preset-title{ font-size:11.5px; font-weight:600; color:#e2e8f0; }
-.preset-badge{ font-size:10px; font-weight:700; color:#818cf8; background:rgba(79,70,229,.2); padding:2px 6px; border-radius:4px; }
 
 /* Sidebar Header Bar */
 .sidebar-header-bar{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding-bottom:8px;
-  margin-bottom:6px;
-  border-bottom:1px solid rgba(255,255,255,.1);
+  padding-bottom:10px;
+  margin-bottom:12px;
+  border-bottom:1px solid #e2e8f0;
 }
 .sidebar-title{
-  font-size:13.5px;
+  font-size:15px;
   font-weight:800;
-  color:#ffffff;
+  color:#0f172a;
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
 }
 .sidebar-counter{
   background:#4f46e5;
-  color:#fff;
-  font-size:10px;
+  color:#ffffff;
+  font-size:11px;
   font-weight:700;
-  padding:2px 7px;
-  border-radius:12px;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* ── Botões Globais ── */
@@ -887,16 +896,16 @@ def show_sidebar(df):
     prev = read_filters()
 
     with st.sidebar:
-        # Brand Header matching React
+        # Brand Header matching React Light Theme
         st.markdown(
             """
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-              <div style="width:38px;height:38px;border-radius:10px;background:#4f46e5;color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(79,70,229,.35);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e2e8f0;">
+              <div style="width:36px;height:36px;border-radius:10px;background:#4f46e5;color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(79,70,229,.3);">
                 ✂️
               </div>
               <div>
-                <div style="font-size:16px;font-weight:800;color:#ffffff;line-height:1.2;letter-spacing:-0.02em;">AcheiMeuCliente</div>
-                <div style="font-size:11.5px;color:#94a3b8;font-weight:500;">Inteligência B2B Beleza</div>
+                <div style="font-size:15px;font-weight:800;color:#0f172a;line-height:1.2;letter-spacing:-0.02em;">AcheiMeuCliente</div>
+                <div style="font-size:11px;color:#64748b;font-weight:600;">Inteligência B2B Beleza</div>
               </div>
             </div>
             """,
@@ -916,22 +925,7 @@ def show_sidebar(df):
             st.toast(f"Perfil: {PROFILE_LABELS[sel]}")
             st.rerun()
 
-        # Upload de planilha
-        uploaded = st.file_uploader("📥 Carregar CSV ou Excel", type=["csv", "xlsx"])
-        if uploaded is not None:
-            try:
-                if uploaded.name.endswith(".csv"):
-                    df_up = pd.read_csv(uploaded, sep=None, engine="python")
-                else:
-                    df_up = pd.read_excel(uploaded)
-                st.session_state["custom_df"] = normalize_df(df_up)
-                st.success(f"Carregados {len(df_up)} registros!")
-            except Exception as e:
-                st.error(f"Erro ao ler arquivo: {e}")
-
-        st.markdown("<hr>", unsafe_allow_html=True)
-
-        # Header de Filtros com contador e botão de limpar sem quebra de texto
+        # Header de Filtros com contador e botão de limpar
         total_active = len(active_filter_chips(prev))
         st.markdown(
             f"""
@@ -946,43 +940,47 @@ def show_sidebar(df):
         )
 
         if total_active > 0:
-            if st.button("↺ Limpar todos os filtros", key="reset_all_btn", use_container_width=True):
+            if st.button("↺ Limpar filtros", key="reset_all_btn", use_container_width=True):
                 reset_filters()
                 st.rerun()
 
-        # Visualizações Rápidas
+        # Visualizações Rápidas (Pílulas com texto e botão Aplicar à direita)
         st.markdown('<div class="sec-label">🔖 VISUALIZAÇÕES RÁPIDAS</div>', unsafe_allow_html=True)
         preset_list = [
             {"name": "Macapá · Salões com WhatsApp", "filters": {"estados": ["AP"], "municipios": ["Macapá"], "segmentos": ["Salões e Barbearias"], "tem_whatsapp": True}},
             {"name": "Clínicas de Estética & Spas", "filters": {"segmentos": ["Clínicas de Estética"], "tem_whatsapp": True}},
             {"name": "Distribuidores e Fábricas B2B", "filters": {"segmentos": ["Distribuidores Atacadistas", "Fábricas e Marcas"]}},
-            {"name": "Apenas CNAE Principal de Beleza", "filters": {"origem_cnae": "Apenas CNAE principal"}},
+            {"name": "Apenas CNAE Principal em Beleza", "filters": {"origem_cnae": "Apenas CNAE principal"}},
         ]
         for i, ps in enumerate(preset_list):
-            if st.button(f"🎯 {ps['name']}", key=f"ps_btn_{i}", use_container_width=True):
-                reset_filters(ps["filters"])
-                st.toast(f"Filtro “{ps['name']}” aplicado")
-                st.rerun()
+            c_p1, c_p2 = st.columns([3, 1])
+            with c_p1:
+                st.markdown(f'<div style="font-size:12px;font-weight:600;color:#334155;padding-top:5px;">{ps["name"]}</div>', unsafe_allow_html=True)
+            with c_p2:
+                if st.button("Aplicar", key=f"ps_btn_{i}"):
+                    reset_filters(ps["filters"])
+                    st.toast(f"Filtro “{ps['name']}” aplicado")
+                    st.rerun()
+
+        st.markdown("<hr>", unsafe_allow_html=True)
 
         # Grupos de Filtros Avançados
-        st.markdown('<div class="sec-label">🔍 CRITÉRIOS DE PROSPECÇÃO</div>', unsafe_allow_html=True)
-
         with st.expander(group_title("📞 Canais de Contato", ["tem_email", "sem_contador", "tem_whatsapp"], prev), expanded=True):
-            st.checkbox("Com WhatsApp confirmado", key=k("tem_whatsapp"))
-            st.checkbox("Com e-mail cadastrado", key=k("tem_email"))
-            st.checkbox("Excluir e-mail de contador", key=k("sem_contador"))
+            st.checkbox("Com WhatsApp Confirmado", key=k("tem_whatsapp"))
+            st.checkbox("Com E-mail Cadastrado", key=k("tem_email"))
+            st.checkbox("Excluir e-mails de contabilidade", key=k("sem_contador"))
 
-        with st.expander(group_title("✂️ Segmento e CNAE", ["segmentos", "origem_cnae"], prev), expanded=False):
-            st.multiselect("Segmentos de Beleza", list(SEG_CFG.keys()), key=k("segmentos"), placeholder="Todos os segmentos")
+        with st.expander(group_title("🛍️ Segmentos de Beleza", ["segmentos", "origem_cnae"], prev), expanded=False):
+            st.multiselect("Segmentos Selecionados", list(SEG_CFG.keys()), key=k("segmentos"), placeholder="Todos os segmentos")
             st.selectbox(
-                "Origem do match CNAE",
+                "Origem do CNAE:",
                 ["Principal ou Secundário", "Apenas CNAE principal", "Apenas CNAE secundário"],
                 key=k("origem_cnae"),
             )
 
         with st.expander(group_title("📍 Localização", ["estados", "municipios", "bairros"], prev), expanded=False):
             estados = sorted(df["ESTADO"].dropna().unique().tolist())
-            st.multiselect("Estados (UF)", estados, key=k("estados"), placeholder="Todos")
+            st.multiselect("Estado (UF)", estados, key=k("estados"), placeholder="Todos")
 
             sel_uf = st.session_state.get(k("estados"), [])
             base = df[df["ESTADO"].isin(sel_uf)] if sel_uf else df
@@ -996,9 +994,22 @@ def show_sidebar(df):
             st.multiselect("Bairro", bai_opts, key=k("bairros"), placeholder="Todos os bairros")
 
         with st.expander(group_title("🏢 Porte & Tributação", ["portes", "mei", "simples", "anos_range"], prev), expanded=False):
-            st.multiselect("Porte da Empresa", ["MEI", "ME", "EPP", "Grande"], key=k("portes"), placeholder="Todos")
-            st.selectbox("Filtro MEI", ["Todos", "Apenas MEI", "Excluir MEI"], key=k("mei"))
-            st.selectbox("Simples Nacional", ["Todos", "Sim", "Não"], key=k("simples"))
+            st.markdown('<div style="font-size:12px;font-weight:600;color:#475569;margin-bottom:6px;">Porte da Empresa</div>', unsafe_allow_html=True)
+            col_p1, col_p2 = st.columns(2)
+            sel_portes = set(st.session_state.get(k("portes"), []))
+            for i, p_item in enumerate(["MEI", "ME", "EPP", "Grande"]):
+                col_target = col_p1 if i % 2 == 0 else col_p2
+                is_sel = p_item in sel_portes
+                btn_label = f"✓ {p_item}" if is_sel else p_item
+                if col_target.button(btn_label, key=f"porte_btn_{p_item}", use_container_width=True):
+                    if is_sel:
+                        st.session_state[k("portes")] = [x for x in sel_portes if x != p_item]
+                    else:
+                        st.session_state[k("portes")] = list(sel_portes | {p_item})
+                    st.rerun()
+
+            st.selectbox("Filtro MEI:", ["Todos", "Apenas MEI", "Excluir MEI"], key=k("mei"))
+            st.selectbox("Simples Nacional:", ["Todos", "Sim", "Não"], key=k("simples"))
             st.slider("Anos de atividade", 0, 25, key=k("anos_range"))
 
         st.markdown('<div class="sec-label">💾 SALVAR FILTRO ATUAL</div>', unsafe_allow_html=True)
